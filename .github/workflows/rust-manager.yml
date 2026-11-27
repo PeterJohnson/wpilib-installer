@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'manager/**'
+      - '.github/scripts/install-linux-dependencies.sh'
       - 'tools/*rust*'
       - 'tools/check_dashboard_releases.py'
       - 'installer_prototype/manager.py'
@@ -11,6 +12,7 @@ on:
   pull_request:
     paths:
       - 'manager/**'
+      - '.github/scripts/install-linux-dependencies.sh'
       - 'tools/*rust*'
       - 'tools/check_dashboard_releases.py'
       - 'installer_prototype/manager.py'
@@ -39,9 +41,15 @@ jobs:
           workspaces: manager
       - run: python -m pip install -e .
       - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y 7zip xvfb libgl1-mesa-dri libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-cursor0 libxcb-shape0 libxcb-xfixes0 libxcb-sync1 libx11-xcb1
+        run: bash .github/scripts/install-linux-dependencies.sh xvfb libgl1-mesa-dri
       - if: runner.os == 'macOS'
         run: brew install sevenzip
+      - if: runner.os == 'Windows'
+        name: Install NASM for the native crypto build
+        shell: pwsh
+        run: |
+          choco install nasm --no-progress -y
+          "C:\Program Files\NASM" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - run: python tools/bootstrap_ifw.py
       - name: Prepare signed fixture bundles
         run: python tools/prepare_rust_fixture.py --ifw .tools/ifw --work build/rust-fixture

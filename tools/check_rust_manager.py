@@ -175,6 +175,8 @@ def main():
     p.add_argument('--isolation', default='none-local-development')
     p.add_argument('--no-isolation', action='store_true')
     a = p.parse_args()
+    for name in ['app', 'baseline', 'candidate', 'work', 'report']:
+        setattr(a, name, getattr(a, name).resolve())
     if a.worker or a.no_isolation:
         worker(a)
         return

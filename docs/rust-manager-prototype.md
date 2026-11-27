@@ -14,7 +14,7 @@ The complete cached ZIP supports add/remove/reinstall without the original downl
 
 ## Build and run
 
-Use Rust 1.100.0 and the Python/IFW development prerequisites from the README. Build on the target OS/architecture. `Cargo.lock` pins the Rust dependency graph.
+Use Rust 1.100.0 (Windows also needs NASM on the build PATH) and the Python/IFW development prerequisites from the README. Build on the target OS/architecture. `Cargo.lock` pins the Rust dependency graph.
 
 ```sh
 python tools/prepare_rust_fixture.py --ifw .tools/ifw --work build/rust-fixture
