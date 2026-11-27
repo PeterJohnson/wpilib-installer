@@ -39,7 +39,7 @@ impl WorkerRuntime {
 }
 
 /// Some Wayland-first desktops omit the X11 keyboard bridge used by winit.
-/// Load only the two missing bridge libraries by absolute path, without changing
+/// Load only the matched keyboard helper libraries by absolute path, without changing
 /// the GUI's search path or loading Qt's private libstdc++, X11 or font stack.
 pub struct GuiRuntime {
     #[cfg(target_os = "linux")]
@@ -57,7 +57,9 @@ impl GuiRuntime {
                 _libraries: Vec::new(),
                 _directory: None,
             };
-            if std::env::var_os("DISPLAY").is_none() {
+            if std::env::var_os("DISPLAY").is_none()
+                || std::env::var_os("WAYLAND_DISPLAY").is_some()
+            {
                 return Ok(runtime);
             }
             // SAFETY: These are conventional system libraries. We call no raw
@@ -70,22 +72,22 @@ impl GuiRuntime {
                 .prefix("wpilib-x11-compat-")
                 .tempdir()?;
             let mut archive = zip::ZipArchive::new(std::io::Cursor::new(RUNTIME))?;
-            // Dependency first: dlopen reuses loaded SONAMEs for DT_NEEDED.
-            for name in ["libxcb-xkb.so.1", "libxkbcommon-x11.so.0"] {
-                // SAFETY: As above, prefer the OS copy when it is available.
-                let library = match unsafe { Library::new(name) } {
-                    Ok(library) => library,
-                    Err(_) => {
-                        let path = directory.path().join(name);
-                        let mut output = std::fs::File::create(&path)?;
-                        std::io::copy(&mut archive.by_name(&format!("lib/{name}"))?, &mut output)?;
-                        drop(output);
-                        // SAFETY: Fixed allowlisted files from the compiled
-                        // archive, never from an external bundle or repository.
-                        unsafe { Library::new(&path) }?
-                    }
-                };
-                runtime._libraries.push(library);
+            // xkbcommon-x11 uses internal core data structures: keep the core
+            // and bridge from the same build, never pair an old bridge with a
+            // newer OS core. The GUI has not loaded XKB yet at this point.
+            for name in [
+                "libxcb-xkb.so.1",
+                "libxkbcommon.so.0",
+                "libxkbcommon-x11.so.0",
+            ] {
+                let path = directory.path().join(name);
+                let mut output = std::fs::File::create(&path)?;
+                std::io::copy(&mut archive.by_name(&format!("lib/{name}"))?, &mut output)?;
+                drop(output);
+                // SAFETY: Fixed allowlisted files from the compiled archive,
+                // never an external bundle. Dependency SONAMEs are reused;
+                // handles remain alive until after the GUI exits.
+                runtime._libraries.push(unsafe { Library::new(&path) }?);
             }
             runtime._directory = Some(directory);
             Ok(runtime)
