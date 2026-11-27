@@ -38,7 +38,10 @@ jobs:
           sudo rm -rf /usr/local/lib/android /opt/ghc
           sudo apt-get update
           sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils xorriso
-          sudo setfacl -m "u:$(id -u):rw" /dev/kvm
+          # logind can remove a per-user device ACL between VM boots.
+          # Group access remains valid for the whole controller process.
+          sudo usermod -a -G kvm "$(id -un)"
+          sudo chmod g+rw /dev/kvm
       - uses: actions/download-artifact@v4
         with:
           name: ubuntu-desktop-test-input
@@ -57,7 +60,7 @@ jobs:
           PYTHON
       - name: Install stock Ubuntu Desktop and test host graphics
         run: |
-          python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm
+          sg kvm -c "python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

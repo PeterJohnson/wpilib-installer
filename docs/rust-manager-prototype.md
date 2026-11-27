@@ -110,4 +110,4 @@ Use the platform-specific application path described above; Linux CI prefixes th
 
 ## Self-contained runtime validation
 
-The subsequent [runtime packaging implementation and validation](self-contained-runtime.md#validation--november-27-2026) adds explicit dependency audits and clean Linux acceptance. Its new Linux application size includes embedded desktop libraries and software graphics; the earlier size/timing table above describes the previous packaging. All four native targets also reran the 35-check authenticated online fixture suite with the self-contained packaging.
+The [runtime policy](self-contained-runtime.md) now uses host Linux graphics and a private Qt worker dependency closure. Metadata verification and GUI startup do not extract that worker runtime. Headless acceptance runs in minimal OS containers; GUI acceptance installs stock Ubuntu Desktop from pinned ISOs. Historical bundled-renderer measurements remain in the runtime document for comparison. Native authenticated online fixture checks continue to cover all four targets.
