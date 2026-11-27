@@ -17,7 +17,7 @@ in [implementation status](docs/prototype-status.md). The full
 - Qt Installer Framework 4.11.0. Use an existing installation or the pinned
   download helper below, which requires `7z` or `7zz`.
 - On Ubuntu 24.04, install Qt runtime libraries and the archive extractor:
-  `sudo apt-get install 7zip libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-cursor0`.
+  `sudo apt-get install 7zip libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-cursor0 libxcb-shape0 libxcb-xfixes0 libxcb-sync1 libx11-xcb1`.
 - Native Qt tools for the host on which you build an installer. The pinned downloads
   cover Linux x64, Windows x64, and universal macOS. Windows/Linux ARM64 native
   installer builds remain a feasibility gate. Package/bundle target identities
