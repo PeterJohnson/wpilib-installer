@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'manager/**'
+      - '.cargo/**'
+      - '.github/containers/**'
+      - 'tools/build_linux_manager.py'
       - '.github/scripts/install-linux-dependencies.sh'
       - 'tools/*rust*'
       - 'tools/check_dashboard_releases.py'
@@ -12,6 +15,9 @@ on:
   pull_request:
     paths:
       - 'manager/**'
+      - '.cargo/**'
+      - '.github/containers/**'
+      - 'tools/build_linux_manager.py'
       - '.github/scripts/install-linux-dependencies.sh'
       - 'tools/*rust*'
       - 'tools/check_dashboard_releases.py'
@@ -59,7 +65,7 @@ jobs:
         shell: bash
         run: |
           cargo fmt --manifest-path manager/Cargo.toml --check
-          WPILIB_ASSET_DIR="$PWD/build/rust-manager/assets" cargo test --release --locked --manifest-path manager/Cargo.toml
+          MACOSX_DEPLOYMENT_TARGET=13.0 WPILIB_ASSET_DIR="$PWD/build/rust-manager/assets" cargo test --release --locked --manifest-path manager/Cargo.toml
       - name: Native fixture startup and offline maintenance
         shell: bash
         run: |

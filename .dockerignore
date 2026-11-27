@@ -1,0 +1,5 @@
+**
+!.github/
+!.github/containers/
+!.github/containers/linux-runtime.Dockerfile
+!.github/containers/linux-display.Dockerfile

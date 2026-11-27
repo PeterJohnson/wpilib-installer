@@ -6,7 +6,11 @@ fn main() {
             "Run tools/build_rust_manager.py to supply pinned bootstrap and private engine",
         ));
     let out = PathBuf::from(env::var_os("OUT_DIR").unwrap());
-    for name in ["bootstrap.json", "engine.zip"] {
+    let mut names = vec!["bootstrap.json", "engine.zip"];
+    if env::var("CARGO_CFG_TARGET_OS").as_deref() == Ok("linux") {
+        names.push("runtime.zip");
+    }
+    for name in names {
         let source = assets.join(name);
         println!("cargo:rerun-if-changed={}", source.display());
         fs::copy(source, out.join(name)).unwrap();

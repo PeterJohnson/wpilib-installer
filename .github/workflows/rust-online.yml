@@ -4,12 +4,18 @@ on:
   push:
     paths:
       - 'manager/**'
+      - '.cargo/**'
+      - '.github/containers/**'
+      - 'tools/build_linux_manager.py'
       - 'tools/*rust*'
       - 'tools/check_native_tuf.py'
       - '.github/workflows/rust-online.yml'
   pull_request:
     paths:
       - 'manager/**'
+      - '.cargo/**'
+      - '.github/containers/**'
+      - 'tools/build_linux_manager.py'
       - 'tools/*rust*'
       - 'tools/check_native_tuf.py'
       - '.github/workflows/rust-online.yml'
@@ -56,7 +62,7 @@ jobs:
         shell: bash
         run: |
           cargo fmt --manifest-path manager/Cargo.toml --check
-          WPILIB_ASSET_DIR="$PWD/build/online-fixture/assets" cargo test --release --locked --manifest-path manager/Cargo.toml
+          MACOSX_DEPLOYMENT_TARGET=13.0 WPILIB_ASSET_DIR="$PWD/build/online-fixture/assets" cargo test --release --locked --manifest-path manager/Cargo.toml
       - name: Native authenticated refresh, caches, and offline-to-online upgrades
         shell: bash
         run: |

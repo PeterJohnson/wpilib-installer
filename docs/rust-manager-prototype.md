@@ -1,6 +1,6 @@
 # Rust single-application prototype
 
-The selected implementation is a Rust manager with a private Qt Installer Framework 4.11 engine. Windows and Linux deliver one executable; macOS delivers one `.app`. The executable implements both GUI and JSON CLI modes. Python, Cargo, and IFW tools are needed to build/test it, not to run it.
+The selected implementation is a Rust manager with a private Qt Installer Framework 4.11 engine. Windows and Linux deliver one executable; macOS delivers one `.app`. The executable implements both GUI and JSON CLI modes. Python, Cargo, and IFW tools are needed to build/test it, not to run it. The [self-contained runtime policy](self-contained-runtime.md) adds embedded Linux GUI/Qt libraries, static Windows CRT linking, platform dependency audits, and clean Linux container acceptance.
 
 ## Implemented boundary
 
@@ -14,7 +14,7 @@ The complete cached ZIP supports add/remove/reinstall without the original downl
 
 ## Build and run
 
-Use Rust 1.100.0 (Windows also needs NASM on the build PATH) and the Python/IFW development prerequisites from the README. Build on the target OS/architecture. `Cargo.lock` pins the Rust dependency graph.
+Use Rust 1.100.0 (Windows also needs NASM on the build PATH) and the Python/IFW development prerequisites from the README. Build on the target OS/architecture. Linux additionally requires Docker on the build host; the manager and its embedded runtime are compiled in the Ubuntu 22.04 baseline builder. `Cargo.lock` pins the Rust dependency graph.
 
 ```sh
 python tools/prepare_rust_fixture.py --ifw .tools/ifw --work build/rust-fixture

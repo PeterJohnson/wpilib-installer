@@ -29,8 +29,14 @@ def build(source, ifw, output, assets, cargo='cargo'):
             if file.is_file():
                 archive.write(file, file.relative_to(assets))
     env = {**os.environ, 'WPILIB_ASSET_DIR': str(assets)}
-    subprocess.run([cargo, 'build', '--locked', '--release', '--manifest-path', 'manager/Cargo.toml'], env=env, check=True)
-    binary = Path('manager/target/release/wpilib-manager' + ('.exe' if os.name == 'nt' else ''))
+    if sys.platform == 'linux':
+        from build_linux_manager import build_linux
+        binary = build_linux(assets)
+    else:
+        if sys.platform == 'darwin':
+            env['MACOSX_DEPLOYMENT_TARGET'] = '13.0'
+        subprocess.run([cargo, 'build', '--locked', '--release', '--manifest-path', 'manager/Cargo.toml'], env=env, check=True)
+        binary = Path('manager/target/release/wpilib-manager' + ('.exe' if os.name == 'nt' else ''))
     if sys.platform == 'darwin':
         app = output / 'WPILib Manager.app'
         exe = app / 'Contents/MacOS/wpilib-manager'
@@ -40,6 +46,8 @@ def build(source, ifw, output, assets, cargo='cargo'):
         exe = output / ('WPILibManager.exe' if os.name == 'nt' else 'wpilib-manager')
         exe.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(binary, exe)
+    from audit_rust_dependencies import check
+    check(exe, engine, assets / 'dependency-audit.json', assets / 'runtime.json' if sys.platform == 'linux' else None)
     # Wrap the app before upload-artifact so Unix executable modes survive download.
     with zipfile.ZipFile(output.parent / 'manager-application.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
         for file in sorted(output.rglob('*')):
