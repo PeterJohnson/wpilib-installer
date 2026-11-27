@@ -2,7 +2,7 @@
 
 ## Rust single-application work
 
-The selected Rust/private-Qt direction now has an [offline application prototype](rust-manager-prototype.md), shared GUI/JSON CLI backend, pinned archival verification, embedded engine, persistent manager and cache-only maintenance. The native workflow tests fixtures and real dashboards on four OS/architecture runners. Online tough integration, release signing, self-update and OS integration remain unfinished; this does not supersede the Python reference behavior described below.
+The selected Rust/private-Qt direction now has an [online/offline application prototype](rust-manager-prototype.md), shared GUI/JSON CLI backend, pinned archival verification, embedded engine, persistent manager and cache-only maintenance. The native workflow tests fixtures and real dashboards on four OS/architecture runners. Native tough registry/publisher refresh, verified caches and offline-to-online updates are integrated. Release signing, self-update and OS integration remain unfinished; this does not supersede the Python reference behavior described below.
 
 The Python/Qt reference was implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3); the Rust application work followed November 27.
 

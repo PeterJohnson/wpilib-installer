@@ -245,7 +245,11 @@ impl Bundle {
                 }
             }
             let files = m["files"].as_object().ok_or("No files")?;
-            log(format!("Verifying every file from {publisher}…"));
+            log(if metadata_only {
+                format!("Verifying {publisher} catalog and package index…")
+            } else {
+                format!("Verifying every file from {publisher}…")
+            });
             for (name, record) in files {
                 safe(name)?;
                 if !record["sha256"]
@@ -389,10 +393,11 @@ impl Bundle {
                 }
             }
         }
-        log(
-            "Bundle signatures, registry identity, package hashes and dependencies verified."
-                .into(),
-        );
+        log(if metadata_only {
+            "Catalog signatures, package indexes and dependencies verified. Payloads will be checked before installation.".into()
+        } else {
+            "Bundle signatures, registry identity, package hashes and dependencies verified.".into()
+        });
         Ok(Self {
             _temp: temp,
             registry,

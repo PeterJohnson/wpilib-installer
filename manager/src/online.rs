@@ -390,7 +390,38 @@ fn role_keys(root: &Value, role: &str) -> Value {
             }
         }
     }
-    json!({"threshold":r["roles"][role]["threshold"],"keys":keys})
+    json!(keys)
+}
+fn checkpoint_floors(prior: &Value, next: &Value) -> Result<(), Error> {
+    if next["root.json"]["signed"]["version"].as_u64()
+        < prior["root.json"]["signed"]["version"].as_u64()
+    {
+        return Err("TUF root checkpoint rollback".into());
+    }
+    // Compare key sets, not their serialization order. A historical replay or
+    // root-key reordering must not become a rollback-floor reset.
+    if ["timestamp", "snapshot"]
+        .iter()
+        .any(|role| role_keys(&prior["root.json"], role) != role_keys(&next["root.json"], role))
+    {
+        return Ok(());
+    }
+    for role in ["timestamp.json", "snapshot.json"] {
+        if let (Some(old), Some(new)) = (prior.get(role), next.get(role)) {
+            if new["signed"]["version"].as_u64() < old["signed"]["version"].as_u64() {
+                return Err("TUF metadata checkpoint rollback".into());
+            }
+            for (name, record) in old["signed"]["meta"]
+                .as_object()
+                .ok_or("Invalid checkpoint meta")?
+            {
+                if new["signed"]["meta"][name]["version"].as_u64() < record["version"].as_u64() {
+                    return Err("TUF referenced metadata checkpoint rollback".into());
+                }
+            }
+        }
+    }
+    Ok(())
 }
 fn save_checkpoint(
     pin: &[u8],
@@ -418,9 +449,15 @@ fn save_checkpoint(
             } else {
                 value[name] = v;
             }
+        } else if !rotated {
+            if let Some(v) = prior.get(name) {
+                value[name] = v.clone();
+                atomic(&path, &serde_json::to_vec(v)?)?;
+            }
         }
     }
     authenticate_checkpoint(pin, &dir.join("roots"), &value)?;
+    checkpoint_floors(prior, &value)?;
     atomic(&dir.join("checkpoint.json"), &serde_json::to_vec(&value)?)?;
     Ok(value)
 }
@@ -868,37 +905,122 @@ pub fn load(
     cache_only: bool,
     log: &(dyn Fn(String) + Sync),
 ) -> Result<Bundle, Error> {
-    tokio::runtime::Runtime::new()?.block_on(async{
-    let dev=source["allow_loopback_http"]==true;let http=client(dev)?;
+    tokio::runtime::Runtime::new()?.block_on(load_async(source, cache, cache_only, log))
+}
+async fn load_async(
+    source: &Value,
+    cache: &Path,
+    cache_only: bool,
+    log: &(dyn Fn(String) + Sync),
+) -> Result<Bundle, Error> {
+    let dev = source["allow_loopback_http"] == true;
+    let http = client(dev)?;
     log("Refreshing the registry through TUF…".into());
-    let catalog=load_catalog(&source["tuf"],cache,dev,cache_only,log).await?;
-    let reg=registry_record(&catalog.value,source,true)?.clone();
-    if let Some(old)=&catalog.previous{registry_record(old,source,false)?;}monotonic(&catalog.value,catalog.previous.as_ref())?;
-    let order=publisher_order(&reg)?;let mut tuf_ids=BTreeSet::new();tuf_ids.insert(bundle::strval(&source["tuf"]["repository_id"])?.to_owned());
-    let mut available=BTreeMap::new();let mut statuses=vec![json!({"repository":"registry","status":catalog.status,"root_version":catalog.root_version})];let mut publisher_catalogs=vec![];
-    for name in &order{bundle::safe(name)?;if name.contains('/')||!name.bytes().all(|b|b.is_ascii_lowercase()||b.is_ascii_digit()||b==b'-'||b==b'_'){return Err("Invalid publisher identifier".into())}
-        let policy=&reg["repositories"][name];url(bundle::strval(&policy["url"])?,dev)?;
-        if !tuf_ids.insert(bundle::strval(&policy["tuf"]["repository_id"])?.to_owned()){return Err("Publishers must have independent TUF identities".into())}
-        log(format!("Refreshing {name} through its own TUF root…"));let c=load_catalog(&policy["tuf"],cache,dev,cache_only,log).await?;
-        let candidates=releases(&c.value,&reg,name)?;
+    let catalog = load_catalog(&source["tuf"], cache, dev, cache_only, log).await?;
+    let reg = registry_record(&catalog.value, source, true)?.clone();
+    if let Some(old) = &catalog.previous {
+        registry_record(old, source, false)?;
+    }
+    monotonic(&catalog.value, catalog.previous.as_ref())?;
+    let order = publisher_order(&reg)?;
+    let mut tuf_ids = BTreeSet::new();
+    tuf_ids.insert(bundle::strval(&source["tuf"]["repository_id"])?.to_owned());
+    let mut available = BTreeMap::new();
+    let mut statuses = vec![
+        json!({"repository":"registry","status":catalog.status,"root_version":catalog.root_version}),
+    ];
+    let mut publisher_catalogs = vec![];
+    for name in &order {
+        bundle::safe(name)?;
+        if name.contains('/')
+            || !name
+                .bytes()
+                .all(|b| b.is_ascii_lowercase() || b.is_ascii_digit() || b == b'-' || b == b'_')
+        {
+            return Err("Invalid publisher identifier".into());
+        }
+        let policy = &reg["repositories"][name];
+        url(bundle::strval(&policy["url"])?, dev)?;
+        if !tuf_ids.insert(bundle::strval(&policy["tuf"]["repository_id"])?.to_owned()) {
+            return Err("Publishers must have independent TUF identities".into());
+        }
+        log(format!("Refreshing {name} through its own TUF root…"));
+        let c = load_catalog(&policy["tuf"], cache, dev, cache_only, log).await?;
+        let candidates = releases(&c.value, &reg, name)?;
         // TUF version rollback is handled by tough; also reject a newer TUF
         // catalog that lowers/repackages its highest publisher revision.
-        if let Some(old)=&c.previous {let old_all=old["releases"].as_array().ok_or("Invalid prior publisher catalog")?;let prior=old_all.last().ok_or("Empty prior history")?;let latest=&c.value["releases"].as_array().unwrap().last().unwrap();
-            let a=prior["signed"]["revision"].as_u64().ok_or("Invalid prior revision")?;let b=latest["signed"]["revision"].as_u64().ok_or("Invalid revision")?;if b<a || b==a&&*latest!=prior{return Err("Publisher revision rollback or mutation".into())}}
-        statuses.push(json!({"repository":name,"status":c.status,"root_version":c.root_version}));available.insert(name.clone(),candidates);publisher_catalogs.push(c);
+        if let Some(old) = &c.previous {
+            let old_all = old["releases"]
+                .as_array()
+                .ok_or("Invalid prior publisher catalog")?;
+            let prior = old_all.last().ok_or("Empty prior history")?;
+            let latest = &c.value["releases"].as_array().unwrap().last().unwrap();
+            let a = prior["signed"]["revision"]
+                .as_u64()
+                .ok_or("Invalid prior revision")?;
+            let b = latest["signed"]["revision"]
+                .as_u64()
+                .ok_or("Invalid revision")?;
+            if b < a || b == a && *latest != prior {
+                return Err("Publisher revision rollback or mutation".into());
+            }
+        }
+        statuses.push(json!({"repository":name,"status":c.status,"root_version":c.root_version}));
+        available.insert(name.clone(), candidates);
+        publisher_catalogs.push(c);
     }
-    let selected=choose(&order,&available)?;let temp=tempfile::tempdir()?;let root=temp.path().to_path_buf();let mut references=serde_json::Map::new();let mut remote=serde_json::Map::new();let mut held=vec![];
-    for (name,envelope) in &selected{let repo=root.join("repos").join(name);fs::create_dir_all(&repo)?;atomic(&repo.join("release.json"),&serde_json::to_vec(envelope)?)?;let m=&envelope["signed"];references.insert(name.clone(),json!({"revision":m["revision"],"sha256":bundle::sha(&trust::canonical(envelope)?)}));
-        let base=format!("{}/releases/{}",bundle::strval(&reg["repositories"][name]["url"])?.trim_end_matches('/'),m["revision"]);
-        verified_file(&http,&base,"Updates.xml",&m["files"]["Updates.xml"],cache,&repo.join("Updates.xml"),dev,cache_only).await?;
-        remote.insert(name.clone(),json!({"url":base,"files":m["files"]}));
-        if m["revision"]!=available[name][0]["signed"]["revision"]{held.push(json!({"publisher":name,"selected":m["revision"],"latest":available[name][0]["signed"]["revision"]}));}
+    let selected = choose(&order, &available)?;
+    let temp = tempfile::tempdir()?;
+    let root = temp.path().to_path_buf();
+    let mut references = serde_json::Map::new();
+    let mut remote = serde_json::Map::new();
+    let mut held = vec![];
+    for (name, envelope) in &selected {
+        let repo = root.join("repos").join(name);
+        fs::create_dir_all(&repo)?;
+        atomic(&repo.join("release.json"), &serde_json::to_vec(envelope)?)?;
+        let m = &envelope["signed"];
+        references.insert(
+            name.clone(),
+            json!({"revision":m["revision"],"sha256":bundle::sha(&trust::canonical(envelope)?)}),
+        );
+        let base = format!(
+            "{}/releases/{}",
+            bundle::strval(&reg["repositories"][name]["url"])?.trim_end_matches('/'),
+            m["revision"]
+        );
+        verified_file(
+            &http,
+            &base,
+            "Updates.xml",
+            &m["files"]["Updates.xml"],
+            cache,
+            &repo.join("Updates.xml"),
+            dev,
+            cache_only,
+        )
+        .await?;
+        remote.insert(name.clone(), json!({"url":base,"files":m["files"]}));
+        if m["revision"] != available[name][0]["signed"]["revision"] {
+            held.push(json!({"publisher":name,"selected":m["revision"],"latest":available[name][0]["signed"]["revision"]}));
+        }
     }
-    let identity=json!({"registry_id":source["registry_id"],"registry_revision":catalog.value["signed"]["revision"],"registry_sha256":bundle::sha(&trust::canonical(&catalog.value)?),"status":if statuses.iter().any(|s|s["status"]=="verified-cache"){"verified-cache"}else{"verified-online"},"repositories":statuses,"held_back":held});
-    let mut bundle=Bundle::repositories(temp,&root,reg,identity,&Value::Object(references),true,log)?;bundle.remote=Some(Value::Object(remote));
-    catalog.accept()?;for c in publisher_catalogs{c.accept()?;}
+    let identity = json!({"registry_id":source["registry_id"],"registry_revision":catalog.value["signed"]["revision"],"registry_sha256":bundle::sha(&trust::canonical(&catalog.value)?),"status":if statuses.iter().any(|s|s["status"]=="verified-cache"){"verified-cache"}else{"verified-online"},"repositories":statuses,"held_back":held});
+    let mut bundle = Bundle::repositories(
+        temp,
+        &root,
+        reg,
+        identity,
+        &Value::Object(references),
+        true,
+        log,
+    )?;
+    bundle.remote = Some(Value::Object(remote));
+    catalog.accept()?;
+    for c in publisher_catalogs {
+        c.accept()?;
+    }
     Ok(bundle)
-})
 }
 pub fn materialize(
     bundle: &Bundle,
@@ -986,6 +1108,19 @@ mod tests {
         }
         assert!(url("http://127.0.0.1:18765/repo", true).is_ok());
         assert!(url("http://example.test/repo", true).is_err());
+    }
+    #[test]
+    fn root_renewal_cannot_reset_metadata_floors() {
+        let prior = json!({"root.json":{"signed":{"version":1,"keys":{},"roles":{}}},
+            "timestamp.json":{"signed":{"version":7,"meta":{"snapshot.json":{"version":5}}}}});
+        let mut next = prior.clone();
+        next["root.json"]["signed"]["version"] = json!(2);
+        assert!(checkpoint_floors(&prior, &next).is_ok());
+        next["timestamp.json"]["signed"]["version"] = json!(6);
+        assert!(checkpoint_floors(&prior, &next).is_err());
+        next["timestamp.json"]["signed"]["version"] = json!(8);
+        next["timestamp.json"]["signed"]["meta"]["snapshot.json"]["version"] = json!(4);
+        assert!(checkpoint_floors(&prior, &next).is_err());
     }
     #[test]
     fn registry_revisions_are_immutable() {

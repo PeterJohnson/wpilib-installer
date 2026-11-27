@@ -145,6 +145,8 @@ def check(a):
         cli('renewed-metadata-accepted', 'verify', '--online')
         changed(timestamp, lambda _: old_timestamp, 'timestamp-rollback-after-key-rotation')
         changed(timestamp, lambda b: b.replace(b'"version":3', b'"version":99999'), 'invalid-signature-no-fallback')
+        changed(origin / 'elastic/tuf/metadata/timestamp.json', lambda _: timestamp.read_bytes(),
+                'independent-publisher-signature-rejected')
         # A valid new timestamp referencing an unavailable snapshot establishes a
         # durable floor even though the refresh cannot complete.
         prior = timestamp.read_bytes()
@@ -172,7 +174,7 @@ def check(a):
         # Payload integrity is checked before Qt can change the installation.
         repo = origin / 'elastic'
         release = json.loads((repo / 'releases/2/release.json').read_text())
-        payload = next(name for name in release['signed']['files'] if name.startswith(primary + '/') and name.endswith(('.7z', '.tar.gz')))
+        payload = next(name for name in release['signed']['files'] if name.startswith(primary + '/') and name.endswith(('.7z', '.tar.gz')) and not name.endswith('meta.7z'))
         file = repo / 'releases/2' / payload
         before = inventory(root)
         original = file.read_bytes()
