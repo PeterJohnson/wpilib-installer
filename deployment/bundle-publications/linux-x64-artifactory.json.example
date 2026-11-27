@@ -1,0 +1,12 @@
+{
+  "source": "deployment/registries/linux-x64.json",
+  "storage": {
+    "type": "artifactory",
+    "api_url": "https://packages.example.org/artifactory",
+    "staging_repository": "offline-bundles-staging-local",
+    "release_repository": "offline-bundles-release-local",
+    "prefix": "2027/stable/linux-x64",
+    "public_url": "https://packages.example.org/artifactory/offline-bundles-release-local/2027/stable/linux-x64",
+    "writer_repository": "OWNER/INSTALLER_REPOSITORY"
+  }
+}

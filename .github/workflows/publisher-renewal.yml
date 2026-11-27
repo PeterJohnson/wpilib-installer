@@ -1,0 +1,39 @@
+name: Renew publisher TUF metadata
+on:
+  workflow_call:
+    inputs:
+      tooling_repository:
+        required: true
+        type: string
+      tooling_ref:
+        required: true
+        type: string
+      publication_config:
+        required: true
+        type: string
+    secrets:
+      TUF_TARGETS_KEY:
+        required: true
+      TUF_SNAPSHOT_KEY:
+        required: true
+      TUF_TIMESTAMP_KEY:
+        required: true
+      S3_ACCESS_KEY_ID:
+        required: false
+      S3_SECRET_ACCESS_KEY:
+        required: false
+      S3_SESSION_TOKEN:
+        required: false
+      ARTIFACTORY_ACCESS_TOKEN:
+        required: false
+permissions:
+  contents: read
+jobs:
+  renew:
+    uses: ./.github/workflows/publisher-release.yml
+    with:
+      tooling_repository: ${{ inputs.tooling_repository }}
+      tooling_ref: ${{ inputs.tooling_ref }}
+      publication_config: ${{ inputs.publication_config }}
+      renew_only: true
+    secrets: inherit

@@ -1,0 +1,13 @@
+{
+  "source": "deployment/registries/linux-x64.json",
+  "publisher": "elastic",
+  "storage": {
+    "type": "artifactory",
+    "api_url": "https://packages.example.org/artifactory",
+    "staging_repository": "elastic-installer-staging-local",
+    "release_repository": "elastic-installer-release-local",
+    "prefix": "2027/stable/linux-x64",
+    "public_url": "https://packages.example.org/artifactory/elastic-installer-release-local/2027/stable/linux-x64",
+    "writer_repository": "OWNER/ELASTIC_REPOSITORY"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "source": "deployment/registries/linux-x64.json",
+  "publisher": "elastic",
+  "storage": {
+    "type": "s3",
+    "bucket": "elastic-packages",
+    "prefix": "2027/stable/linux-x64/elastic",
+    "public_url": "https://elastic-packages.example.org/2027/stable/linux-x64/elastic",
+    "endpoint_url": "https://ACCOUNT_ID.r2.cloudflarestorage.com",
+    "region": "auto"
+  }
+}

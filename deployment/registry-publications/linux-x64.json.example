@@ -1,0 +1,14 @@
+{
+  "source": "deployment/registries/linux-x64.json",
+  "approved_registry": "deployment/approved-registries/linux-x64.json",
+  "valid_days": 7,
+  "renew_before_days": 3,
+  "storage": {
+    "type": "s3",
+    "bucket": "wpilib-packages",
+    "prefix": "2027/stable/linux-x64/registry",
+    "public_url": "https://packages.example.org/2027/stable/linux-x64/registry",
+    "endpoint_url": "https://ACCOUNT_ID.r2.cloudflarestorage.com",
+    "region": "auto"
+  }
+}

@@ -1,0 +1,73 @@
+name: Prototype CI
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-24.04
+            installer: wpilib-installer
+          - os: windows-2022
+            installer: wpilib-installer.exe
+          - os: macos-15
+            installer: wpilib-installer.app
+          - os: macos-15-intel
+            installer: wpilib-installer.app
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e '.[ci]'
+      - if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y 7zip
+      - if: runner.os == 'macOS'
+        run: brew install sevenzip
+      - run: python tools/bootstrap_ifw.py
+      - name: Native install, upgrade, offline, and publication tests
+        shell: bash
+        env:
+          IFW_PATH: ${{ github.workspace }}/.tools/ifw
+        run: |
+          mkdir -p build
+          python -m unittest discover -v 2>&1 | tee build/tests.log
+      - name: Exercise the offline publication platform gate
+        run: python tools/check_offline_fixture.py --ifw .tools/ifw --work build/fixture --report build/fixture-report.json
+      - run: python -m installer_prototype build-installer --ifw .tools/ifw --output build/${{ matrix.installer }}
+      - name: Archive installer with executable modes and app bundle structure
+        shell: bash
+        env:
+          INSTALLER_NAME: ${{ matrix.installer }}
+        run: |
+          python - <<'PY'
+          import os, tarfile
+          from pathlib import Path
+          installer = Path('build') / os.environ['INSTALLER_NAME']
+          with tarfile.open('build/installer.tar.gz', 'w:gz') as archive:
+              archive.add(installer, arcname=installer.name)
+          PY
+      - if: runner.os == 'Linux'
+        run: python tools/build_demo_bundles.py --ifw .tools/ifw
+      - uses: actions/upload-artifact@v4
+        with:
+          name: prototype-${{ matrix.os }}
+          path: |
+            build/installer.tar.gz
+            build/platforms/*/downloads/
+            build/platforms/*/demo/registry.json
+            build/platforms/*/demo/registry-source.json
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results-${{ matrix.os }}
+          path: |
+            build/tests.log
+            build/fixture-report.json
+            build/fixture/native/*.log
+          if-no-files-found: warn

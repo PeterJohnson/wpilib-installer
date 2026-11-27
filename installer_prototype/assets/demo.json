@@ -1,0 +1,23 @@
+{
+  "repository_order": ["core", "elastic", "advantagescope", "robotpy"],
+  "publishers": {
+    "core": [
+      {"id": "org.wpilib.runtime", "dependencies": {}},
+      {"id": "org.wpilib.cpp", "dependencies": {"org.wpilib.runtime": "1.0.0"}},
+      {"id": "org.wpilib.java", "dependencies": {"org.wpilib.runtime": "1.0.0"}}
+    ],
+    "elastic": [{"id": "org.wpilib.elastic", "dependencies": {"org.wpilib.runtime": "1.0.0"}}],
+    "advantagescope": [{"id": "org.wpilib.advantagescope", "dependencies": {"org.wpilib.runtime": "1.0.0"}}],
+    "robotpy": [
+      {"id": "org.robotpy.python", "dependencies": {}},
+      {"id": "org.robotpy.sdk", "dependencies": {"org.robotpy.python": "1.0.0", "org.wpilib.runtime": "1.0.0"}},
+      {"id": "org.robotpy.deploy", "dependencies": {"org.robotpy.sdk": "1.0.0"}}
+    ]
+  },
+  "profiles": {
+    "cpp": ["org.wpilib.cpp", "org.wpilib.elastic", "org.wpilib.advantagescope"],
+    "java": ["org.wpilib.java", "org.wpilib.elastic", "org.wpilib.advantagescope"],
+    "tools": ["org.wpilib.elastic", "org.wpilib.advantagescope"],
+    "python": ["org.robotpy.sdk", "org.robotpy.deploy"]
+  }
+}

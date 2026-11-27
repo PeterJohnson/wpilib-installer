@@ -1,0 +1,11 @@
+{
+  "source": "deployment/registries/linux-x64.json",
+  "storage": {
+    "type": "s3",
+    "bucket": "wpilib-offline-bundles",
+    "prefix": "2027/stable/linux-x64",
+    "public_url": "https://downloads.example.org/2027/stable/linux-x64",
+    "endpoint_url": "https://ACCOUNT_ID.r2.cloudflarestorage.com",
+    "region": "auto"
+  }
+}
