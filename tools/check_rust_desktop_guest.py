@@ -30,7 +30,8 @@ def inventory(root):
     return {p.findtext('Name'): p.findtext('Version') for p in ET.parse(root/'components.xml').getroot().findall('Package')}
 
 
-def verify(root, packages):
+def verify(root, packages, expected):
+    assert set(inventory(root)) == expected, inventory(root)
     for component, version in inventory(root).items():
         p = packages[component]
         assert version == p['version'], (component, version, p['version'])
@@ -57,17 +58,38 @@ def main(shared):
     initial, current = manifest(shared/'baseline.zip'), manifest(shared/'candidate.zip')
     primary = next(n for n in initial if n.endswith('.elastic'))
     secondary = next(n for n in initial if n.endswith('.advantagescope'))
+    real = all(p.get('upstream') for p in initial.values()) and all(p.get('upstream') for p in current.values())
+    config = json.loads((shared/'acceptance.json').read_text())
+    assert not config['require_real'] or real, 'Real upstream packages required'
+    if real:
+        assert set(initial) == set(current) == {primary, secondary}
+        assert all(initial[n]['version'] != current[n]['version'] for n in initial)
+    expected = {primary, secondary}
+    while True:
+        expanded = expected | {d for n in expected for d in initial[n].get('dependencies', {})}
+        if expanded == expected: break
+        expected = expanded
+    result['real_packages'] = real
+    result['bundles'] = {n:sha(shared/(n+'.zip')) for n in ['baseline','candidate']}
+    result['packages'] = {n:{'baseline':initial[n]['version'],'candidate':current[n]['version'],
+        'baseline_upstream':initial[n].get('upstream'), 'candidate_upstream':current[n].get('upstream'),
+        'baseline_files':len(initial[n]['owned_files']), 'candidate_files':len(current[n]['owned_files'])} for n in sorted(expected)}
+    # Stage each independent backend case, then remove the shared input copies.
+    for backend in ['wayland','x11']:
+        case = work/backend; case.mkdir()
+        (case/'download').mkdir(); (case/'usb').mkdir()
+        shutil.copy2(shared/'wpilib-manager',case/'download/wpilib-manager')
+        for name in ['baseline','candidate']:shutil.copy2(shared/(name+'.zip'),case/'usb'/(name+'.zip'))
+    for name in ['wpilib-manager','baseline.zip','candidate.zip']:(shared/name).unlink()
     env = {k:v for k,v in os.environ.items() if not k.startswith(('PYTHON','CARGO','RUSTUP','VIRTUAL_ENV','WPILIB_'))}
     for k in ['LD_LIBRARY_PATH','LIBGL_DRIVERS_PATH','LIBGL_ALWAYS_SOFTWARE','GALLIUM_DRIVER','__GLX_VENDOR_LIBRARY_NAME','__EGL_VENDOR_LIBRARY_FILENAMES','FONTCONFIG_FILE','FONTCONFIG_PATH']:
         env.pop(k, None)
     env['PATH'] = '/no-external-runtimes'
     result['client_environment'] = {k:v for k,v in env.items() if k in ['PATH','DISPLAY','WAYLAND_DISPLAY'] or k.startswith(('LD_','LIBGL','GALLIUM','__EGL','FONTCONFIG'))}
     for backend in ['wayland','x11']:
-        case = work/backend; case.mkdir()
-        download = case/'download'; download.mkdir()
-        usb = case/'usb'; usb.mkdir()
-        shutil.copy2(shared/'wpilib-manager',download/'wpilib-manager')
-        shutil.copy2(shared/'baseline.zip',usb/'baseline.zip'); shutil.copy2(shared/'candidate.zip',usb/'candidate.zip')
+        case = work/backend
+        download = case/'download'
+        usb = case/'usb'
         app = download/'wpilib-manager'; root = case/'installation'
         child_env = env.copy()
         child_env.pop('DISPLAY' if backend == 'wayland' else 'WAYLAND_DISPLAY',None)
@@ -84,7 +106,7 @@ def main(shared):
             else:args += ['--command',command]
             start = time.monotonic()
             p = subprocess.run([*args,*map(str,extra)],env={**child_env,'LD_DEBUG_OUTPUT':str(trace)},
-                               cwd=case,capture_output=True,text=True,timeout=300)
+                               cwd=case,capture_output=True,text=True,timeout=900)
             (shared/(label+'.log')).write_text(p.stdout+'\n'+p.stderr)
             assert p.returncode == 0, (label,p.stdout,p.stderr)
             value = json.loads(path.read_text()) if gui else json.loads(p.stdout)
@@ -123,20 +145,29 @@ def main(shared):
 
         invoke('startup')
         invoke('offline-install','install','--bundle',usb/'baseline.zip','--package',primary,'--package',secondary,'--accept-licenses',worker=True)
-        verify(root, initial)
+        verify(root, initial, expected)
         shutil.rmtree(download);(usb/'baseline.zip').unlink();app=root/'wpilib-manager'
         invoke('installed-startup')
         invoke('cached-verification','verify',gui=False)
         found=invoke('discover-updates','check-updates','--bundle',usb/'candidate.zip',gui=False)
         assert {p['id'] for p in found['updates']} == {n for n in inventory(root) if initial[n]['version'] != current[n]['version']}
         invoke('offline-upgrade','update','--bundle',usb/'candidate.zip','--accept-licenses',worker=True)
-        verify(root,current);(usb/'candidate.zip').unlink()
+        verify(root,current, expected)
+        obsolete = {f for n in expected for f in initial[n]['owned_files']} - {f for n in expected for f in current[n]['owned_files']}
+        for name in obsolete:assert not (root/name).exists() and not (root/name).is_symlink(), name
+        (usb/'candidate.zip').unlink()
         invoke('cached-remove','remove','--package',secondary,'--accept-licenses',worker=True)
-        assert secondary not in inventory(root)
+        assert set(inventory(root)) == expected - {secondary}
+        for name in current[secondary]['owned_files']:
+            assert not (root/name).exists() and not (root/name).is_symlink(), name
         invoke('cached-reinstall','install','--package',secondary,'--accept-licenses',gui=False,worker=True)
-        verify(root,current)
+        verify(root,current, expected)
         invoke('final-cached-verification','verify',gui=False)
         assert not download.exists() and not list(usb.iterdir())
+        result.setdefault('maintenance_without_media', {})[backend] = {
+            'original_installer_removed':not download.exists(), 'bundles_removed':not list(usb.iterdir()),
+            'shared_inputs_removed':all(not (shared/n).exists() for n in ['wpilib-manager','baseline.zip','candidate.zip']),
+            'inventory':inventory(root), 'obsolete_files_checked':len(obsolete)}
     result['status']='passed'
     return result
 

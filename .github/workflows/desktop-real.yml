@@ -1,0 +1,60 @@
+name: Real dashboards on clean Ubuntu Desktop
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  actions: read
+jobs:
+  packages:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m pip install -e .
+      - run: bash .github/scripts/install-linux-dependencies.sh
+      - run: python tools/bootstrap_ifw.py
+      - name: Package pinned real release pairs and assemble signed offline bundles
+        run: python -u tools/check_dashboard_releases.py --ifw .tools/ifw --work build/desktop-real --prepare-only
+      - name: Build standalone application with matching public trust bootstrap
+        run: python tools/build_rust_manager.py --source build/desktop-real/registry-source.json --ifw .tools/ifw --assets build/desktop-real/assets --output build/desktop-real/download
+      - name: Prepare browser media for isolated Desktop guests
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          import shutil
+          source=Path('build/desktop-real');out=Path('build/desktop-input');out.mkdir()
+          shutil.copy2(source/'manager-application.zip',out)
+          shutil.copy2(source/'provenance.json',out)
+          for name in ['baseline','candidate']:
+              (out/name).mkdir()
+              bundles=list((source/name/'current').glob('*.zip'))
+              assert len(bundles)==1, bundles
+              shutil.copy2(bundles[0],out/name/bundles[0].name)
+          PYTHON
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ubuntu-desktop-test-input
+          compression-level: 0
+          retention-days: 14
+          path: build/desktop-input/
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: desktop-real-package-evidence
+          retention-days: 14
+          path: |
+            build/desktop-real/provenance.json
+            build/desktop-real/assets/dependency-audit.json
+            build/desktop-real/assets/runtime.json
+          if-no-files-found: warn
+  desktop:
+    needs: packages
+    uses: ./.github/workflows/rust-desktop.yml
+    with:
+      application_run: ${{ format('{0}', github.run_id) }}
+      release: all
+      require_real: true

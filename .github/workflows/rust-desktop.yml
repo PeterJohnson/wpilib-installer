@@ -2,6 +2,10 @@ name: Rust Ubuntu Desktop acceptance
 on:
   workflow_dispatch:
     inputs:
+      require_real:
+        description: Require real upstream release packages
+        type: boolean
+        default: false
       application_run:
         description: Successful Linux application build run containing ubuntu-desktop-test-input
         type: string
@@ -13,6 +17,9 @@ on:
         options: [all, '24.04.4', '26.04.1']
   workflow_call:
     inputs:
+      require_real:
+        type: boolean
+        default: false
       application_run:
         type: string
         required: true
@@ -60,7 +67,7 @@ jobs:
           PYTHON
       - name: Install stock Ubuntu Desktop and test host graphics
         run: |
-          sg kvm -c "python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm"
+          sg kvm -c "python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm ${{ inputs.require_real && '--require-real' || '' }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

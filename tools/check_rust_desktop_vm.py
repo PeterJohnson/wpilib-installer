@@ -35,6 +35,7 @@ def check(a):
                    ('check_rust_desktop_guest.py',Path(__file__).with_name('check_rust_desktop_guest.py'))]:
         shutil.copy2(p,share/name)
     (share/'wpilib-manager').chmod(0o755)
+    (share/'acceptance.json').write_text(json.dumps({'require_real':a.require_real}))
     series,expected=IMAGES[a.release]
     a.iso_dir.mkdir(parents=True,exist_ok=True)
     iso=a.iso_dir.resolve()/f'ubuntu-{a.release}-desktop-amd64.iso'
@@ -145,6 +146,7 @@ touch /mnt/wpilib-test/installed
     vm('desktop',[],share/'report.json')
     report=json.loads((share/'report.json').read_text())
     assert report['status']=='passed',report
+    assert not a.require_real or report['real_packages'],report
     assert report['application_sha256']==evidence['application_sha256']
     assert f'VERSION_ID="{series}"' in report['os_release'],report['os_release']
     assert len(report['checks'])==18 and all(c['passed'] for c in report['checks']),report
@@ -158,5 +160,6 @@ if __name__=='__main__':
     for name in ['app','baseline','candidate','work','iso-dir']:p.add_argument('--'+name,type=Path,required=True)
     p.add_argument('--release',choices=IMAGES,required=True)
     p.add_argument('--tcg',action='store_true')
+    p.add_argument('--require-real',action='store_true')
     p.add_argument('--timeout',type=int,default=2400)
     check(p.parse_args())
