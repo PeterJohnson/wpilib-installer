@@ -4,6 +4,8 @@
 
 The selected Rust/private-Qt direction now has an [online/offline application prototype](rust-manager-prototype.md), shared GUI/JSON CLI backend, pinned archival verification, embedded engine, persistent manager and cache-only maintenance. The native workflow tests fixtures and real dashboards on four OS/architecture runners. Native tough registry/publisher refresh, verified caches and offline-to-online updates are integrated. Release signing, self-update and OS integration remain unfinished; this does not supersede the Python reference behavior described below.
 
+The [native online run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46051023760) passed 272 fixture/real-package checks plus 11 Rust unit tests on each of Windows x64, macOS ARM64, macOS x64 and Linux x64. [Saved evidence](evidence/rust-online-2026-11-27.json) binds these results to commit `ef768bf`; [reproduction and scope](rust-manager-prototype.md#online-validation--november-27-2026) describe the HTTP/TUF tests.
+
 The Python/Qt reference was implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3); the Rust application work followed November 27.
 
 The Rust application passed **136 native lifecycle checks across Windows x64, Linux x64, macOS x64 and macOS ARM64**, plus seven Rust unit tests per runner. Checks include rendered GUI startup, real Elastic/AdvantageScope upgrades, cached maintenance with original media removed, and tamper rejection under native network isolation. [Results, artifacts and limits](rust-manager-prototype.md#validated-results--november-27-2026).

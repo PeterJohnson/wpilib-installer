@@ -87,3 +87,23 @@ Root catch-up permits four batches of 256 remote roots per operation; exhaustion
 A successful online upgrade preserves `bundle_sha256` and `offline_registry` for the original USB snapshot while recording the new online registry and installed package descriptions. Explicit `--bundle` verification stays archival and cannot reset online checkpoints. Online cache retention/garbage collection, cache relocation and migration remain unfinished.
 
 `.github/workflows/rust-online.yml` runs the same native application on Windows x64, Linux x64, macOS x64 and macOS ARM64, for synthetic multi-publisher fixtures and real Elastic/AdvantageScope releases. The loopback HTTP fixture deliberately embeds an expired bootstrap, 1,030 root versions, a 2-of-3 rotation at version 257, and a rotated archival signing key. It tests resumable catch-up, registry/publisher discovery, GUI upgrades, fresh online installation, on-demand payloads, cache maintenance, real payload integrity, post-rotation rollback, incomplete-refresh floors, registry revision mutation, HTTP failure handling, actual timestamp expiry and poisoned caches. The client runs without external runtimes on PATH. Tests use a compile-time loopback-only HTTP exception; production bootstraps require HTTPS. Public TLS/proxy deployment, OS signing and clean-machine UX need separate acceptance. Test origins and keys are ephemeral and are not production publishing credentials.
+
+## Online validation — November 27, 2026
+
+Commit `ef768bf` passed [native online CI run 46051023760](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46051023760) on Windows x64, macOS ARM64, macOS x64 and Linux x64: **272 native checks plus 11 Rust unit tests per target**. Each target passed 35 fixture checks and 33 real-package checks. [Saved evidence](evidence/rust-online-2026-11-27.json) records check names, application/report hashes, native GUI frame timings, final inventories and the exact source commit.
+
+The real flows install **Elastic 2026.1.1 and AdvantageScope 26.0.1 from an offline bundle**, delete the original manager download, discover their updates through independent HTTP/TUF repositories, then upgrade to **Elastic 2026.1.2 and AdvantageScope 26.0.2**. They also install fresh online, retain the offline registry pin, shut down the origin, and remove/reinstall using verified cached packages. Payload checks include file hashes, modes, symlinks and macOS signature attributes. The client runs with external runtimes removed from PATH.
+
+The fixture checks add a new publisher/profile without rebuilding the client, require metadata-only discovery, reject invalid publisher signatures, corrupted downloads and poisoned caches, preserve rollback floors after interrupted refresh and key rotation, reject actually expired cached metadata, and recover through renewal. Catch-up from the expired bootstrap traverses 1,030 roots and requires a retry after the first operation's four-batch budget. The unit suite also writes and atomically replaces a cache file beyond the Windows 260-character path boundary.
+
+The [existing native offline application matrix](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46048522204) and [installer/publication regression matrix](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46048522233) passed on all four targets at implementation commit `ac7dea6`. Subsequent client changes hardened online checkpoints and Windows online cache paths; the final online matrix tested those changes. CI publication/signing and Artifactory/R2 layouts remain unchanged.
+
+To reproduce the fixture online run on a native host:
+
+```sh
+python tools/prepare_rust_online.py --ifw .tools/ifw --work build/online-fixture
+python tools/build_rust_manager.py --source build/online-fixture/online-source.json --ifw .tools/ifw --assets build/online-fixture/assets --output build/online-fixture/download
+python tools/check_rust_online.py --app build/online-fixture/download/wpilib-manager --fixture build/online-fixture --work build/online-fixture/native --report build/online-fixture/report.json
+```
+
+Use the platform-specific application path described above; Linux CI prefixes the test driver with `xvfb-run -a`. The driver starts/stops its loopback origin. These test applications embed ephemeral public trust roots and the loopback HTTP exception. Build with a deployed HTTPS registry-source bootstrap for an actual online repository; the older file-URL demo bootstrap is for offline testing. Public TLS/proxy deployment and clean-machine acceptance remain separate work. Downloads currently have a 120-second request deadline; resumable transfers and production download UX remain unfinished.
