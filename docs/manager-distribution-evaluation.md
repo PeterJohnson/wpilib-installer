@@ -36,9 +36,9 @@ Ship a native launcher/manager containing the trusted bootstrap, a Go or Rust cl
 
 The manager validates the source and plan, exposes only verified repositories, owns the child process lifetime, and invokes Qt for package operations. On installation it persists its own entry point and the required engine; Qt's generated maintenance tool remains private. Manager and engine compatibility are versioned together. The original download is not a required runtime dependency.
 
-The selected prototype has Rust/egui own the first window and all progress, with Qt running headlessly. For other variants, the main design work is **who owns the first window**. A plain Go or Rust CLI that verifies everything and only then launches Qt fails UX-2. This design needs a responsive graphical bootstrap with progress, cancellation, source selection and errors, followed by a controlled handoff to the Qt wizard. Avoid two competing wizards, lost focus, duplicate taskbar/Dock entries and mismatched branding. A Qt-first frontend controlling a Go helper is another process arrangement, discussed below; do not assume it follows automatically from embedding the engine.
+The selected prototype has Rust/egui own the first window and all progress, with Qt running headlessly. For other variants, the main design work is **who owns the first window**. A plain Go or Rust CLI that verifies everything and only then launches Qt fails UX-2. The chosen prototype supplies source selection, asynchronous progress and errors in Rust, and invokes only headless Qt commands. Cancellation remains a production gate. A variant that retains Qt's wizard would also need a controlled GUI handoff. Avoid two competing wizards, lost focus, duplicate taskbar/Dock entries and mismatched branding. A Qt-first frontend controlling a Go helper is another process arrangement, discussed below; do not assume it follows automatically from embedding the engine.
 
-Advantages: preserves the current process/gateway boundary, minimizes dependence on Qt internals, and permits independent native client tests. Go uses `go-tuf/v2`; Rust uses `tough`. Neither requires a Qt fork or a C++ FFI for this process design; Python can continue producing repository metadata. The whole client still needs porting. [go-tuf](https://github.com/theupdateframework/go-tuf)
+Advantages: preserves the current process/gateway boundary, minimizes dependence on Qt internals, and permits independent native client tests. Go uses `go-tuf/v2`; Rust uses `tough`. Neither requires a Qt fork or a C++ FFI for this process design; Python can continue producing repository metadata. The online client and production integration still need porting; the offline application path is implemented in the new prototype. [go-tuf](https://github.com/theupdateframework/go-tuf)
 
 Costs: graphical bootstrap/handoff, two internal executable lifecycles, private extraction and cleanup, authenticated IPC, coordinated cancellation/elevation, and keeping all maintenance shortcuts away from the raw engine. An ordinary temporary-directory extraction followed by execution is not sufficient: use exclusive creation, restrictive access, embedded digest checks, and no untrusted helper search path. Do not run general network/UI logic elevated merely because an installation operation requires it.
 
@@ -76,7 +76,7 @@ The assessments below are engineering judgments based on the inspected prototype
 | Concern | A1/A2: Go or Rust launcher + private Qt | B: integrated Qt + Rust |
 | --- | --- | --- |
 | One application download | Feasible by embedded resources/app bundle; must include engine and bootstrap | Feasible with custom installerbase and linked core |
-| First window, progress, errors | Major unresolved UX work; embedding does not provide a GUI | Natural window ownership; still implement asynchronous verification UI |
+| First window, progress, errors | Rust/egui owns the implemented offline UI; Windows uses Direct3D, Linux/macOS OpenGL | Natural window ownership; still implement asynchronous verification UI |
 | Package install/update/remove | Reuses existing Qt subprocess boundary | Reuses Qt engine but changes its startup/control integration |
 | Persistent maintenance | Persist wrapper and route every registered launch through it; private Qt worker remains | Preserve custom code/bootstrap in the installed maintenance image and every engine update |
 | Offline-to-online transition | Application policy port required | Same policy port required |
@@ -87,7 +87,7 @@ The assessments below are engineering judgments based on the inspected prototype
 | Dependency on Qt internals | Lower, provided public CLI/scripts suffice | Higher; C++ API has no compatibility guarantee |
 | Build/distribution work | Go or Cargo builds plus native Qt packaging and GUI bootstrap | C++/Rust/static-Qt builds and source-integration maintenance |
 | Clean Linux machine | Current Qt binary needs additional libraries; packaging unresolved | Static Qt alone does not prove all system dependencies are included |
-| Overall disposition | Preferred first packaging/UX experiment; not selected for production yet | Stronger integrated UX, higher maintenance cost; fallback if A cannot meet UX without comparable custom UI work |
+| Overall disposition | A2 (Rust) selected; offline application prototype implemented, production gates remain | Stronger integrated UX, higher maintenance cost; fallback if A cannot meet UX without comparable custom UI work |
 
 **GUI ownership and backend language are separate decisions.** A Qt GUI with one Go CLI/helper could satisfy the user's allowed two-entry-point fallback while retaining `go-tuf`. It still needs a verified pre-fetch startup contract and installed-maintenance integration. Test whether public controller hooks suffice before assuming it avoids a source patch. Conversely, Go can be exposed through a native bridge; Rust is not technically required by an integrated UI. The process architecture and the language now have separate comparisons above.
 
@@ -105,17 +105,17 @@ Select Qt build/linkage and redistribution terms explicitly before shipping a cu
 
 ## Decision and next acceptance experiment
 
-Prefer the **private Qt engine architecture** for the next complete application experiment, with Go and Rust as peer backend candidates. Both passed the tested trust contracts without a library fork. Go has a modest adapter-simplicity advantage; Rust is not disqualified by the key-ID issue for our fixtures. Make the whole installed application the selection unit: evaluate A1/A2 with a real first-window/maintenance path; retain B if this requires comparable custom GUI work, exposes a second installer, or cannot close the maintenance verification path. The allowed Qt GUI + Go CLI variant is worth testing before committing to Rust solely for packaging. The production library choice remains open pending that evidence.
+Proceed with **A2: Rust plus a private Qt engine**. The user selected this direction after the trust comparison. Rust owns the application window and CLI; Qt remains a headless internal worker. Retain Python for CI packaging/signing/publication. The [offline application prototype](rust-manager-prototype.md) is the next evidence step; it does not yet integrate the tough online adapter. Go and integrated Qt/Rust remain evaluated alternatives, not parallel implementation tracks.
 
 Require the following evidence on Windows x64, macOS x64/ARM64 and Linux x64. Windows/Linux ARM64 remain explicit feasibility gates; do not extrapolate the four-runner result to them.
 
 | Gate | Required evidence | Current state |
 | --- | --- | --- |
-| G1: Launch and dependencies | Start the shipped artifact on clean supported desktops, with no developer runtimes/PATH; record first-window latency, cancellation/errors and visible windows/process entries | Not tested for A/B |
-| G2: Offline GUI install | Select the browser bundle with networking blocked; install real dashboards/profile; remove media and launch installed manager | Existing engine/CLI tests only; A/B GUI untested |
-| G3: Maintenance routing | Offline then online upgrades through desktop shortcut, OS maintenance entry, original download and VS Code; reject unauthenticated metadata before script execution | Existing adapter paths only; distribution routing untested |
-| G4: CLI | JSON/exit status/cancellation with redirected pipes and no display; GUI double-click has no console flash; shared policy with any companion CLI | A/B untested |
-| G5: Trust equivalence | Python-produced catalogs and archival bundles, Unicode signature vectors, bad hashes/signatures, independent publishers, expired bootstraps, >256 and >1024 rotations, interrupted catch-up, poisoned cache and rollback | Native subset passed on Linux x64 (results below); complete manager/cache migration and other OS coverage remain |
+| G1: Launch and dependencies | Start the shipped artifact on clean supported desktops, with no developer runtimes/PATH; record first-window latency, cancellation/errors and visible windows/process entries | Native startup/screenshots and no-runtime-PATH checks implemented; clean OS/signing/cancellation remain |
+| G2: Offline GUI install | Select the browser bundle with networking blocked; install real dashboards/profile; remove media and launch installed manager | Native application GUI-handler tests cover fixtures and both real dashboards; see application evidence |
+| G3: Maintenance routing | Offline then online upgrades through desktop shortcut, OS maintenance entry, original download and VS Code; reject unauthenticated metadata before script execution | Installed manager supports offline maintenance after deleting the original media; online/OS/VS Code routing remain |
+| G4: CLI | JSON/exit status/cancellation with redirected pipes and no display; GUI double-click has no console flash; shared policy with any companion CLI | Same executable JSON/exit-status/redirected-pipe checks implemented; cancellation and manual shell UX remain |
+| G5: Trust equivalence | Python-produced catalogs and archival bundles, Unicode signature vectors, bad hashes/signatures, independent publishers, expired bootstraps, >256 and >1024 rotations, interrupted catch-up, poisoned cache and rollback | Online TUF probes passed on Linux x64 (results below); the offline application has separate native archival/cache checks. Online integration and cache migration remain |
 | G6: Signed distribution | Download/quarantine the final artifact; verify initial, extracted/nested and installed maintenance code; assess macOS offline after notarization/stapling | Manager signing untested |
 | G7: Self-update/recovery | Update manager/engine online and from media; inject failure before/after handoff, locked files and interrupted replacement; registered launch remains usable | Unimplemented |
 | G8: Operational fit | Read-only USB/path with spaces/non-ASCII, insufficient space, extraction failure, proxy errors, concurrent operation and narrowly scoped elevation | A/B untested |
@@ -128,7 +128,7 @@ Record artifact hashes, toolchain/library versions, OS baseline, reports and GUI
 - Ran the pinned local `binarycreator --help`: confirms custom-template/resource options. This did not build or run a custom template.
 - Inspected the local engine with `file`, `stat` and `readelf -d`: confirms the Linux dependency issue above.
 - Reviewed IFW 4.11 source startup, which selects installer or maintenance GUI through the same application implementation. This identifies an integration area, not a demonstrated secure pre-fetch hook. [Pinned installerbase source](https://github.com/qtproject/installer-framework/blob/4.11.0/src/sdk/installerbase.cpp)
-- Reviewed the primary references linked above. Native library/probe results follow; no complete manager builds, GUI runs, signing/notarization tests, or other-platform results are claimed.
+- Reviewed the primary references linked above. The library/probe results below are distinct from the later [native application tests](rust-manager-prototype.md). Signing/notarization and full production gates are not closed by either experiment.
 
 
 ## Native library interoperability results
@@ -158,4 +158,4 @@ Three findings affect implementation:
 
 Scope limits are deliberate. Directory-backed transports supply the exact repository bytes through a synthetic URL namespace, so these results do not validate HTTPS/proxy behavior. The archival probes cover schema-3 indefinite authorization, not complete bundle payload extraction/verification or legacy bounded schemas. The existing Python archival implementation is also used as an oracle, including its year-2100 test; native authorization is separately exercised with already-expired online authorization and performs no TUF/cache access. Native clocks are never moved backward. The programs are experiments with caller-supplied trust inputs, not hardened production entry points.
 
-No Windows/macOS execution, clean-machine GUI, signing, self-update or installed-manager routing is established here. Probe byte sizes are included for reproducibility but are not an apples-to-apples production size benchmark. These results strengthen **Rust plus private Qt** as a peer to Go; they do not select the final GUI/distribution design or imply G1–G8 are complete.
+These library probes alone establish no Windows/macOS execution, clean-machine GUI, signing, self-update or installed-manager routing. The subsequent application experiment is documented separately. Probe byte sizes are included for reproducibility but are not an apples-to-apples production size benchmark. These results supported choosing **Rust plus private Qt**; they do not imply G1–G8 are complete.

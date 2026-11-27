@@ -4,13 +4,15 @@
 
 The selected Rust/private-Qt direction now has an [offline application prototype](rust-manager-prototype.md), shared GUI/JSON CLI backend, pinned archival verification, embedded engine, persistent manager and cache-only maintenance. The native workflow tests fixtures and real dashboards on four OS/architecture runners. Online tough integration, release signing, self-update and OS integration remain unfinished; this does not supersede the Python reference behavior described below.
 
-Implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3).
+The Python/Qt reference was implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3); the Rust application work followed November 27.
+
+The Rust application passed **136 native lifecycle checks across Windows x64, Linux x64, macOS x64 and macOS ARM64**, plus seven Rust unit tests per runner. Checks include rendered GUI startup, real Elastic/AdvantageScope upgrades, cached maintenance with original media removed, and tamper rejection under native network isolation. [Results, artifacts and limits](rust-manager-prototype.md#validated-results--november-27-2026).
 
 ## Single-application distribution requirement
 
 The November 27 [distribution evaluation](manager-distribution-evaluation.md) records the required one-application UX (at most one GUI plus one CLI). It compares Go and Rust with a private Qt engine, plus an integrated Qt/Rust application. Linux x64 native probes passed **69 checks (34 Go, 35 Rust)** using go-tuf 2.5.0 and tough 0.24.0: existing dashboard catalogs, updates/rollback, verified and tampered caches, interrupted 1,030-root histories, native archival authorization and old-offline-to-online trust continuity. Both require application adapters; tough needs transport-error normalization. See [results and scope](manager-distribution-evaluation.md#native-library-interoperability-results).
 
-This is experimental trust interoperability, not implemented manager distribution: the Python adapter and separate Qt executable still fail the single-application requirement. Native archive checks cover authorization only, and no Windows/macOS native-client execution or signed-manager GUI results are claimed.
+Those probes test trust interoperability only. The subsequent Rust application above implements the offline distribution/maintenance experiment; it is separate from both the probes and the Python reference. Signed-manager distribution, online integration and the other production gates remain open.
 
 ## Implemented
 
