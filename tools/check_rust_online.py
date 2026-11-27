@@ -26,8 +26,15 @@ def check(a):
     source = json.loads((fixture / 'online-source.json').read_text())
     registry = json.loads((fixture / 'online-registry.json').read_text())
     origin = home / 'store' / source['target']
-    baseline = next((fixture / 'baseline').rglob('*.zip'))
-    candidate = next((fixture / 'candidate').rglob('*.zip'))
+    def bundle_for(name):
+        directory = fixture / name
+        if config['real']:
+            directory /= 'current'
+        bundles = list(directory.glob('*.zip'))
+        assert len(bundles) == 1, (name, bundles)
+        return bundles[0]
+
+    baseline, candidate = bundle_for('baseline'), bundle_for('candidate')
     initial, current = unpack_manifest(baseline), unpack_manifest(candidate)
     primary = next(k for k in initial if k.endswith('.elastic'))
     secondary = next(k for k in initial if k.endswith('.advantagescope'))
