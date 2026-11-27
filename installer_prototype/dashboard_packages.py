@@ -9,6 +9,7 @@ import tarfile
 
 from .common import atomic_json, cached_file, run, safe_path, version
 from .release_archive import extract
+from .macos_metadata import restore_script
 
 
 RECIPES = {
@@ -68,7 +69,7 @@ def verify_app(root, package, target):
     if system == 'macos' and sys.platform == 'darwin':
         # Verify after repackaging and installation, without contacting Apple.
         app = next(p for p in exe.parents if p.suffix == '.app')
-        run(['codesign', '--verify', '--deep', '--strict', app], timeout=120)
+        run(['codesign', '--verify', '--deep', '--strict', '--verbose=4', app], timeout=120)
     return {'executable': definition['executable'], 'architectures': sorted(architectures),
             'codesign_verified': system == 'macos' and sys.platform == 'darwin'}
 
@@ -93,7 +94,7 @@ def package_release(lock_path, publisher, target, release, output, cache, *, sea
     license_file = download(selected['license'], cache)
     prefix = f'tools/{publisher}'
     payload = output / 'payload'
-    extract(archive, payload / prefix)
+    attributes = extract(archive, payload / prefix)
     # Retain all upstream runtime resources and notices; add the project license
     # and provenance outside the signed .app bundle.
     notice = payload / 'licenses' / publisher / 'LICENSE'
@@ -107,6 +108,17 @@ def package_release(lock_path, publisher, target, release, output, cache, *, sea
     package = {'id': config['component'], 'name': recipe['name'], 'version': selected['version'],
                'description': f"Official WPILib distribution from {config['repository']} {selected['tag']}",
                'payload': 'payload', 'upstream': upstream, 'release_date': selected.get('release_date', '2026-11-26')}
+    if attributes:
+        if not target.startswith('macos-'):
+            raise ValueError('macOS metadata appeared in a non-macOS release')
+        attributes = {prefix + '/' + path: values for path, values in attributes.items()}
+        package['macos_xattrs'] = f'licenses/{publisher}/macos-xattrs.json'
+        package['macos_xattr_script'] = f'licenses/{publisher}/restore-macos-metadata.sh'
+        atomic_json(payload / package['macos_xattrs'], attributes)
+        script = payload / package['macos_xattr_script']
+        script.write_text(restore_script(attributes), encoding='utf-8', newline='\n')
+        if sys.platform == 'darwin':
+            run(['/bin/sh', script, payload], timeout=180)
     verify_app(payload, package, target)
     spec = {'publisher': publisher, 'target': target, 'season': season, 'channel': channel,
             'revision': revision, 'archive_format': 'tar.gz', 'packages': [package]}

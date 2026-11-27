@@ -99,6 +99,18 @@ def publish(spec_path, store, key, registry, ifw, *, tuf_keys=None, update_tuf=T
             if not payload.is_dir():
                 raise ValueError(f"Missing payload directory: {payload}")
             p["file_records"] = payload_inventory(payload)
+            if p.get("macos_xattrs"):
+                from .macos_metadata import records, restore_script
+                if not target.startswith("macos-"):
+                    raise ValueError("macOS metadata requires a macOS package")
+                attributes = json.loads((payload / str(safe_path(p["macos_xattrs"]))).read_text())
+                script = payload / str(safe_path(p["macos_xattr_script"]))
+                if script.read_text() != restore_script(attributes):
+                    raise ValueError("macOS restore script differs from its declared metadata")
+                for name, attrs in records(attributes).items():
+                    if p["file_records"].get(name, {}).get("type") != "file":
+                        raise ValueError("macOS metadata refers to an absent or non-regular payload")
+                    p["file_records"][name]["xattrs"] = attrs
             p["owned_files"] = sorted(p["file_records"])
             metadata.append(p)
         validate_packages(metadata, registry["repositories"][publisher]["components"])
@@ -110,6 +122,18 @@ def publish(spec_path, store, key, registry, ifw, *, tuf_keys=None, update_tuf=T
             for tag, value in {"DisplayName": p["name"], "Description": p.get("description", p["name"]),
                                "Version": p["version"], "ReleaseDate": p.get("release_date", "2026-11-26"), "Default": "false"}.items():
                 ET.SubElement(xml, tag).text = value
+            if p.get("macos_xattr_script"):
+                # Qt owns the files and their uninstall/rollback operations. The
+                # extra operation restores attributes attached to those files;
+                # deleting the owned files also deletes their attributes.
+                path = "@TargetDir@/" + str(safe_path(p["macos_xattr_script"]))
+                script = ('function Component() {}\n'
+                          'Component.prototype.createOperations = function() {\n'
+                          '    component.createOperations();\n'
+                          '    component.addOperation("Execute", "/bin/sh", ' + json.dumps(path) + ', "@TargetDir@");\n'
+                          '};\n')
+                (package_dir / "meta" / "install.js").write_text(script, encoding="utf-8")
+                ET.SubElement(xml, "Script").text = "install.js"
             deps = p.get("dependencies", {})
             if deps:
                 ET.SubElement(xml, "Dependencies").text = ",".join(f"{name}->={minimum}" for name, minimum in deps.items())

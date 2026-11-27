@@ -1,4 +1,8 @@
 import io
+import base64
+import hashlib
+import subprocess
+import sys
 import json
 import os
 from pathlib import Path
@@ -12,6 +16,7 @@ from installer_prototype.common import digest
 from installer_prototype.dashboard_packages import binary_architectures, package_release
 from installer_prototype.payload import inventory, verify_installed, validate_ownership
 from installer_prototype.release_archive import extract
+from installer_prototype.macos_metadata import records, restore_script, verify
 
 
 class PayloadTests(unittest.TestCase):
@@ -74,6 +79,45 @@ class PayloadTests(unittest.TestCase):
         binary.write_bytes(b'tampered')
         with self.assertRaisesRegex(ValueError, 'differs from signed'):
             verify_installed(self.root / 'out', package)
+
+    def test_pax_signature_metadata_is_preserved_as_data_without_appledouble_files(self):
+        archive = self.root / 'signed.tar'
+        signature = b'original upstream signature'
+        with tarfile.open(archive, 'w', format=tarfile.PAX_FORMAT) as stream:
+            info = tarfile.TarInfo('App/resource')
+            info.size = 3
+            info.pax_headers = {'LIBARCHIVE.xattr.com.apple.cs.CodeSignature': base64.b64encode(signature).decode().rstrip('=')}
+            stream.addfile(info, io.BytesIO(b'app'))
+            sidecar = tarfile.TarInfo('App/._resource')
+            sidecar.size = 4
+            stream.addfile(sidecar, io.BytesIO(b'\x00\x05\x16\x07'))
+        attributes = extract(archive, self.root / 'out')
+        self.assertFalse((self.root / 'out/App/._resource').exists())
+        self.assertEqual((self.root / 'out/App/resource').read_bytes(), b'app')
+        expected = {'App/resource': {'com.apple.cs.CodeSignature': signature.hex()}}
+        self.assertEqual(attributes, expected)
+        self.assertEqual(records(attributes)['App/resource']['com.apple.cs.CodeSignature'],
+                         {'size': len(signature), 'sha256': hashlib.sha256(signature).hexdigest()})
+        script = restore_script(attributes)
+        self.assertIn('/usr/bin/xattr -wx com.apple.cs.CodeSignature', script)
+        with self.assertRaisesRegex(ValueError, 'Unsupported'):
+            restore_script({'App/resource': {'com.apple.quarantine': '01'}})
+
+    @unittest.skipUnless(sys.platform == 'darwin', 'Native macOS xattr round trip')
+    def test_native_signature_xattrs_round_trip_and_tampering(self):
+        root = self.root / "root with spaces ' and $chars"
+        root.mkdir()
+        file = root / "resource with ' quote"
+        file.write_bytes(b'resource')
+        attributes = {file.name: {'com.apple.cs.test': b'original signature'.hex()}}
+        script = self.root / 'restore.sh'
+        script.write_text(restore_script(attributes))
+        subprocess.run(['/bin/sh', script, root], check=True)
+        expected = records(attributes)[file.name]
+        verify(file, expected)
+        subprocess.run(['/usr/bin/xattr', '-wx', 'com.apple.cs.test', b'tampered signature'.hex(), file], check=True)
+        with self.assertRaisesRegex(ValueError, 'signature attribute'):
+            verify(file, expected)
 
     def test_ownership_rejects_cross_package_link_or_file_ancestors(self):
         with self.assertRaisesRegex(ValueError, 'nested beneath'):

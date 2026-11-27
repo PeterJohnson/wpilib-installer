@@ -44,6 +44,11 @@ def validate_records(records):
                     or type(record.get('size')) is not int or record['size'] < 0
                     or type(record.get('executable')) is not bool):
                 raise ValueError(f'Invalid payload record: {name}')
+            for attr, value in record.get('xattrs', {}).items():
+                if ((not attr.startswith('com.apple.cs.') and attr not in ('com.apple.FinderInfo', 'com.apple.ResourceFork'))
+                        or not re.fullmatch(r'[0-9a-f]{64}', value.get('sha256', ''))
+                        or type(value.get('size')) is not int or not 0 <= value['size'] <= 1024 * 1024):
+                    raise ValueError(f'Invalid macOS payload attribute: {name}')
         else:
             raise ValueError(f'Unsupported payload entry: {name}')
         if any(parent.as_posix() in records for parent in PurePosixPath(name).parents if str(parent) != '.'):
@@ -87,6 +92,10 @@ def verify_installed(root, package):
     for name in package['owned_files']:
         actual = entry(root, name)
         expected = package.get('file_records', {}).get(name)
+        if expected is not None and expected.get('xattrs'):
+            from .macos_metadata import verify
+            verify(Path(root) / name, expected['xattrs'])
+            actual['xattrs'] = expected['xattrs']
         if expected is not None and actual != expected:
             raise ValueError(f'Installed payload differs from signed manifest: {name}')
         if expected is None and actual['type'] != 'file':

@@ -51,11 +51,22 @@ Mach-O architecture; macOS additionally requires local `codesign --verify --deep
 --strict` to succeed before and after packaging/installing. This checks signature
 integrity without online revocation or Gatekeeper/notarization assessment.
 
+AdvantageScope also carries signature data in macOS extended attributes. The
+recipe retains the tarball’s PAX attributes in an owned JSON file, normalizes
+redundant AppleDouble entries, and generates a fixed restore script. Qt IFW does
+not restore these attributes itself, so a component `Execute` operation runs that
+script with `/bin/sh` and `/usr/bin/xattr` after extraction. Attribute values are
+restored unchanged, without signing keys or re-signing the app. They are attached
+to Qt-owned files and disappear when those files are removed. The native gate
+checks each declared attribute hash and size, then verifies the complete app
+signature. JSON/script handoff keeps this metadata intact even when a publisher
+repository is generated on Linux.
+
 Archive extraction rejects traversal, duplicate names, special files, hardlinks,
 escaping/dangling/cyclic links, and archive writes below a symlink. Contained
 relative framework links are preserved. Qt payload archives use `tar.gz`; signed
-publisher manifests record installed file hashes/sizes, executable bits, and link
-targets. Release artifact handoff also preserves these links and modes.
+publisher manifests record installed file hashes/sizes, executable bits, link
+targets, and signature-attribute hashes/sizes. Release artifact handoff also preserves these links and modes.
 
 ## Native offline acceptance
 

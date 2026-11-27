@@ -8,6 +8,7 @@ import zipfile
 
 from .common import safe_path
 from .payload import inventory, link_destination
+from .macos_metadata import archive_attributes
 
 
 def extract(archive, destination):
@@ -15,7 +16,7 @@ def extract(archive, destination):
     if destination.exists():
         raise ValueError('Release extraction needs a fresh directory')
     try:
-        _extract(archive, destination)
+        return _extract(archive, destination)
     except Exception:
         shutil.rmtree(destination, ignore_errors=True)
         raise
@@ -28,6 +29,7 @@ def _extract(archive, destination):
     is_zip = zipfile.is_zipfile(archive)
     with (zipfile.ZipFile(archive) if is_zip else tarfile.open(archive)) as stream:
         entries = []
+        attributes = {}
         for member in (stream.infolist() if is_zip else stream.getmembers()):
             name = (member.filename if is_zip else member.name).rstrip('/')
             safe_path(name)
@@ -44,10 +46,29 @@ def _extract(archive, destination):
                 if kind is None:
                     raise ValueError('Release archives cannot contain hardlinks or special files')
                 target = member.linkname if kind == 'link' else None
+                attrs = archive_attributes(member.pax_headers)
+                if attrs:
+                    if kind != 'file':
+                        raise ValueError('Extended attributes require a regular payload file')
+                    attributes[name] = attrs
                 opener = stream.extractfile
             if kind == 'link':
                 link_destination(name, target)
             entries.append((name, kind, mode, target, member))
+        filtered = []
+        for item in entries:
+            name, kind, _, _, member = item
+            path = PurePosixPath(name)
+            counterpart = (path.parent / path.name[2:]).as_posix() if path.name.startswith('._') else None
+            if counterpart in attributes:
+                if kind != 'file':
+                    raise ValueError('Invalid AppleDouble metadata entry')
+                with opener(member) as metadata:
+                    if metadata.read(4) != b'\x00\x05\x16\x07':
+                        raise ValueError('Invalid AppleDouble metadata header')
+                continue
+            filtered.append(item)
+        entries = filtered
         names = {}
         for name, kind, *_ in entries:
             folded = name.casefold()
@@ -91,3 +112,4 @@ def _extract(archive, destination):
                 path.parent.mkdir(parents=True, exist_ok=True)
                 os.symlink(target, path)
         inventory(destination)  # Reject dangling/cyclic/indirectly escaping links.
+        return attributes
