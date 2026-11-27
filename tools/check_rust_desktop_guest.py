@@ -162,6 +162,13 @@ def main(shared):
             assert not (root/name).exists() and not (root/name).is_symlink(), name
         invoke('cached-reinstall','install','--package',secondary,'--accept-licenses',gui=False,worker=True)
         verify(root,current, expected)
+        if real:
+            invoke('cached-remove-elastic','remove','--package',primary,'--accept-licenses',worker=True)
+            assert set(inventory(root)) == expected - {primary}
+            for name in current[primary]['owned_files']:
+                assert not (root/name).exists() and not (root/name).is_symlink(), name
+            invoke('cached-reinstall-elastic','install','--package',primary,'--accept-licenses',gui=False,worker=True)
+            verify(root,current, expected)
         invoke('final-cached-verification','verify',gui=False)
         assert not download.exists() and not list(usb.iterdir())
         result.setdefault('maintenance_without_media', {})[backend] = {
