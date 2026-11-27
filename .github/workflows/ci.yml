@@ -25,7 +25,7 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install -e '.[ci]'
       - if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y 7zip
+        run: sudo apt-get update && sudo apt-get install -y 7zip libxkbcommon-x11-0 libxcb-icccm4 libxcb-image0 libxcb-keysyms1 libxcb-render-util0 libxcb-cursor0
       - if: runner.os == 'macOS'
         run: brew install sevenzip
       - run: python tools/bootstrap_ifw.py
