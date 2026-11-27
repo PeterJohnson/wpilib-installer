@@ -14,6 +14,7 @@ import xml.etree.ElementTree as ET
 from .common import (TARGETS, atomic_json, cached_file, digest, read_json_url,
                      resource_url, run, safe_path, sign, verify, version)
 from .registry import validate_registry
+from .payload import inventory as payload_inventory, validate_records, validate_ownership
 
 
 @contextmanager
@@ -58,12 +59,17 @@ def validate_packages(packages, allowed):
             if not re.fullmatch(r"[a-z][a-z0-9.]+", dep):
                 raise ValueError(f"Invalid dependency ID: {dep}")
             version(minimum)
+        if "file_records" in p:
+            validate_records(p["file_records"])
+            if set(p["file_records"]) != set(p["owned_files"]):
+                raise ValueError("Payload records differ from component ownership")
         for filename in p["owned_files"]:
             safe_path(filename)
             folded = filename.casefold()
             if folded in files:
                 raise ValueError(f"Conflicting ownership: {filename}")
             files.add(folded)
+    validate_ownership(files)
 
 
 def publish(spec_path, store, key, registry, ifw, *, tuf_keys=None, update_tuf=True):
@@ -92,25 +98,27 @@ def publish(spec_path, store, key, registry, ifw, *, tuf_keys=None, update_tuf=T
             payload = spec_path.parent / p.pop("payload")
             if not payload.is_dir():
                 raise ValueError(f"Missing payload directory: {payload}")
-            if any(f.is_symlink() for f in payload.rglob("*")):
-                raise ValueError("Prototype directory payloads do not support symlinks")
-            p["owned_files"] = sorted(f.relative_to(payload).as_posix() for f in payload.rglob("*") if f.is_file())
+            p["file_records"] = payload_inventory(payload)
+            p["owned_files"] = sorted(p["file_records"])
             metadata.append(p)
         validate_packages(metadata, registry["repositories"][publisher]["components"])
         for package, p in zip(spec["packages"], metadata):
             package_dir = packages_dir / p["id"]
             (package_dir / "meta").mkdir(parents=True)
-            shutil.copytree(spec_path.parent / package["payload"], package_dir / "data")
+            shutil.copytree(spec_path.parent / package["payload"], package_dir / "data", symlinks=True)
             xml = ET.Element("Package")
             for tag, value in {"DisplayName": p["name"], "Description": p.get("description", p["name"]),
-                               "Version": p["version"], "ReleaseDate": "2026-11-26", "Default": "false"}.items():
+                               "Version": p["version"], "ReleaseDate": p.get("release_date", "2026-11-26"), "Default": "false"}.items():
                 ET.SubElement(xml, tag).text = value
             deps = p.get("dependencies", {})
             if deps:
                 ET.SubElement(xml, "Dependencies").text = ",".join(f"{name}->={minimum}" for name, minimum in deps.items())
             xml_file(xml, package_dir / "meta" / "package.xml")
         repo = Path(tmp) / "repository"
-        run([tool(ifw, "repogen"), "-p", packages_dir, repo], timeout=180)
+        archive_format = spec.get("archive_format", "7z")
+        if archive_format not in ("7z", "tar.gz"):
+            raise ValueError("Unsupported package archive format")
+        run([tool(ifw, "repogen"), "--archive-format", archive_format, "-p", packages_dir, repo], timeout=900)
         files = {f.relative_to(repo).as_posix(): {"sha256": digest(f), "size": f.stat().st_size}
                  for f in sorted(repo.rglob("*")) if f.is_file()}
         manifest = {"schema": 1, "publisher": publisher, "target": target,
@@ -245,6 +253,7 @@ def package_map(snapshots):
                 if name in owned:
                     raise ValueError(f"Cross-repository file collision: {name}")
                 owned.add(name)
+    validate_ownership(owned)
     return packages
 
 

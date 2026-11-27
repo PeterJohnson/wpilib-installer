@@ -46,7 +46,7 @@ def assemble(registry, destination, key, cache, *, registry_record=None, registr
             content = {"schema": 2, "registry": registry_ref, "id": bundle_id, "target": registry["target"],
                        "season": registry["season"], "channel": registry["channel"],
                        "repositories": identity, "held_back": held,
-                       "payload_kind": "prototype-fixtures"}
+                       "payload_kind": ("upstream-releases" if all(p.get("upstream") for s in snapshots for p in s.manifest["packages"]) else "prototype-fixtures")}
             if archival is not None:
                 content.update(schema=3, archival=archival)
             envelope = sign(content, key)
@@ -73,10 +73,11 @@ def assemble(registry, destination, key, cache, *, registry_record=None, registr
                 pending.unlink(missing_ok=True)
         atomic_json(destination / "latest.json", {"bundle": path.name, "sha256": digest(path),
                     "registry": registry_ref, "repositories": identity, "held_back": held})
+        notice = "Pinned upstream application releases." if content["payload_kind"] == "upstream-releases" else "Test payloads only."
         page = ("<!doctype html><html lang='en'><meta charset='utf-8'>"
                 "<meta name='viewport' content='width=device-width'><title>WPILib prototype packages</title>"
                 f"<h1>WPILib prototype: {html.escape(registry['target'])}</h1>"
-                "<p>Test payloads only. Download the installer separately.</p>"
+                f"<p>{notice} Download the installer separately.</p>"
                 f"<p><a href='{path.name}'>Download this platform's complete package set</a></p>"
                 f"<p>SHA-256: <code>{digest(path)}</code></p>"
                 f"<pre>{html.escape(json.dumps({'registry': registry_ref, 'repositories': identity, 'held_back': held}, indent=2))}</pre></html>")

@@ -18,7 +18,7 @@ from .manager import build_installer, executable, inventory, launch
 from .registry_updates import resolve
 from .repository import package_map
 
-SUITE = 1
+SUITE = 2
 CHECKS = ["fresh-install", "profiles", "baseline-install", "offline-upgrade", "older-bundle-no-downgrade"]
 RUNNERS = {"linux-x64": "ubuntu-24.04", "windows-x64": "windows-2022",
            "macos-x64": "macos-15-intel", "macos-arm64": "macos-15"}
@@ -71,13 +71,13 @@ def profile_closure(packages, selected):
 
 
 def installed_files(root, packages):
+    from .payload import verify_installed
     result = {}
     for package in packages.values():
-        for name in package["owned_files"]:
-            path = Path(root) / str(safe_path(name))
-            if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(Path(root).resolve()):
-                raise ValueError(f"Missing or escaping installed payload: {name}")
-            result[name] = digest(path)
+        result.update(verify_installed(root, package))
+        if package.get("upstream"):
+            from .dashboard_packages import verify_app
+            verify_app(root, package, host_target())
     return result
 
 
@@ -162,13 +162,21 @@ def exercise(directory, source, engine, work, report_path, isolation):
     if inventory(upgraded) != expected or installed_files(upgraded, packages) != fresh_files:
         raise ValueError("Offline upgrade inventory or payload differs from fresh installation")
     retained = {name: p for name, p in old_packages.items() if name not in packages}
+    kept_files = {name for p in {**retained, **packages}.values() for name in p["owned_files"]}
+    for name in old_files.keys() - kept_files:
+        path = upgraded / name
+        if path.exists() or path.is_symlink():
+            raise ValueError(f"Upgrade retained obsolete package file: {name}")
     if any(old_files[name] != value for name, value in installed_files(upgraded, retained).items()):
         raise ValueError("Upgrade changed an unrelated retained package")
     operation(baseline, upgraded, "update", engine_path=maintenance)
     if inventory(upgraded) != expected or installed_files(upgraded, packages) != fresh_files:
         raise ValueError("Older offline media downgraded the installation")
     atomic_json(report_path, {**report_identity(directory, plan), "status": "passed", "host_target": host_target(),
-                "checks": CHECKS, "network_isolation": isolation, "inventory": expected})
+                "checks": CHECKS, "network_isolation": isolation, "inventory": expected,
+                "upstream_releases": {name: {"current": p["upstream"]["tag"],
+                    "baseline": old_packages.get(name, {}).get("upstream", {}).get("tag"),
+                    "files_verified": len(p["owned_files"])} for name, p in packages.items() if p.get("upstream")}})
 
 
 @contextmanager

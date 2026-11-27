@@ -1,0 +1,145 @@
+{
+  "schema": 1,
+  "publishers": {
+    "elastic": {
+      "repository": "Gold872/elastic_dashboard",
+      "component": "org.wpilib.elastic",
+      "releases": [
+        {
+          "tag": "v2026.1.1",
+          "version": "2026.1.1",
+          "assets": {
+            "windows-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-Windows.zip",
+              "sha256": "02137ae1656c06ff36a44b5b093908f118fd58498b0ec29a0f1d6c4a50b4503c",
+              "size": 35137825
+            },
+            "linux-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-Linux.zip",
+              "sha256": "143c64f54a2533f6559486dfcaf1e084dc0f45b25a0b667252577c788b1a140a",
+              "size": 38423343
+            },
+            "macos-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-macOS.tar.gz",
+              "sha256": "a952fffc4477adb4391d44be5488ae467313d30e172e520f066b2469ac782567",
+              "size": 41515221
+            },
+            "macos-arm64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-macOS.tar.gz",
+              "sha256": "a952fffc4477adb4391d44be5488ae467313d30e172e520f066b2469ac782567",
+              "size": 41515221
+            }
+          },
+          "license": {
+            "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.1/LICENSE",
+            "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+            "size": 1099
+          },
+          "release_date": "2026-01-16"
+        },
+        {
+          "tag": "v2026.1.2",
+          "version": "2026.1.2",
+          "assets": {
+            "windows-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-Windows.zip",
+              "sha256": "0b862cc0ab0de90a3a2ed5f4c065d341561065499737fdda060e894c3b37a9db",
+              "size": 35137393
+            },
+            "linux-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-Linux.zip",
+              "sha256": "eaae0808e244a34dc1b584ab82321fd109c6193a784a961a294af20d531d88af",
+              "size": 38423280
+            },
+            "macos-x64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-macOS.tar.gz",
+              "sha256": "1f6f7c9523faacefb39ce363e8c8bac1c44eea46dfe3dbf6a07d0d6c1dfe47a7",
+              "size": 41516019
+            },
+            "macos-arm64": {
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-macOS.tar.gz",
+              "sha256": "1f6f7c9523faacefb39ce363e8c8bac1c44eea46dfe3dbf6a07d0d6c1dfe47a7",
+              "size": 41516019
+            }
+          },
+          "license": {
+            "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.2/LICENSE",
+            "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+            "size": 1099
+          },
+          "release_date": "2026-03-02"
+        }
+      ]
+    },
+    "advantagescope": {
+      "repository": "Mechanical-Advantage/AdvantageScope",
+      "component": "org.wpilib.advantagescope",
+      "releases": [
+        {
+          "tag": "v26.0.1",
+          "version": "26.0.1",
+          "assets": {
+            "windows-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-win-x64.zip",
+              "sha256": "0ee2993734bd93af5a7fc3f27e87e8b6aea673f3935429ff893b245f806da086",
+              "size": 211949832
+            },
+            "linux-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-linux-x64.zip",
+              "sha256": "7945c042624191b56c1bc559017d108d5d0b5533c1eb72359dfd13a92f70b2bf",
+              "size": 173731546
+            },
+            "macos-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-mac-x64.tar.gz",
+              "sha256": "0ed717dd287c7fd05183b4b74d08d9fe30fc095e0eabc3ccc8808673eb3f425d",
+              "size": 217288271
+            },
+            "macos-arm64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-mac-arm64.tar.gz",
+              "sha256": "d2bee335a5d7adbb71dad1394c269ccb8aa170ac0e68d013aa370221a68392ac",
+              "size": 210651293
+            }
+          },
+          "license": {
+            "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.1/LICENSE",
+            "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+            "size": 1600
+          },
+          "release_date": "2026-02-28"
+        },
+        {
+          "tag": "v26.0.2",
+          "version": "26.0.2",
+          "assets": {
+            "windows-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-win-x64.zip",
+              "sha256": "f25d2aa71f00400fbb08ac23123ad899b12e9bcfb488766754e735d77683aa7a",
+              "size": 211980772
+            },
+            "linux-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-linux-x64.zip",
+              "sha256": "23fb0979dd7af489922aee974755713b63250ed74af79d291089098f7ad37428",
+              "size": 173769652
+            },
+            "macos-x64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-mac-x64.tar.gz",
+              "sha256": "8ed7c8dcb797ebbf9052e3e44672cedaea98dbde90a47321353edf8f3689046d",
+              "size": 217328008
+            },
+            "macos-arm64": {
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-mac-arm64.tar.gz",
+              "sha256": "c47ba3457a0bcd50c39b6e518c530798a546d279b72bd96d3a1cab9ca8340b9d",
+              "size": 210659315
+            }
+          },
+          "license": {
+            "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.2/LICENSE",
+            "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+            "size": 1600
+          },
+          "release_date": "2026-04-25"
+        }
+      ]
+    }
+  }
+}

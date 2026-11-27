@@ -5,7 +5,7 @@ WPILib core, Elastic, AdvantageScope, and RobotPy repositories, with additional 
 components through Qt's native engine, verifies publisher manifests before Qt
 reads them, and assembles complete offline bundles for one platform at a time.
 
-**The demo installs small synthetic text payloads, not WPILib or either dashboard.**
+**The demo installs small synthetic text payloads.** Separate [real dashboard recipes](packaging/README.md) package pinned Elastic and AdvantageScope WPILib releases and exercise native offline installation and upgrades.
 This repository proves the distribution and maintenance paths. Production SDK
 packaging, platform integration, and the remaining feasibility gates are tracked
 in [implementation status](docs/prototype-status.md). The full

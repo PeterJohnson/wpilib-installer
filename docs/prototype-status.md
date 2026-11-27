@@ -4,6 +4,9 @@ Implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3).
 
 ## Implemented
 
+- Real Elastic and AdvantageScope WPILib release recipes with pinned upstream assets/licenses, portable payloads, architecture validation, macOS signature-integrity checks, and a separate four-runner offline installation/upgrade workflow. See [real dashboard packaging](../packaging/README.md).
+- Contained framework symlink preservation, executable-mode and per-file digest inventories, and native acceptance against signed source contents, including obsolete-file removal.
+
 - Python TUF 7.0.1 online verification, independent publisher/authority roots and role keys, authenticated catalogs, consistent snapshots, current-clock expiry, persistent rollback state, verified cache fallback, and sequential root rotation. Threshold root setup/rotation tooling defaults to two of three root keys.
 - Online authority trust is independent of the archival authority pin. Registry cache evidence is reverified through TUF, CI renewal supports a replacement archival key, and existing offline bundles retain their original key/policy.
 - Root histories longer than 256 versions use bounded, resumable download batches with complete signature replay from the original bootstrap. The client reports retryable pending status after its per-operation budget; no catalog is accepted at a batch boundary. Publication-origin verification traverses the complete root chain.
@@ -125,7 +128,7 @@ real SDK payloads, and live R2/Artifactory publication remain untested.
 
 | Area | Remaining work before production |
 | --- | --- |
-| Real payloads | Import allwpilib, JDK/toolchains, dashboard archives, standalone Python, pinned RobotPy host/robot wheels, licenses, and full offline build dependencies. Directory packaging currently rejects symlinks; macOS app bundle preservation needs a dedicated recipe. |
+| Real payloads | Elastic/AdvantageScope release recipes are implemented; validate deployment policy and application behavior. Import allwpilib, JDK/toolchains, standalone Python, pinned RobotPy host/robot wheels, licenses, and full offline build dependencies. |
 | Setup operations | Existing paths, launcher/shortcut integration, Gradle caches, VSIX installation, running-process checks, and legacy migration. |
 | Manager distribution | Bundle the adapter/runtime, discovery registration, manager self-update, and shortcuts that always enter through verification. Direct manual invocation of Qt bypasses adapter checks. |
 | Trust | TUF client verification, online role separation, long root-history catch-up, archival-key-independent online updates, and explicit indefinite archival authorization are implemented. Remaining work: emergency threshold-compromise recovery, distribution of replacement offline trust pins, release-withdrawal administration, hardened signing services, and deployment monitoring. The client assumes its local trust cache and the publishing workflow's authoritative origin are protected from unauthorized replacement. |
