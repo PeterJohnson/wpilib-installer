@@ -15,6 +15,7 @@ on:
       - '.github/containers/**'
       - 'tools/build_linux_manager.py'
       - '.github/workflows/rust-contained.yml'
+      - '.github/workflows/rust-desktop.yml'
   pull_request:
     paths:
       - 'manager/**'
@@ -23,6 +24,7 @@ on:
       - '.github/containers/**'
       - 'tools/build_linux_manager.py'
       - '.github/workflows/rust-contained.yml'
+      - '.github/workflows/rust-desktop.yml'
 permissions:
   contents: read
   actions: read

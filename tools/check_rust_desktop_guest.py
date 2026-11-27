@@ -45,11 +45,14 @@ def verify(root, packages):
 def main(shared):
     result = {'schema': 1, 'checks': [], 'session': {k: os.environ.get(k) for k in ['XDG_SESSION_TYPE','DISPLAY','WAYLAND_DISPLAY']},
               'application_sha256': sha(shared/'wpilib-manager'), 'os_release': Path('/etc/os-release').read_text(),
+              'kernel_cmdline': Path('/proc/cmdline').read_text(),
+              'root_mount': next(line for line in Path('/proc/mounts').read_text().splitlines() if line.split()[1] == '/'),
               'network_interfaces': sorted(p.name for p in Path('/sys/class/net').iterdir()),
               'test_tooling': 'OS Python stdlib only; no guest packages installed for tests; client PATH empty'}
     work = Path.home()/'wpilib-acceptance'; work.mkdir()
     (shared/'base-packages.txt').write_text(subprocess.check_output(['/usr/bin/dpkg-query','-W'],text=True))
     assert result['network_interfaces'] == ['lo'], result
+    assert result['root_mount'].split()[2] == 'ext4', result['root_mount']
     assert os.environ.get('WAYLAND_DISPLAY') and os.environ.get('DISPLAY'), result
     initial, current = manifest(shared/'baseline.zip'), manifest(shared/'candidate.zip')
     primary = next(n for n in initial if n.endswith('.elastic'))

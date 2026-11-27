@@ -52,7 +52,7 @@ def check(a):
     for name in ['vmlinuz','initrd','install-sources.yaml']:
         run('xorriso','-osirrox','on','-indev',iso,'-extract','/casper/'+name,work/name,
             stdout=subprocess.DEVNULL,stderr=subprocess.DEVNULL)
-    # Only autologin and the test entry point differ from the installed desktop.
+    # Autologin, the test entry point and diagnostic logging are test-only changes.
     setup='''#!/bin/bash
 set -eux
 mkdir -p /target/mnt/wpilib-test /target/home/tester/.config/autostart
@@ -69,6 +69,19 @@ Name=WPILib acceptance
 Exec=/usr/bin/python3 /mnt/wpilib-test/check_rust_desktop_guest.py
 X-GNOME-Autostart-enabled=true
 EOF
+cat > /target/etc/systemd/system/wpilib-test-diagnostics.service <<'EOF'
+[Unit]
+Description=Record acceptance VM diagnostics
+After=local-fs.target
+RequiresMountsFor=/mnt/wpilib-test
+[Service]
+Type=simple
+ExecStart=/bin/bash -c 'while true; do journalctl -b --no-pager > /mnt/wpilib-test/guest-journal.log; sleep 15; done'
+[Install]
+WantedBy=multi-user.target
+EOF
+mkdir -p /target/etc/systemd/system/multi-user.target.wants
+ln -s /etc/systemd/system/wpilib-test-diagnostics.service /target/etc/systemd/system/multi-user.target.wants/
 touch /target/home/tester/.config/gnome-initial-setup-done
 chown -R 1000:1000 /target/home/tester
 cp -r /var/log/installer /mnt/wpilib-test/install-logs || true
@@ -107,7 +120,7 @@ touch /mnt/wpilib-test/installed
     def vm(phase, extra, complete=None):
         started=time.monotonic()
         with (work/(phase+'-qemu.log')).open('w') as log:
-            p=subprocess.Popen([*common,'-serial',f'file:{work/(phase+"-serial.log")}',*extra],stdout=log,stderr=subprocess.STDOUT)
+            p=subprocess.Popen([*common,'-chardev',f'socket,id=console,path={work/(phase+"-console.sock")},server=on,wait=off,logfile={work/(phase+"-serial.log")}', '-serial','chardev:console',*extra],stdout=log,stderr=subprocess.STDOUT)
             try:
                 while p.poll() is None:
                     if complete and complete.exists(): break
