@@ -63,7 +63,7 @@ A native registry-update test installs from an authenticated three-publisher bun
 
 Additional native tests install the fourth publisher’s Python profile from an offline bundle, then update its components through the online gateway. A single custom publisher with none of the original project names also publishes, selects, and bundles successfully. These are marker payloads, not a real Python/RobotPy installation.
 
-The new publication acceptance runner also passed locally on Linux x64, with networking blocked for the complete worker. It installed all components and all four profiles from cold caches, upgraded Elastic 1.0.0 to 2.0.0 from exact signed ZIPs, compared installed file hashes with a fresh install, rejected old-media downgrades, and exercised first-publication reinstall behavior. The complete 103-test suite passed locally, including TUF-backed publication fixtures, indefinite archival authorization, archival-key rotation, and long root histories. Windows/macOS gates are implemented but still require execution on their hosted runners.
+The new publication acceptance runner also passed locally on Linux x64, with networking blocked for the complete worker. It installed all components and all four profiles from cold caches, upgraded Elastic 1.0.0 to 2.0.0 from exact signed ZIPs, compared installed file hashes with a fresh install, rejected old-media downgrades, and exercised first-publication reinstall behavior. The complete 103-test suite passed locally, including TUF-backed publication fixtures, indefinite archival authorization, archival-key rotation, and long root histories. Hosted-runner validation is recorded below.
 
 The real `repogen --update` regression test used only old `Updates.xml`, its named
 combined metadata archive, and one new component. The unchanged component remained
@@ -80,13 +80,46 @@ request contract. Artifactory REST tests cover staging verification, exact-path
 promotion, partial/corrupt copies, immutable collisions, changed heads, configured
 writer guards, and staged-registry recovery. Native Qt releases exercise both
 storage contracts without old archive downloads. Live Artifactory/cloud publication
-and GitHub execution have not been run.
+has not been run. Native GitHub Actions execution is recorded below.
 
 TUF tests also demonstrate HTTP installs/updates, rejected expired online metadata, and native offline installation with archival verification evaluated in the year 2100, followed by an online upgrade after archival-authority rotation with the unchanged original bootstrap. Separate tests check cold/warm caches, no wall-clock dependency, signed policy enforcement, unchanged online history, authentic expired cache evidence, 520 root versions with expired intermediates and threshold rotation, and resumable 1,030-version catch-up.
 
-Windows and macOS workflows are defined but have not run on this Linux host.
-Generating target-labelled data archives does not prove a native ARM64 installer.
+Native macOS ARM64 is exercised on its own hosted runner. Generating
+target-labelled data archives does not prove native Windows/Linux ARM64 support.
 The GUI controller is included; visual/layout acceptance remains a manual gate.
+
+## GitHub Actions validation
+
+[Prototype CI run 45954840264](https://github.com/PeterJohnson/wpilib-installer/actions/runs/45954840264)
+validated commit `7939d02` on November 27, 2026 (UTC):
+
+| Runner | Native target | Result |
+| --- | --- | --- |
+| `windows-2022` | Windows x64 | 103 tests, offline publication fixture gate, and installer packaging passed |
+| `macos-15` | macOS ARM64 | 103 tests, offline publication fixture gate, and installer packaging passed |
+| `macos-15-intel` | macOS x64 | 103 tests, offline publication fixture gate, and installer packaging passed |
+| `ubuntu-24.04` | Linux x64 | 103 tests, offline publication fixture gate, installer packaging, and six fixture bundles passed |
+
+The native tests exercise online installation, offline installation and upgrades,
+registry discovery, independent publisher updates, archival-key rotation, and TUF
+root histories beyond 256 rotations. The publication fixture installs all profiles
+with networking blocked by the host OS, upgrades Elastic from 1.0.0 to 2.0.0,
+compares installed file hashes, and rejects old-media downgrades. It calls the same
+checker used by the production offline workflow; no production release is
+published during this test run.
+
+The first runs identified missing Ubuntu XCB runtime libraries and Windows text
+mode changing temporary signing-key line endings. The workflows now install the
+required libraries, build the installer before the test suite to catch missing
+runtime dependencies early, and preserve PEM bytes on Windows. The key cleanup
+test covers both LF and CRLF input. The long root-history tests account for most
+of the Windows test runtime; the complete suite takes roughly 11 minutes there.
+
+Each runner uploads its native installer as `installer.tar.gz` in
+`prototype-<runner>` and test logs/JSON acceptance reports in `test-results-<runner>`.
+The macOS archive preserves the `.app` structure and executable modes. All
+payloads remain synthetic markers. GUI acceptance, code signing/notarization,
+real SDK payloads, and live R2/Artifactory publication remain untested.
 
 ## Deliberate prototype limits
 
@@ -99,9 +132,9 @@ The GUI controller is included; visual/layout acceptance remains a manual gate.
 | Compatibility | Season policy, upper bounds/conflicts, SDK release groups, historical retention, installed-version-aware planning, richer diagnostics, and explicit unsupported package/platform availability. |
 | GUI | Dedicated profile choice, source/bundle picker, user-facing update summaries, visual/accessibility acceptance. Current launch flags select profile and source. |
 | Transactions | Crash/power-loss recovery, repair, file replacement on Windows, custom operation rollback, and disk-space tests. Qt's built-in file operations alone do not prove all of these. |
-| Deployment | Configure and run the implemented secret-backed publisher/registry workflows against actual upstream repositories and HTTPS storage. Smoke-test R2 conditional writes or Artifactory promotion and enforce its designated writer/token isolation. Native publication gates are connected; run them on Windows/macOS and real payloads, and provision enough runner disk/artifact quota for candidate and baseline archives. S3/R2 supports conditional multipart uploads; Artifactory uses server/proxy limits and a 120-second HTTP timeout. |
+| Deployment | Configure and run the implemented secret-backed publisher/registry workflows against actual upstream repositories and HTTPS storage. Smoke-test R2 conditional writes or Artifactory promotion and enforce its designated writer/token isolation. Native publication gates pass on all four supported hosted runners with fixtures; run them with real payloads, and provision enough runner disk/artifact quota for candidate and baseline archives. S3/R2 supports conditional multipart uploads; Artifactory uses server/proxy limits and a 120-second HTTP timeout. |
 | VS Code | Consume the JSON protocol and launch the manager from an extension. Editor acquisition/redistribution remains as described in the proposal. |
-| Platforms | Run Windows/macOS CI and GUI tests; supply and test native Windows/Linux ARM64 IFW builds; signing/notarization and minimum OS baselines. |
+| Platforms | Run GUI tests on each platform; supply and test native Windows/Linux ARM64 IFW builds; signing/notarization and minimum OS baselines. |
 
 ## Source references
 

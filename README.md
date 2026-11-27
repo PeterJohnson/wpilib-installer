@@ -141,8 +141,21 @@ operation. Run it on a host allowing unprivileged user/network namespaces. On
 other platforms the tests stop the source HTTP server before offline operations.
 In PowerShell set `$env:IFW_PATH='.tools/ifw'` before invoking unittest.
 
-CI defines native tests for Windows, macOS, and Linux, and generates six separate
-fixture bundles. The [offline assembly workflow](.github/workflows/offline-bundles.yml)
+[Prototype CI](.github/workflows/ci.yml) runs on each push, pull request, or manual
+dispatch with Windows x64 (`windows-2022`), macOS ARM64 (`macos-15`), macOS Intel
+(`macos-15-intel`), and Linux x64 (`ubuntu-24.04`). Every job builds a native
+installer, runs the complete test suite, and exercises the same network-blocked
+offline fixture gate required by publication. No release secrets or storage
+configuration are needed.
+
+Each successful job uploads `prototype-<runner>` with `installer.tar.gz`; the tar
+preserves executable modes and the macOS `.app` directory structure. Linux also
+uploads six separate target-labelled fixture bundles. `test-results-<runner>`
+contains the test log, offline gate report, and Qt operation logs, including on
+failure when those files exist. These artifacts use synthetic payloads and are
+not signed production distributions. See [recorded results](docs/prototype-status.md#github-actions-validation).
+
+The [offline assembly workflow](.github/workflows/offline-bundles.yml)
 is triggered by producer notifications or a reconciliation schedule once
 [deployment registries](deployment/registries/README.md) are configured. It emits
 verified ZIPs and browser download pages to R2/S3 or Artifactory only after required
