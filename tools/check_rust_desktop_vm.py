@@ -101,7 +101,7 @@ touch /mnt/wpilib-test/installed
             '-cpu','max' if a.tcg else 'host','-smp','4','-m','6144',
             '-drive',f'file={disk},format=qcow2,if=virtio', '-device','virtio-vga',
             '-display','none','-monitor','none','-nic','none','-no-reboot',
-            '-fsdev',f'local,id=share,path={share},security_model=none',
+            '-fsdev',f'local,id=share,path={share},security_model=mapped-xattr',
             '-device','virtio-9p-pci,fsdev=share,mount_tag=wpilibshare']
 
     def vm(phase, extra, complete=None):
