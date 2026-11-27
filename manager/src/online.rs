@@ -25,11 +25,16 @@ const MAX_CATALOG: u64 = 8 * 1024 * 1024;
 const ROOT_BATCH: usize = 256;
 const BATCHES: usize = 4;
 pub fn atomic(path: &Path, data: &[u8]) -> Result<(), Error> {
-    fs::create_dir_all(path.parent().ok_or("Missing parent")?)?;
-    let mut f = tempfile::NamedTempFile::new_in(path.parent().unwrap())?;
+    let parent = path.parent().ok_or("Missing parent")?;
+    fs::create_dir_all(parent)?;
+    // tempfile's Windows persist path uses native Win32 APIs directly. Resolve
+    // to an extended-length path before creating AND renaming the file.
+    let parent = fs::canonicalize(parent)?;
+    let destination = parent.join(path.file_name().ok_or("Missing file name")?);
+    let mut f = tempfile::NamedTempFile::new_in(&parent)?;
     f.write_all(data)?;
     f.as_file().sync_all()?;
-    f.persist(path)?;
+    f.persist(destination)?;
     Ok(())
 }
 fn now() -> Result<u64, Error> {
@@ -875,7 +880,8 @@ async fn verified_file(
             return Err("Payload size mismatch".into());
         }
         fs::create_dir_all(cached.parent().unwrap())?;
-        let mut f = tempfile::NamedTempFile::new_in(cached.parent().unwrap())?;
+        let cache_parent = fs::canonicalize(cached.parent().unwrap())?;
+        let mut f = tempfile::NamedTempFile::new_in(&cache_parent)?;
         let mut n = 0;
         while let Some(chunk) = response.chunk().await? {
             n += chunk.len() as u64;
@@ -888,7 +894,7 @@ async fn verified_file(
             return Err(format!("Package hash mismatch: {name}").into());
         }
         f.as_file().sync_all()?;
-        f.persist(&cached)?;
+        f.persist(cache_parent.join(hash))?;
     }
     fs::create_dir_all(dest.parent().ok_or("Missing payload parent")?)?;
     fs::copy(cached, dest)?;
@@ -1093,6 +1099,20 @@ pub fn materialize(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn atomic_cache_publication_supports_long_paths() {
+        let temp = tempfile::tempdir().unwrap();
+        let path = temp
+            .path()
+            .join("a".repeat(90))
+            .join("b".repeat(90))
+            .join("c".repeat(90))
+            .join("timestamp.json");
+        assert!(path.as_os_str().len() > 260);
+        atomic(&path, b"first verified generation").unwrap();
+        atomic(&path, b"replacement verified generation").unwrap();
+        assert_eq!(fs::read(path).unwrap(), b"replacement verified generation");
+    }
     #[test]
     fn production_urls_cannot_bypass_https() {
         assert!(url("https://example.test/repo", false).is_ok());
