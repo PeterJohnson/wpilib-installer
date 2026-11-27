@@ -53,8 +53,8 @@ integrity without online revocation or Gatekeeper/notarization assessment.
 
 AdvantageScope also carries signature data in macOS extended attributes. The
 recipe retains the tarball’s PAX attributes in an owned JSON file, normalizes
-redundant AppleDouble entries, and generates a fixed restore script. Qt IFW does
-not restore these attributes itself, so a component `Execute` operation runs that
+redundant AppleDouble entries, and generates a fixed restore script. [Qt IFW 4.11’s disk extraction options](https://github.com/qtproject/installer-framework/blob/4.11/src/libs/installer/libarchivearchive.cpp)
+do not restore these attributes, so a component `Execute` operation runs that
 script with `/bin/sh` and `/usr/bin/xattr` after extraction. Attribute values are
 restored unchanged, without signing keys or re-signing the app. They are attached
 to Qt-owned files and disappear when those files are removed. The native gate
@@ -101,6 +101,9 @@ provenance, and acceptance reports are retained as `real-dashboard-results-<runn
 artifacts for 14 days. The large application payloads, test private keys, and
 throwaway installation trees are not uploaded. The ordinary prototype regression
 matrix still runs separately.
+
+[Recorded four-platform CI results](../docs/prototype-status.md#real-dashboard-validation)
+include the pinned real upgrade pairs and verified payload entry counts.
 
 This validates real installation and maintenance payloads. GUI startup, renderer
 behavior, robot connectivity, first-run asset downloads, shortcuts, OS integration,

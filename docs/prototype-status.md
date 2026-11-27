@@ -5,7 +5,7 @@ Implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3).
 ## Implemented
 
 - Real Elastic and AdvantageScope WPILib release recipes with pinned upstream assets/licenses, portable payloads, architecture validation, macOS signature-integrity checks, and a separate four-runner offline installation/upgrade workflow. See [real dashboard packaging](../packaging/README.md).
-- Contained framework symlink preservation, executable-mode and per-file digest inventories, and native acceptance against signed source contents, including obsolete-file removal.
+- Contained framework symlink preservation, executable-mode and per-file digest inventories, preservation/restoration of upstream macOS signature attributes, and native acceptance against signed source contents, including obsolete-file removal.
 
 - Python TUF 7.0.1 online verification, independent publisher/authority roots and role keys, authenticated catalogs, consistent snapshots, current-clock expiry, persistent rollback state, verified cache fallback, and sequential root rotation. Threshold root setup/rotation tooling defaults to two of three root keys.
 - Online authority trust is independent of the archival authority pin. Registry cache evidence is reverified through TUF, CI renewal supports a replacement archival key, and existing offline bundles retain their original key/policy.
@@ -120,9 +120,48 @@ of the Windows test runtime; the complete suite takes roughly 11 minutes there.
 
 Each runner uploads its native installer as `installer.tar.gz` in
 `prototype-<runner>` and test logs/JSON acceptance reports in `test-results-<runner>`.
-The macOS archive preserves the `.app` structure and executable modes. All
-payloads remain synthetic markers. GUI acceptance, code signing/notarization,
-real SDK payloads, and live R2/Artifactory publication remain untested.
+The macOS archive preserves the `.app` structure and executable modes. That run
+used synthetic markers; real dashboard validation is recorded below. GUI
+acceptance, manager code signing/notarization, full SDK payloads, and live
+R2/Artifactory publication remain untested.
+
+## Real dashboard validation
+
+[Real dashboard releases run 45959389025](https://github.com/PeterJohnson/wpilib-installer/actions/runs/45959389025)
+passed on commit `65530df`, November 27, 2026 (UTC). It installed and upgraded the
+official WPILib distributions of Elastic **2026.1.1 → 2026.1.2** and AdvantageScope
+**26.0.1 → 26.0.2** from signed offline bundles.
+
+| Native target | Result | Elastic owned entries checked | AdvantageScope owned entries checked |
+| --- | --- | --- | --- |
+| Windows x64 | Passed with program firewall isolation | 192 | 139 |
+| macOS x64 | Passed with network sandbox isolation | 247 | 355 |
+| macOS ARM64 | Passed with network sandbox isolation | 247 | 355 |
+| Linux x64 | Passed with network namespace isolation | 183 | 137 |
+
+Every target exercised fresh installation, both individual dashboard profiles and
+the combined tools profile, baseline installation, real version upgrades, signed
+source-content verification, comparison with a fresh install, obsolete-file
+removal, and rejection of downgrades from old media. Every report binds the exact
+candidate and baseline ZIP hashes. Both Mac targets additionally verified the
+original app signatures before packaging and after offline installation/upgrades.
+
+The Mac tests found that Electron resources carry signature data in extended
+attributes. Preserving ordinary file bytes and framework symlinks was insufficient:
+Qt's extraction did not restore these attributes. The recipes now preserve the
+upstream values in package-owned metadata and restore them with native `xattr`
+commands after Qt extraction, without re-signing. The gate checks the declared
+attribute hashes/sizes and requires `codesign --verify --deep --strict` to pass.
+
+The [110-test regression matrix](https://github.com/PeterJohnson/wpilib-installer/actions/runs/45959389049)
+also passed on the same commit and four runners; native attribute tests run on
+macOS, with platform-specific tests skipped where inapplicable.
+
+Logs, provenance, and reports are available as `real-dashboard-results-<runner>`
+Actions artifacts. See [packaging commands and recipe contracts](../packaging/README.md).
+Application GUI startup/functionality, robot connectivity, first-run downloads,
+Gatekeeper/quarantine and notarization assessment, and production publication
+remain outside these installation/upgrade checks.
 
 ## Deliberate prototype limits
 
