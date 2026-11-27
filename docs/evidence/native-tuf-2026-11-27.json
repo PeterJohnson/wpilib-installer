@@ -1,0 +1,434 @@
+{
+  "clients": {
+    "go-tuf": {
+      "binary_bytes": 13575127,
+      "binary_sha256": "c65a7408e10b76eab37911b46520a9ee27c4e70060bba8443a94ba7ab0ebd3d4",
+      "checks": [
+        {
+          "detail": null,
+          "name": "python-publisher-update-and-rollback",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "verified-cache-with-origin-removed",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-timestamp-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-snapshot-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-targets-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-catalog-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "authentic-expired-cache-rejected",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "independent-publisher-root-substitution",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-timestamp-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-snapshot-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-catalog-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "expected_limitation": "expired metadata error: final root.json is expired"
+          },
+          "name": "default-limit-cannot-cross-1030-roots",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "expired-bootstrap-and-1030-root-history",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "final_root": 1030,
+            "last_downloaded_roots": 5,
+            "pending_invocations": 4
+          },
+          "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-root-reverified-on-resume",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "rotation-requires-old-threshold",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "rotation-requires-new-threshold",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-missing",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-skipped",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-expired-final",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "native": "online TUF/cache and independent archival authorization",
+            "offline_revision": 1,
+            "online_revision": 2,
+            "python_oracle": "archival authorization at year 2100; old offline pin retained"
+          },
+          "name": "archival-key-rotation-old-bundle-and-online-cache",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "archival-signer-cannot-authorize-online-catalog",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "archival_key_rotated": true,
+            "current_root": 1030,
+            "old_online_authorization_expired": true,
+            "old_root_expired": true
+          },
+          "name": "old-offline-authorization-then-online-through-1030-roots",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-none",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-unicode",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-registry-signature",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-bundle-signature",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-wrong-pin",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-registry-binding",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-policy",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-publisher-identity",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "c568be6341611d642d7206f49ad0e10139036bc418f9b5d527f12d6b1182820f",
+            "repository_id": "real-linux-x64-registry"
+          },
+          "name": "existing-repository-registry",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "8d6a5b9ef4442b1e4d19569e71495d78b804aeba85400c0bf943b63353ccf3b8",
+            "repository_id": "real-linux-x64-advantagescope"
+          },
+          "name": "existing-repository-advantagescope",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "aead780a39b8e21ba6959eebb5739c6e5ddba2a7c533e3b9e13932dcf24829d8",
+            "repository_id": "real-linux-x64-elastic"
+          },
+          "name": "existing-repository-elastic",
+          "status": "passed"
+        }
+      ]
+    },
+    "tough": {
+      "binary_bytes": 7875888,
+      "binary_sha256": "c898447e478ccfd2e4c30770fec1cd7970085c8345639d0f66bba7f52b96e08f",
+      "checks": [
+        {
+          "detail": null,
+          "name": "python-publisher-update-and-rollback",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "verified-cache-with-origin-removed",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-timestamp-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-snapshot-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-targets-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-catalog-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "authentic-expired-cache-rejected",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "independent-publisher-root-substitution",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-timestamp-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-snapshot-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "origin-catalog-tampering",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "expected_limitation": "Maximum root updates 1024 exceeded"
+          },
+          "name": "default-limit-cannot-cross-1030-roots",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "expired-bootstrap-and-1030-root-history",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "final_root": 1030,
+            "last_downloaded_roots": 5,
+            "pending_invocations": 4
+          },
+          "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "expected_limitation": "Initial fetch error is treated as end-of-root-chain; stream-error adapter preserves pending status."
+          },
+          "name": "raw-fetch-error-loses-root-budget-status",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "cached-root-reverified-on-resume",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "rotation-requires-old-threshold",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "rotation-requires-new-threshold",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-missing",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-skipped",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "root-history-expired-final",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "native": "online TUF/cache and independent archival authorization",
+            "offline_revision": 1,
+            "online_revision": 2,
+            "python_oracle": "archival authorization at year 2100; old offline pin retained"
+          },
+          "name": "archival-key-rotation-old-bundle-and-online-cache",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "archival-signer-cannot-authorize-online-catalog",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "archival_key_rotated": true,
+            "current_root": 1030,
+            "old_online_authorization_expired": true,
+            "old_root_expired": true
+          },
+          "name": "old-offline-authorization-then-online-through-1030-roots",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-none",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-unicode",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-registry-signature",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-bundle-signature",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-wrong-pin",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-registry-binding",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-policy",
+          "status": "passed"
+        },
+        {
+          "detail": null,
+          "name": "native-archival-publisher-identity",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "c568be6341611d642d7206f49ad0e10139036bc418f9b5d527f12d6b1182820f",
+            "repository_id": "real-linux-x64-registry"
+          },
+          "name": "existing-repository-registry",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "8d6a5b9ef4442b1e4d19569e71495d78b804aeba85400c0bf943b63353ccf3b8",
+            "repository_id": "real-linux-x64-advantagescope"
+          },
+          "name": "existing-repository-advantagescope",
+          "status": "passed"
+        },
+        {
+          "detail": {
+            "catalog_sha256": "aead780a39b8e21ba6959eebb5739c6e5ddba2a7c533e3b9e13932dcf24829d8",
+            "repository_id": "real-linux-x64-elastic"
+          },
+          "name": "existing-repository-elastic",
+          "status": "passed"
+        }
+      ]
+    }
+  },
+  "host": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "libraries": {
+    "go-tuf": "2.5.0",
+    "tough": "0.24.0"
+  },
+  "schema": 1,
+  "scope": "native TUF/local transports, explicit response-cache adapters, native schema-3 indefinite archival authorization against Python oracle; no full bundle loader or HTTP/GUI validation",
+  "status": "passed",
+  "date": "2026-11-27",
+  "prototype_baseline": "037f1e7",
+  "toolchains": {
+    "go": "go1.27.4 linux/amd64",
+    "rust": "rustc 1.100.0 (0ef1bc386 2026-11-09)"
+  },
+  "source_sha256": {
+    "experiments/tuf-clients/go/archive.go": "21a1a21f9a42f7687042b735b89e9c9d110dec521f4c312746d99ec81faad08a",
+    "experiments/tuf-clients/go/main.go": "76be5650b917e5a428c40f86e08fc11faa5dc51e5ac8a14e189e216dc8b030a0",
+    "experiments/tuf-clients/rust/src/archive.rs": "279fd418febe995f55048b1a6ea39964408572890fe4e3d7b6a621ec9f717893",
+    "experiments/tuf-clients/rust/src/main.rs": "8c2f7df042ca63411c44fe35bacd64175e507ac7021e1edd1c6c60f17826453d",
+    "tools/check_native_tuf.py": "075b34486bff3a56cca80c7bb58bfc57ff1ba0475affa68d3837ba9afc6e0244"
+  }
+}

@@ -1,0 +1,22 @@
+[package]
+name = "wpilib-manager"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+eframe = { version = "=0.37.0", default-features = false, features = ["default_fonts", "glow", "x11", "wayland"] }
+egui-file-dialog = "=0.16.0"
+serde_json = "1"
+base64 = "=0.22.1"
+aws-lc-rs = "=1.19.0"
+url = "2"
+zip = { version = "=9.8.2", default-features = false, features = ["deflate"] }
+tempfile = "3"
+roxmltree = "0.21"
+fs2 = "0.4"
+clap = { version = "4", features = ["derive"] }
+image = { version = "0.25", default-features = false, features = ["png"] }
+
+[profile.release]
+strip = true

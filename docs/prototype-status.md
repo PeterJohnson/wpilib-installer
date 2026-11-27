@@ -1,6 +1,16 @@
 # Prototype scope and findings
 
+## Rust single-application work
+
+The selected Rust/private-Qt direction now has an [offline application prototype](rust-manager-prototype.md), shared GUI/JSON CLI backend, pinned archival verification, embedded engine, persistent manager and cache-only maintenance. The native workflow tests fixtures and real dashboards on four OS/architecture runners. Online tough integration, release signing, self-update and OS integration remain unfinished; this does not supersede the Python reference behavior described below.
+
 Implemented November 26, 2026, against Qt IFW 4.11.0 (Qt 6.9.3).
+
+## Single-application distribution requirement
+
+The November 27 [distribution evaluation](manager-distribution-evaluation.md) records the required one-application UX (at most one GUI plus one CLI). It compares Go and Rust with a private Qt engine, plus an integrated Qt/Rust application. Linux x64 native probes passed **69 checks (34 Go, 35 Rust)** using go-tuf 2.5.0 and tough 0.24.0: existing dashboard catalogs, updates/rollback, verified and tampered caches, interrupted 1,030-root histories, native archival authorization and old-offline-to-online trust continuity. Both require application adapters; tough needs transport-error normalization. See [results and scope](manager-distribution-evaluation.md#native-library-interoperability-results).
+
+This is experimental trust interoperability, not implemented manager distribution: the Python adapter and separate Qt executable still fail the single-application requirement. Native archive checks cover authorization only, and no Windows/macOS native-client execution or signed-manager GUI results are claimed.
 
 ## Implemented
 
@@ -169,7 +179,7 @@ remain outside these installation/upgrade checks.
 | --- | --- |
 | Real payloads | Elastic/AdvantageScope release recipes are implemented; validate deployment policy and application behavior. Import allwpilib, JDK/toolchains, standalone Python, pinned RobotPy host/robot wheels, licenses, and full offline build dependencies. |
 | Setup operations | Existing paths, launcher/shortcut integration, Gradle caches, VSIX installation, running-process checks, and legacy migration. |
-| Manager distribution | Bundle the adapter/runtime, discovery registration, manager self-update, and shortcuts that always enter through verification. Direct manual invocation of Qt bypasses adapter checks. |
+| Manager distribution | Meet the [single-application UX and gates](manager-distribution-evaluation.md): responsive GUI with no separate runtime/engine acquisition, persistent verified maintenance, shared CLI policy, clean-machine dependencies, signing and recoverable self-update. Select a native client only after interoperability and full UX evidence. Direct manual invocation of Qt currently bypasses adapter checks. |
 | Trust | TUF client verification, online role separation, long root-history catch-up, archival-key-independent online updates, and explicit indefinite archival authorization are implemented. Remaining work: emergency threshold-compromise recovery, distribution of replacement offline trust pins, release-withdrawal administration, hardened signing services, and deployment monitoring. The client assumes its local trust cache and the publishing workflow's authoritative origin are protected from unauthorized replacement. |
 | Compatibility | Season policy, upper bounds/conflicts, SDK release groups, historical retention, installed-version-aware planning, richer diagnostics, and explicit unsupported package/platform availability. |
 | GUI | Dedicated profile choice, source/bundle picker, user-facing update summaries, visual/accessibility acceptance. Current launch flags select profile and source. |

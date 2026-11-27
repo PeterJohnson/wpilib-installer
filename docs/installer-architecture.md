@@ -1,6 +1,6 @@
 # WPILib package installer architecture proposal
 
-Date: November 26, 2026. Original installer repository baseline: `66733df`.
+Updated: November 27, 2026. Original installer repository baseline: `66733df`.
 
 A runnable implementation is now in this repository; see [prototype status and remaining gates](prototype-status.md). This document describes the intended production architecture.
 
@@ -18,6 +18,7 @@ The main decision gates are reliable offline upgrades, support for the existing 
 
 | Requirement | Proposed behavior |
 | --- | --- |
+| Single-application UX | One user-facing application per platform, preferably one executable with GUI/CLI modes; at most one GUI plus one CLI shipped together. No separately acquired runtime/engine or manually launched helper. The installed maintenance entry point has the same requirement. |
 | Fresh online installation | A small installer reads the approved repositories and downloads only selected packages and their dependencies. |
 | Fresh offline installation | The installer reads a local bundle with the same package metadata and payloads used online. No network access is required. |
 | Package upgrades in both modes | Compare installed package revisions with the combined online repository view or a local bundle, then update the chosen packages and required dependencies. |
@@ -29,6 +30,14 @@ The main decision gates are reliable offline upgrades, support for the existing 
 | VS Code update discovery | The WPILib extension invokes a stable manager command that reports updates as JSON and launches the installation's maintenance UI. |
 
 “Latest” means the newest versions admitted to the selected season/channel that are compatible with each other and the target machine. Stable installations should not silently advance to prereleases, an incompatible tool major version, or another FRC season.
+
+## Manager distribution and single-application UX
+
+**Single-application delivery is a hard acceptance requirement.** Double-click must open a responsive GUI with source/bundle selection, progress and errors. Users must not operate a separate Qt installer or raw maintenance tool. Prefer one executable supporting GUI and headless commands; the allowed fallback is one GUI and one CLI sharing the same verification/planning implementation. A macOS app bundle counts as one application. Complete offline package bundles remain separate browser-downloadable data, not a requirement to embed every payload in the executable.
+
+Bundle required runtimes/engine resources and install a persistent verified entry point so maintenance works after removing the original download or USB drive. Internal helpers may be embedded or private, but must not require separate acquisition, manual launch, or expose a third application. Define and test clean OS baselines, signing, self-update and GUI/CLI behavior. The present Python adapter plus separately supplied Qt engine does not yet meet this requirement.
+
+The selected installed-client direction is **Rust plus a private Qt engine**. The [manager distribution evaluation](manager-distribution-evaluation.md) records the alternatives and native trust results. The [single-application prototype](rust-manager-prototype.md) has a Rust/egui window, embedded public bootstrap and native Qt worker, direct offline ZIP selection, and persistent GUI/CLI maintenance. Its four-runner workflow covers startup and offline lifecycle with fixtures and real dashboards. Online tough integration and the remaining production UX/distribution gates are still outstanding; Python remains the reference for online behavior and CI publishing.
 
 ## What the current repository already provides
 
@@ -226,7 +235,7 @@ Package ownership must be explicit. Packages can share directories, but two pack
 
 Qt's built-in operations should handle ordinary file changes. Wrap Gradle cache setup, VSIX installation, shortcuts, and other external effects in idempotent operations with recorded prior state. On cancellation or failure, restore the previous usable state or enter an explicit repair state. Recovery must include operation logs and retained known-good payloads; ordinary upgrades should not promise arbitrary version downgrades. Retain the previous working repository revisions and installation plan for recovery, and provide a deliberate restore/reinstall path. Proving recovery after power loss is a release gate, not an assumed property of Qt.
 
-The manager itself has a separate update path. Publish a compatible signed manager alongside every offline bundle, with both versions recorded on the download page; a convenience wrapper may include it. Ship the manager and verification helper with their required runtimes so a clean offline machine does not need to acquire .NET, Java, or Qt separately just to run the installer. When a package requires a newer manager, update/restart the manager first, then re-evaluate the package plan. Do not replace a running manager executable in place without a platform-appropriate handoff.
+The manager itself has a separate update path. Publish a compatible signed manager alongside every offline bundle, with both versions recorded on the download page; a convenience wrapper may include it. Ship the manager under the single-application requirement above, including all required engine/runtime resources; a clean offline machine must not acquire Python, .NET, Java, Go, Rust, or Qt separately to run it. Ordinary maintenance and VS Code entry points must open the same verified manager; any raw engine/updater helper stays private. When a package requires a newer manager, update/restart the manager first, then re-evaluate the package plan. Do not replace a running manager executable in place without a platform-appropriate handoff.
 
 ## Browser downloads and offline installation
 
@@ -401,7 +410,9 @@ The [CI deployment guide](../deployment/ci-signing.md) gives key setup, secret n
 
 ### Production trust implementation
 
-The prototype now uses `python-tuf==7.0.1` with separate root, targets, snapshot, and timestamp roles for the registry authority and every publisher. The maintained `ngclient.Updater` performs current-clock expiry, threshold signatures, rollback protection, hash checks, and sequential root rotation. Roots are pinned in reviewed bootstrap/registry configuration; per-repository caches are locked and retain trusted metadata history. Metadata-only registry transport failures may use a reverified unexpired cache. Signature, expiry, rollback, and integrity failures do not downgrade to the custom protocol. HTTPS bootstraps and CI require TUF; legacy local/loopback fixtures remain only for regression coverage. [Python TUF client](https://theupdateframework.readthedocs.io/en/stable/api/tuf.ngclient.html).
+The working reference prototype uses `python-tuf==7.0.1` with separate root, targets, snapshot, and timestamp roles for the registry authority and every publisher. The maintained `ngclient.Updater` performs current-clock expiry, threshold signatures, rollback protection, hash checks, and sequential root rotation. Roots are pinned in reviewed bootstrap/registry configuration; per-repository caches are locked and retain trusted metadata history. Metadata-only registry transport failures may use a reverified unexpired cache. Signature, expiry, rollback, and integrity failures do not downgrade to the custom protocol. HTTPS bootstraps and CI require TUF; legacy local/loopback fixtures remain only for regression coverage. [Python TUF client](https://theupdateframework.readthedocs.io/en/stable/api/tuf.ngclient.html).
+
+The selected production installed-client language is Rust, as recorded in the [single-application evaluation](manager-distribution-evaluation.md). A native client must preserve these trust behaviors and interoperate with Python-generated repositories; changing client language does not require replacing CI signing or publication.
 
 Each repository's logical TUF target is a catalog: the authority's catalog contains its signed archival registry record; a publisher's contains up to eight full signed release manifests. Their hashes bind the Qt indexes, metadata archives, and payloads. Payload verification and compatibility selection remain adapter responsibilities. The publisher catalog is authenticated by that publisher's own TUF metadata, so no shared snapshot/timestamp publication job is introduced. Core, Elastic, AdvantageScope, and RobotPy can release or renew independently.
 
@@ -450,6 +461,7 @@ Introduce the publication format before retiring the existing distribution. The 
 
 | Stage | Deliverable and exit condition |
 | --- | --- |
+| Single-application distribution | Close UX-1–UX-9 and G1–G8 in the [distribution evaluation](manager-distribution-evaluation.md), including actual GUI startup, installed maintenance after media removal, headless CLI, signed artifacts, clean-machine dependencies and recoverable self-update. A library smoke test or existing engine-only CI does not satisfy this gate. |
 | Package inventory | Map existing archives and setup actions into packages with exclusive file ownership, redistribution policy, dependencies, and a complete offline build closure. |
 | Qt feasibility prototype | Load separate core, Elastic, AdvantageScope, and RobotPy repositories from configuration. Add a synthetic publisher without changing installer code. Install representative components, resolve a cross-repository dependency, update one tool online and from USB, and remove/reinstall it. Exercise all six build targets and the minimum OS baselines. Prove the verification adapter and inventory/update contract. |
 | Independent repository publication | Real tool releases publish their own repository revisions without an installer edit or shared index writer. Verify concurrent publishers and incremental `repogen` jobs using only old metadata plus new component data. |

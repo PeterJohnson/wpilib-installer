@@ -11,7 +11,12 @@ packaging, platform integration, and the remaining feasibility gates are tracked
 in [implementation status](docs/prototype-status.md). The full
 [architecture proposal](docs/installer-architecture.md) is included.
 
-## Prerequisites
+The production manager must be **one user-facing application**, preferably one
+executable with GUI/CLI modes; at most one GUI plus one CLI. The current Python
+adapter and separate Qt engine remain development interfaces. A [Rust single-application prototype](docs/rust-manager-prototype.md) now embeds its bootstrap and private Qt worker, with GUI and JSON CLI modes in the same application. See the
+[single-application requirements and native design comparison](docs/manager-distribution-evaluation.md).
+
+## Development prerequisites
 
 - Python 3.11 or newer, with `cryptography` installed through this project.
 - Qt Installer Framework 4.11.0. Use an existing installation or the pinned

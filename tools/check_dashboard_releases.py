@@ -15,7 +15,7 @@ from installer_prototype.repository import publish
 from installer_prototype.tuf_repository import demo_trust
 
 
-def check_releases(lock_path, ifw, work, cache, report):
+def check_releases(lock_path, ifw, work, cache, report, *, prepare_only=False):
     work = Path(work).resolve()
     if work.exists():
         raise ValueError('Real release workspace must be new')
@@ -73,6 +73,8 @@ def check_releases(lock_path, ifw, work, cache, report):
             shutil.copyfile(destination / 'current' / (publication['id'] + '.zip'), dest)
             (public / 'index.html').write_bytes(render_page({'current': record}))
     atomic_json(work / 'provenance.json', provenance)
+    if prepare_only:
+        return provenance
     print('Running native offline fresh/profile/upgrade/downgrade checks', flush=True)
     result = check_candidate(work / 'candidate', work / 'registry-source.json', ifw, work / 'native', report)
     expected = {d['component']: d['releases'][1]['version'] for d in lock['publishers'].values()}
@@ -89,8 +91,9 @@ def main():
     parser.add_argument('--work', type=Path, default=Path('build/dashboard-releases'))
     parser.add_argument('--cache', type=Path, default=Path('build/upstream-cache'))
     parser.add_argument('--report', type=Path, default=Path('build/dashboard-report.json'))
+    parser.add_argument('--prepare-only', action='store_true')
     args = parser.parse_args()
-    check_releases(args.lock, args.ifw, args.work, args.cache, args.report)
+    check_releases(args.lock, args.ifw, args.work, args.cache, args.report, prepare_only=args.prepare_only)
 
 
 if __name__ == '__main__':

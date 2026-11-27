@@ -14,7 +14,7 @@ from .gateway import gateway
 from .repository import package_map, tool, validate_index, xml_file
 
 
-def build_installer(ifw, output):
+def build_installer(ifw, output, *, maintenance_name="maintenancetool"):
     output = Path(output).resolve()
     output.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.TemporaryDirectory(prefix="ifw-installer-") as tmp:
@@ -23,7 +23,7 @@ def build_installer(ifw, output):
         for tag, value in {"Name": "WPILib Qt Prototype", "Version": "0.1.0",
                            "Title": "WPILib package installer prototype",
                            "Publisher": "WPILib", "TargetDir": "@HomeDir@/wpilib-qt-prototype",
-                           "MaintenanceToolName": "maintenancetool", "RemoveTargetDir": "false",
+                           "MaintenanceToolName": maintenance_name, "RemoveTargetDir": "false",
                            "RepositorySettingsPageVisible": "false", "SaveDefaultRepositories": "false",
                            "ControlScript": "controller.js"}.items():
             ET.SubElement(config, tag).text = value
