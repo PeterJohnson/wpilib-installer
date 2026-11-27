@@ -107,3 +107,7 @@ python tools/check_rust_online.py --app build/online-fixture/download/wpilib-man
 ```
 
 Use the platform-specific application path described above; Linux CI prefixes the test driver with `xvfb-run -a`. The driver starts/stops its loopback origin. These test applications embed ephemeral public trust roots and the loopback HTTP exception. Build with a deployed HTTPS registry-source bootstrap for an actual online repository; the older file-URL demo bootstrap is for offline testing. Public TLS/proxy deployment and clean-machine acceptance remain separate work. Downloads currently have a 120-second request deadline; resumable transfers and production download UX remain unfinished.
+
+## Self-contained runtime validation
+
+The subsequent [runtime packaging implementation and validation](self-contained-runtime.md#validation--november-27-2026) adds explicit dependency audits and clean Linux acceptance. Its new Linux application size includes embedded desktop libraries and software graphics; the earlier size/timing table above describes the previous packaging. All four native targets also reran the 35-check authenticated online fixture suite with the self-contained packaging.
