@@ -1,5 +1,6 @@
 use crate::{
     bundle::{self, Bundle},
+    online,
     trust::{self, Error},
 };
 use fs2::FileExt;
@@ -98,6 +99,8 @@ pub struct Request {
     pub packages: Vec<String>,
     pub profile: Option<String>,
     pub accept_licenses: bool,
+    pub online: bool,
+    pub cached: bool,
 }
 fn binding(source: &Value) -> Value {
     json!({"registry_id":source["registry_id"],"season":source["season"],"channel":source["channel"],"target":source["target"],"archive_key":source["public_key"]})
@@ -140,24 +143,43 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
     if req.command == "list" {
         return Ok(json!({"status":"ok","inventory":installed,"installation":root}));
     }
-    let bundle_path = if let Some(p) = &req.bundle {
-        p.clone()
-    } else {
-        let s = state.as_ref().ok_or("Choose an offline bundle ZIP")?;
-        let hash = bundle::strval(&s["bundle_sha256"])?;
-        if hash.len() != 64 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
-            return Err("Invalid cached bundle identity".into());
-        }
-        root.join(".wpilib-manager").join(format!("{hash}.zip"))
-    };
-    // Snapshot source media before verification and publication into the cache.
-    let snapshot = tempfile::NamedTempFile::new()?;
-    fs::copy(&bundle_path, snapshot.path())?;
-    let hash = bundle::file_hash(snapshot.path())?;
-    if req.bundle.is_none() && state.as_ref().is_some_and(|s| s["bundle_sha256"] != hash) {
-        return Err("Cached bundle digest mismatch".into());
+    let online_mode = req.online
+        || req.cached
+        || (req.bundle.is_none() && state.as_ref().is_some_and(|s| s["last_source"] == "online"));
+    if (req.online || req.cached) && req.bundle.is_some() {
+        return Err("Choose an online source or an offline bundle, not both".into());
     }
-    let bundle = Bundle::open(snapshot.path(), &source, log)?;
+    let online_cache = parent.join(format!(
+        ".{}.online",
+        root.file_name().ok_or("Invalid root")?.to_string_lossy()
+    ));
+    let (bundle, snapshot, hash) = if online_mode {
+        (
+            online::load(&source, &online_cache, req.cached, log)?,
+            None,
+            None,
+        )
+    } else {
+        let bundle_path = if let Some(p) = &req.bundle {
+            p.clone()
+        } else {
+            let s = state.as_ref().ok_or("Choose an offline bundle ZIP")?;
+            let hash = bundle::strval(&s["bundle_sha256"])?;
+            if hash.len() != 64 || !hash.bytes().all(|b| b.is_ascii_hexdigit()) {
+                return Err("Invalid cached bundle identity".into());
+            }
+            root.join(".wpilib-manager").join(format!("{hash}.zip"))
+        };
+        // Snapshot source media before verification and publication into the cache.
+        let snapshot = tempfile::NamedTempFile::new()?;
+        fs::copy(&bundle_path, snapshot.path())?;
+        let hash = bundle::file_hash(snapshot.path())?;
+        if req.bundle.is_none() && state.as_ref().is_some_and(|s| s["bundle_sha256"] != hash) {
+            return Err("Cached bundle digest mismatch".into());
+        }
+        let bundle = Bundle::open(snapshot.path(), &source, log)?;
+        (bundle, Some(snapshot), Some(hash))
+    };
     let updates = installed
         .iter()
         .filter_map(|(id, current)| bundle.packages.get(id).map(|p| (id, current, p)))
@@ -297,6 +319,21 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
         }
     }
     bundle::validate_plan(&planned)?;
+    if online_mode {
+        let no_payloads = BTreeSet::new();
+        online::materialize(
+            &bundle,
+            if req.command == "remove" {
+                &no_payloads
+            } else {
+                &selected
+            },
+            &online_cache,
+            &source,
+            req.cached,
+            log,
+        )?;
+    }
     let private = Worker::new(&root)?;
     let engine = if state.is_some() {
         qt_executable(&engine_path(&root))?
@@ -396,22 +433,37 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
     persist_app(&root)?;
     let cache = root.join(".wpilib-manager");
     fs::create_dir_all(&cache)?;
-    let cached = cache.join(format!("{hash}.zip"));
-    if !cached.exists() || bundle::file_hash(&cached)? != hash {
-        let mut f = tempfile::NamedTempFile::new_in(&cache)?;
-        std::io::copy(&mut fs::File::open(snapshot.path())?, &mut f)?;
-        f.as_file().sync_all()?;
-        f.persist(&cached)?;
+    if let (Some(snapshot), Some(hash)) = (&snapshot, &hash) {
+        let cached = cache.join(format!("{hash}.zip"));
+        if !cached.exists() || bundle::file_hash(&cached)? != *hash {
+            let mut f = tempfile::NamedTempFile::new_in(&cache)?;
+            std::io::copy(&mut fs::File::open(snapshot.path())?, &mut f)?;
+            f.as_file().sync_all()?;
+            f.persist(&cached)?;
+        }
     }
+    let offline_hash = hash.clone().map(Value::String).unwrap_or_else(|| {
+        state
+            .as_ref()
+            .map(|s| s["bundle_sha256"].clone())
+            .unwrap_or(Value::Null)
+    });
+    let offline_registry = if online_mode {
+        state
+            .as_ref()
+            .map(|s| s.get("offline_registry").unwrap_or(&s["registry"]).clone())
+            .unwrap_or(Value::Null)
+    } else {
+        bundle.identity.clone()
+    };
     atomic(
         &state_path,
         &serde_json::to_vec_pretty(
-            &json!({"schema":1,"binding":binding(&source),"bundle_sha256":hash,"registry":bundle.identity,"inventory":after,"packages":planned}),
+            &json!({"schema":1,"binding":binding(&source),"bundle_sha256":offline_hash,"offline_registry":offline_registry,"last_source":if online_mode{"online"}else{"offline"},"registry":bundle.identity,"inventory":after,"packages":planned}),
         )?,
     )?;
     log(
-        "Completed. The installed manager and verified offline media are retained for maintenance."
-            .into(),
+        "Completed. The installed manager and verified caches are retained for maintenance.".into(),
     );
     Ok(
         json!({"status":"ok","changed":true,"inventory":after,"registry":bundle.identity,"manager":app_path(&root),"bundle_sha256":hash}),

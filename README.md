@@ -13,7 +13,7 @@ in [implementation status](docs/prototype-status.md). The full
 
 The production manager must be **one user-facing application**, preferably one
 executable with GUI/CLI modes; at most one GUI plus one CLI. The current Python
-adapter and separate Qt engine remain development interfaces. A [Rust single-application prototype](docs/rust-manager-prototype.md) now embeds its bootstrap and private Qt worker, with GUI and JSON CLI modes in the same application. See the
+adapter and separate Qt engine remain development interfaces. A [Rust single-application prototype](docs/rust-manager-prototype.md) now embeds its bootstrap and private Qt worker, with GUI and JSON CLI modes in the same application, native TUF online updates, and verified online/offline caches. See the
 [single-application requirements and native design comparison](docs/manager-distribution-evaluation.md).
 
 ## Development prerequisites

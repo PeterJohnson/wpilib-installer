@@ -18,6 +18,12 @@ fs2 = "0.4"
 clap = { version = "4", features = ["derive"] }
 image = { version = "0.25", default-features = false, features = ["png"] }
 
+tough = "=0.24.0"
+tokio = { version = "1", features = ["rt-multi-thread", "time"] }
+async-trait = "0.1"
+futures = "0.3"
+reqwest = { version = "0.12", default-features = false, features = ["rustls-tls", "stream"] }
+
 [profile.release]
 strip = true
 

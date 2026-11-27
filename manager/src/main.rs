@@ -1,18 +1,25 @@
 #![cfg_attr(target_os = "windows", windows_subsystem = "windows")]
 mod bundle;
 mod core;
+mod online;
 mod trust;
 mod ui;
 use clap::Parser;
 use std::path::PathBuf;
 #[derive(Parser, Clone)]
-#[command(version, about = "WPILib single-application offline manager prototype")]
+#[command(version, about = "WPILib single-application package manager prototype")]
 pub struct Args {
     /// Run a JSON CLI operation instead of opening a window.
     #[arg(long,value_parser=["verify","install","update","remove","list","check-updates"])]
     command: Option<String>,
     #[arg(long)]
     bundle: Option<PathBuf>,
+    /// Refresh authenticated registry and independent publisher repositories.
+    #[arg(long, conflicts_with = "bundle")]
+    online: bool,
+    /// Reverify online caches at the current clock without contacting origins.
+    #[arg(long, conflicts_with = "bundle")]
+    cached: bool,
     #[arg(long)]
     root: Option<PathBuf>,
     #[arg(long = "package")]
@@ -36,6 +43,8 @@ impl Args {
             packages: self.packages.clone(),
             profile: self.profile.clone(),
             accept_licenses: self.accept_licenses,
+            online: self.online,
+            cached: self.cached,
         }
     }
 }

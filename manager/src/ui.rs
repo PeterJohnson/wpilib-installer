@@ -18,6 +18,8 @@ struct App {
     args: Args,
     root: String,
     bundle: String,
+    online: bool,
+    cached: bool,
     dialog: egui_file_dialog::FileDialog,
     pick_root: bool,
     selected: BTreeSet<String>,
@@ -48,6 +50,8 @@ impl App {
                 .as_ref()
                 .map(|p| p.display().to_string())
                 .unwrap_or_default(),
+            online: args.online,
+            cached: args.cached,
             selected: args.packages.iter().cloned().collect(),
             profile: args.profile.clone().unwrap_or_default(),
             accepted: args.accept_licenses,
@@ -70,7 +74,7 @@ impl App {
         let request = core::Request {
             command: command.into(),
             root: PathBuf::from(&self.root),
-            bundle: if self.bundle.is_empty() {
+            bundle: if self.online || self.cached || self.bundle.is_empty() {
                 None
             } else {
                 Some(PathBuf::from(&self.bundle))
@@ -82,6 +86,8 @@ impl App {
                 None
             },
             accept_licenses: self.accepted,
+            online: self.online,
+            cached: self.cached,
         };
         let (tx, rx) = mpsc::channel();
         self.rx = Some(rx);
@@ -154,19 +160,20 @@ impl eframe::App for App {
             self.rx = None;
         }
         egui::CentralPanel::default().show(ui,|ui|{
-            ui.heading("WPILib Manager");ui.label("Offline installation and maintenance · Rust + private Qt prototype");ui.separator();
+            ui.heading("WPILib Manager");ui.label("Package installation and maintenance");ui.separator();
             ui.add_enabled_ui(self.rx.is_none(),|ui|{
                 ui.horizontal(|ui|{ui.label("Installation folder");if ui.text_edit_singleline(&mut self.root).changed(){self.verified=None;}if ui.button("Browse folder…").clicked(){self.pick_root=true;self.dialog.pick_directory();}});
+                ui.horizontal(|ui|{if ui.checkbox(&mut self.online,"Online repositories").changed(){self.verified=None;}if ui.checkbox(&mut self.cached,"Use verified online cache only").changed(){self.verified=None;}});
                 ui.horizontal(|ui|{ui.label("Offline bundle ZIP");if ui.text_edit_singleline(&mut self.bundle).changed(){self.verified=None;}if ui.button("Browse bundle…").clicked(){self.pick_root=false;self.dialog.pick_file();}});
-                ui.small("Leave the bundle empty to use the verified media retained by the installed manager.");
-                if ui.button("Verify bundle / check for updates").clicked(){self.launch("verify",&ctx);}
+                ui.small("Leave the bundle empty to reuse the installation’s last source. Online cache use requires unexpired metadata.");
+                if ui.button("Verify / check for updates").clicked(){self.launch("verify",&ctx);}
                 if let Some(v)=self.verified.clone(){
-                    ui.label(format!("Verified registry revision {}",v["registry"]["registry_revision"]));
+                    ui.label(format!("Verified registry revision {} · {}",v["registry"]["registry_revision"],v["registry"]["status"].as_str().unwrap_or("archival bundle")));
                     if let Some(updates)=v["updates"].as_array(){ui.label(format!("{} package update(s) available",updates.len()));}
                     ui.horizontal(|ui|{ui.label("Use case");egui::ComboBox::from_id_salt("profile").selected_text(if self.profile.is_empty(){"Individual packages"}else{&self.profile}).show_ui(ui,|ui|{ui.selectable_value(&mut self.profile,String::new(),"Individual packages");if let Some(profiles)=v["profiles"].as_object(){for name in profiles.keys(){ui.selectable_value(&mut self.profile,name.clone(),name);}}});});
                     ui.collapsing("Individual packages",|ui|{if let Some(packages)=v["packages"].as_object(){for (id,p) in packages{let mut selected=self.selected.contains(id);let installed=v["inventory"][id].as_str().unwrap_or("not installed");if ui.checkbox(&mut selected,format!("{} {} — {}",p["name"].as_str().unwrap_or(id),p["version"].as_str().unwrap_or(""),installed)).changed(){if selected{self.selected.insert(id.clone());}else{self.selected.remove(id);}}}}});
                     ui.checkbox(&mut self.accepted,"I have reviewed and accept the selected packages’ licenses.");
-                    ui.small("Prototype: license browsing and online updates are not yet integrated. Only use approved test packages.");
+                    ui.small("Prototype: license browsing is not yet integrated. Only use approved test packages.");
                     ui.add_enabled_ui(self.accepted,|ui|{ui.horizontal(|ui|{if ui.button("Install selected / profile").clicked(){self.launch("install",&ctx)}if ui.button("Update selected (empty = all)").clicked(){self.launch("update",&ctx)}if ui.button("Remove selected").clicked(){self.launch("remove",&ctx)}});});
                 }
             });

@@ -160,6 +160,7 @@ pub struct Bundle {
     pub identity: Value,
     pub packages: BTreeMap<String, Value>,
     pub repos: Vec<PathBuf>,
+    pub remote: Option<Value>,
 }
 impl Bundle {
     pub fn open(path: &Path, source: &Value, log: &dyn Fn(String)) -> Result<Self, Error> {
@@ -181,15 +182,29 @@ impl Bundle {
                 return Err("Bundle scope mismatch".into());
             }
         }
+        Self::repositories(
+            temp,
+            &root,
+            registry,
+            identity,
+            &b["repositories"],
+            false,
+            log,
+        )
+    }
+    pub fn repositories(
+        temp: TempDir,
+        root: &Path,
+        registry: Value,
+        identity: Value,
+        references: &Value,
+        metadata_only: bool,
+        log: &dyn Fn(String),
+    ) -> Result<Self, Error> {
         let publishers = registry["repositories"]
             .as_object()
             .ok_or("No publishers")?;
-        if publishers.len()
-            != b["repositories"]
-                .as_object()
-                .ok_or("No bundle publishers")?
-                .len()
-        {
+        if publishers.len() != references.as_object().ok_or("No bundle publishers")?.len() {
             return Err("Publisher set mismatch".into());
         }
         let mut packages = BTreeMap::new();
@@ -214,9 +229,8 @@ impl Bundle {
             let m = trust::signed(&envelope, &policy["public_key"])?;
             if m["schema"] != 1
                 || m["publisher"] != *publisher
-                || m["revision"] != b["repositories"][publisher]["revision"]
-                || sha(&trust::canonical(&envelope)?)
-                    != strval(&b["repositories"][publisher]["sha256"])?
+                || m["revision"] != references[publisher]["revision"]
+                || sha(&trust::canonical(&envelope)?) != strval(&references[publisher]["sha256"])?
             {
                 return Err("Release identity mismatch".into());
             }
@@ -234,6 +248,16 @@ impl Bundle {
             log(format!("Verifying every file from {publisher}…"));
             for (name, record) in files {
                 safe(name)?;
+                if !record["sha256"]
+                    .as_str()
+                    .is_some_and(|s| s.len() == 64 && s.bytes().all(|b| b.is_ascii_hexdigit()))
+                    || record["size"].as_u64().is_none()
+                {
+                    return Err("Invalid repository file record".into());
+                }
+                if metadata_only && name != "Updates.xml" {
+                    continue;
+                }
                 let file = repo.join(name);
                 if fs::symlink_metadata(&file)?.file_type().is_symlink()
                     || fs::metadata(&file)?.len()
@@ -375,6 +399,7 @@ impl Bundle {
             identity,
             packages,
             repos,
+            remote: None,
         })
     }
     pub fn closure(&self, selected: &[String]) -> Result<BTreeSet<String>, Error> {
