@@ -208,8 +208,9 @@ def secret_key(variable):
     with tempfile.TemporaryDirectory(prefix="ci-signing-") as tmp:
         path = Path(tmp) / "signing.pem"
         fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
-        with os.fdopen(fd, "w") as stream:
-            stream.write(pem)
+        # Preserve the supplied PEM bytes instead of translating LF to CRLF on Windows.
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(pem.encode("ascii"))
         try:
             yield path
         finally:

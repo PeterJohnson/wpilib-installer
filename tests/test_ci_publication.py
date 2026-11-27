@@ -158,15 +158,17 @@ class PublicationTests(unittest.TestCase):
         self.assertFalse(self.store.writes)
 
     def test_secret_cleanup_on_failure_and_no_child_environment_key(self):
-        with patch.dict(os.environ, {"TEST_SIGNING_KEY": self.key.read_text()}):
-            with self.assertRaisesRegex(RuntimeError, "failed"):
-                with secret_key("TEST_SIGNING_KEY") as path:
-                    self.assertNotIn("TEST_SIGNING_KEY", os.environ)
-                    self.assertEqual(path.read_bytes(), self.key.read_bytes())
-                    if os.name != "nt":
-                        self.assertEqual(path.stat().st_mode & 0o777, 0o600)
-                    raise RuntimeError("failed")
-            self.assertFalse(path.exists())
+        for newline in ("\n", "\r\n"):
+            pem = self.key.read_text().replace("\n", newline)
+            with self.subTest(newline=repr(newline)), patch.dict(os.environ, {"TEST_SIGNING_KEY": pem}):
+                with self.assertRaisesRegex(RuntimeError, "failed"):
+                    with secret_key("TEST_SIGNING_KEY") as path:
+                        self.assertNotIn("TEST_SIGNING_KEY", os.environ)
+                        self.assertEqual(path.read_bytes(), pem.encode("ascii"))
+                        if os.name != "nt":
+                            self.assertEqual(path.stat().st_mode & 0o777, 0o600)
+                        raise RuntimeError("failed")
+                self.assertFalse(path.exists())
 
     def spec(self, revision):
         payload = self.root / "payload"
