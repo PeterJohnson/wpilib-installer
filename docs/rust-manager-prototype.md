@@ -111,3 +111,5 @@ Use the platform-specific application path described above; Linux CI prefixes th
 ## Self-contained runtime validation
 
 The [runtime policy](self-contained-runtime.md) now uses host Linux graphics and a private Qt worker dependency closure. Metadata verification and GUI startup do not extract that worker runtime. Headless acceptance runs in minimal OS containers; GUI acceptance installs stock Ubuntu Desktop from pinned ISOs. Historical bundled-renderer measurements remain in the runtime document for comparison. Native authenticated online fixture checks continue to cover all four targets.
+
+The [host-graphics acceptance run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46073080624) passed all four native targets, four headless Linux images, and fresh Ubuntu 24.04.4/26.04.1 Desktop installations on Wayland and X11. The current Linux executable is 46.0 MiB (34.4 MiB as a browser ZIP); exact sizes, hashes, the isolated X11 compatibility fallback and remaining coverage limits are in the runtime policy.
