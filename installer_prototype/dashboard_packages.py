@@ -17,7 +17,7 @@ RECIPES = {
         'macos': 'elastic_dashboard.app/Contents/MacOS/elastic_dashboard'}},
     'advantagescope': {'name': 'AdvantageScope (WPILib)', 'executables': {
         'windows': 'AdvantageScope (WPILib).exe', 'linux': 'advantagescope-wpilib',
-        'macos': 'AdvantageScope (WPILib).app/Contents/MacOS/AdvantageScope (WPILib)'}},
+        'macos': 'AdvantageScope (WPILib).app/Contents/MacOS/AdvantageScope'}},
 }
 
 
