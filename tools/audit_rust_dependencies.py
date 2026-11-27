@@ -7,7 +7,8 @@ import struct
 import subprocess
 import sys
 
-WINDOWS_SYSTEM = set(('kernel32 user32 gdi32 gdi32full shell32 advapi32 ole32 oleaut32 ws2_32 '
+# ComBase is an OS component since Windows 8 (Microsoft RoRegisterActivationFactories requirements).
+WINDOWS_SYSTEM = set(('kernel32 user32 gdi32 gdi32full shell32 advapi32 ole32 oleaut32 combase ws2_32 '
     'iphlpapi userenv ntdll bcrypt bcryptprimitives crypt32 cryptbase cryptnet wintrust dwmapi '
     'shlwapi shcore comdlg32 comctl32 uxtheme winmm version netapi32 secur32 imm32 setupapi '
     'cfgmgr32 powrprof psapi dnsapi msvcrt ucrtbase rpcrt4 ntasn1 ncrypt d3d11 d3d12 dxgi '

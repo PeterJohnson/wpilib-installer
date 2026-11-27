@@ -2,7 +2,7 @@
 
 Date: November 27, 2026. Inspected prototype baseline: `037f1e7`.
 
-Decision: proceed with **A2, Rust plus a private Qt engine**, as requested. The [single-application offline prototype](rust-manager-prototype.md) uses a Rust/egui first window and headless Qt worker, avoiding a second wizard. Native acceptance is tracked there; the full production gates below remain requirements. The earlier Go/Rust probes establish trust interoperability separately. Python remains the reference for the online client and CI publication.
+Decision: proceed with **A2, Rust plus a private Qt engine**, as requested. The [single-application offline prototype](rust-manager-prototype.md) uses a Rust/egui first window and headless Qt worker, avoiding a second wizard. Native acceptance is tracked there; the full production gates below remain requirements. The earlier Go/Rust probes establish trust interoperability separately. Python remains the reference implementation and CI publication/test tooling; the Rust prototype now implements online TUF updates as well.
 
 ## Required user experience
 
@@ -16,9 +16,11 @@ The primary distribution requirement is **one user-facing application, preferabl
 | UX-4 | The GUI selects online repositories or a browser-downloaded offline bundle and exposes profiles plus advanced package selection. A complete platform bundle remains a separate data download; this requirement does not put every package inside the manager executable. The manager must open/select the published bundle format without requiring a Python command. |
 | UX-5 | Install a persistent manager entry point and discovery registration. After removing the USB drive and original download, the same product UI performs add/update/remove and can switch from offline installation to online updates. All ordinary shortcuts, OS uninstall entries, and VS Code launches enter the verification path. |
 | UX-6 | Headless commands produce stable JSON, exit status, and cancellation behavior without opening a window or requiring a desktop display. Prefer the same application executable; use the permitted companion CLI if necessary for reliable Windows shell behavior. Both frontends use the same trust and planning implementation. |
-| UX-7 | The application runs on a clean supported OS without separately installing Python, Go, Rust, Java, .NET, or Qt. Declare minimum OS/desktop requirements and package required non-baseline libraries. “One file” does not by itself prove this. Test Linux executable-media and extraction restrictions explicitly. |
+| UX-7 | The application runs on a clean supported OS without separately installing Python, Go, Rust, Java, .NET, Qt, a VC redistributable, FUSE, or non-baseline GUI libraries. Declare minimum OS/desktop requirements and package required non-baseline libraries. “One file” does not by itself prove this. Test Linux executable-media and extraction restrictions explicitly. |
 | UX-8 | Authenticate the distributed manager and its executable contents, use platform signing/notarization where required, and provide a recoverable self-update handoff. Replacement must preserve discovery paths and the verified maintenance entry point. Cancelled/failed updates leave a usable manager or an explicit repair path. |
 | UX-9 | Preserve independent publisher trust, authenticated registry changes, verified caches, indefinitely authorized archival bundles, and sequential root catch-up beyond 256 rotations. No GUI, CLI, maintenance, or self-update route may silently bypass verification. |
+
+The [self-contained runtime implementation](self-contained-runtime.md) defines the platform baselines, embedded Linux runtime, static Windows CRT, dependency audits and clean-OS checks for UX-7.
 
 The single-application requirement concerns what the user downloads and operates, not a prohibition on internal processes, libraries, Qt inventory files, or installed packages. Hidden extraction must still preserve UX-2/5/7/8; it is not a blanket exemption. A separate GUI/CLI is the fallback ceiling, not permission to expose a third installer engine.
 
