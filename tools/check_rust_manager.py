@@ -10,6 +10,7 @@ from pathlib import Path
 import shutil
 import subprocess
 import sys
+import time
 import zipfile
 
 from installer_prototype.common import digest
@@ -76,7 +77,17 @@ def worker(a):
         args = [str(application), '--root', str(root), '--ui-test-report', str(report)]
         if command:
             args += ['--ui-test-command', command]
-        result = subprocess.run([*args, *map(str, extra)], env=env, cwd=work, capture_output=True, text=True, timeout=900)
+        started = time.monotonic()
+        with subprocess.Popen([*args, *map(str, extra)], env=env, cwd=work,
+                              stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) as process:
+            while not report.with_suffix('.startup.json').exists() and process.poll() is None:
+                if time.monotonic() - started > 60:
+                    process.kill()
+                    raise AssertionError(f'{name}: no rendered startup report within 60 seconds')
+                time.sleep(0.02)
+            startup_wall_ms = round((time.monotonic() - started) * 1000)
+            stdout, stderr = process.communicate(timeout=900)
+            result = subprocess.CompletedProcess(args, process.returncode, stdout, stderr)
         (work / (name + '.log')).write_text(result.stdout + result.stderr, encoding='utf-8')
         if result.returncode:
             raise AssertionError(f'{name}: GUI exited {result.returncode}: {result.stderr}')
@@ -87,7 +98,7 @@ def worker(a):
         assert final['native_window'] and (final['error'] is None) == ok, final
         if command and ok:
             assert final['result']['status'] == 'ok', final
-        checks.append({'name': name, 'passed': True, 'startup_ms': first['elapsed_ms'], 'final': final})
+        checks.append({'name': name, 'passed': True, 'startup_frame_ms': first['elapsed_ms'], 'startup_process_wall_ms': startup_wall_ms, 'final': final})
 
     gui('startup')
     gui('invalid-media', 'verify', '--bundle', media / 'missing.zip', ok=False)
@@ -103,15 +114,17 @@ def worker(a):
     application = app_path(root)
     gui('installed-startup')
     cli('cached-verification', 'verify')
+    cli('baseline-cache-add', 'install', '--package', secondary, '--accept-licenses')
+    verify_installed(root, initial[secondary])
     result = cli('discover-updates', 'check-updates', '--bundle', candidate)
-    assert primary in {u['id'] for u in result['updates']}, result
+    expected_updates = {name for name in inventory(root) if current[name]['version'] != initial[name]['version']}
+    assert {u['id'] for u in result['updates']} == expected_updates, result
     gui('offline-upgrade', 'update', '--bundle', candidate, '--accept-licenses')
     for p in inventory(root):
         verify_installed(root, current[p])
     upgraded = inventory(root)
     assert upgraded[primary] == current[primary]['version'] != initial[primary]['version']
     candidate.unlink()
-    cli('cached-add-package', 'install', '--package', secondary, '--accept-licenses')
     verify_installed(root, current[secondary])
     # Remove a leaf and put it back using retained media, no original application or ZIPs.
     gui('cached-remove', 'remove', '--package', secondary, '--accept-licenses')

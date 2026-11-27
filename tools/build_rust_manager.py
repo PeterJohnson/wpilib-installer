@@ -40,6 +40,11 @@ def build(source, ifw, output, assets, cargo='cargo'):
         exe = output / ('WPILibManager.exe' if os.name == 'nt' else 'wpilib-manager')
         exe.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(binary, exe)
+    # Wrap the app before upload-artifact so Unix executable modes survive download.
+    with zipfile.ZipFile(output.parent / 'manager-application.zip', 'w', zipfile.ZIP_DEFLATED) as archive:
+        for file in sorted(output.rglob('*')):
+            if file.is_file():
+                archive.write(file, file.relative_to(output))
     print(exe, flush=True)
     return exe
 

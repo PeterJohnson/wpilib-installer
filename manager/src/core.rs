@@ -254,6 +254,49 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
             }
         }
     }
+    // Preserve authenticated package descriptions for the versions actually
+    // installed, not the newer versions merely offered by the latest bundle.
+    // Like Qt's inventory, this is local installation state protected by its
+    // directory permissions; external sources still require signatures.
+    let mut planned = if let Some(s) = &state {
+        let saved = s["packages"]
+            .as_object()
+            .ok_or("Missing installed package records; repair is required")?;
+        if saved.len() != installed.len()
+            || installed.iter().any(|(id, v)| {
+                saved
+                    .get(id)
+                    .is_none_or(|p| p["id"] != *id || p["version"] != *v)
+            })
+        {
+            return Err(
+                "Installed inventory differs from manager state; repair is required".into(),
+            );
+        }
+        saved
+            .iter()
+            .map(|(id, p)| (id.clone(), p.clone()))
+            .collect()
+    } else {
+        std::collections::BTreeMap::new()
+    };
+    for id in &selected {
+        if req.command == "remove" {
+            planned.remove(id);
+        } else {
+            let offered = &bundle.packages[id];
+            if let Some(previous) = planned.get(id) {
+                if previous["version"] == offered["version"] && previous != offered {
+                    return Err(
+                        "Publisher changed an installed package without increasing its version"
+                            .into(),
+                    );
+                }
+            }
+            planned.insert(id.clone(), offered.clone());
+        }
+    }
+    bundle::validate_plan(&planned)?;
     let private = Worker::new(&root)?;
     let engine = if state.is_some() {
         qt_executable(&engine_path(&root))?
@@ -363,7 +406,7 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
     atomic(
         &state_path,
         &serde_json::to_vec_pretty(
-            &json!({"schema":1,"binding":binding(&source),"bundle_sha256":hash,"registry":bundle.identity,"inventory":after}),
+            &json!({"schema":1,"binding":binding(&source),"bundle_sha256":hash,"registry":bundle.identity,"inventory":after,"packages":planned}),
         )?,
     )?;
     log(

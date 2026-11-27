@@ -5,7 +5,7 @@ edition = "2021"
 publish = false
 
 [dependencies]
-eframe = { version = "=0.37.0", default-features = false, features = ["default_fonts", "glow", "x11", "wayland"] }
+eframe = { version = "=0.37.0", default-features = false, features = ["default_fonts"] }
 egui-file-dialog = "=0.16.0"
 serde_json = "1"
 base64 = "=0.22.1"
@@ -20,3 +20,10 @@ image = { version = "0.25", default-features = false, features = ["png"] }
 
 [profile.release]
 strip = true
+
+[target.'cfg(target_os = "windows")'.dependencies]
+# Use native Direct3D on Windows, including software WARP on GPU-less hosts.
+eframe = { version = "=0.37.0", default-features = false, features = ["wgpu"] }
+
+[target.'cfg(not(target_os = "windows"))'.dependencies]
+eframe = { version = "=0.37.0", default-features = false, features = ["glow", "x11", "wayland"] }

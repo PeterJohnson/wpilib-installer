@@ -135,10 +135,15 @@ impl eframe::App for App {
                             Ok(v) => {
                                 if v.get("packages").is_some() {
                                     self.verified = Some(v.clone())
+                                } else {
+                                    self.verified = None;
                                 }
                                 self.result = Some(v)
                             }
-                            Err(e) => self.error = Some(e),
+                            Err(e) => {
+                                self.verified = None;
+                                self.error = Some(e);
+                            }
                         }
                         done = true;
                     }
@@ -197,6 +202,10 @@ pub fn run(args: Args) -> eframe::Result {
     eframe::run_native(
         "WPILib Manager",
         eframe::NativeOptions {
+            #[cfg(target_os = "windows")]
+            renderer: eframe::Renderer::Wgpu,
+            #[cfg(not(target_os = "windows"))]
+            renderer: eframe::Renderer::Glow,
             viewport: egui::ViewportBuilder::default().with_inner_size([940.0, 720.0]),
             ..Default::default()
         },

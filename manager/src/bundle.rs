@@ -397,9 +397,66 @@ impl Bundle {
     }
 }
 
+/// Check the final installed set, including unchanged versions from local state.
+pub fn validate_plan(packages: &BTreeMap<String, Value>) -> Result<(), Error> {
+    let mut owned = BTreeSet::new();
+    for p in packages.values() {
+        if let Some(deps) = p["dependencies"].as_object() {
+            for (id, minimum) in deps {
+                let dependency = packages
+                    .get(id)
+                    .ok_or("Plan would remove a required dependency")?;
+                if version(strval(&dependency["version"])?)? < version(strval(minimum)?)? {
+                    return Err("Plan does not satisfy installed dependencies".into());
+                }
+            }
+        }
+        for name in p["owned_files"]
+            .as_array()
+            .ok_or("Missing installed ownership records")?
+        {
+            let name = strval(name)?;
+            safe(name)?;
+            if !owned.insert(name.to_lowercase()) {
+                return Err("Plan would overwrite another installed package's files".into());
+            }
+        }
+    }
+    for name in &owned {
+        let mut at = name.as_str();
+        while let Some((parent, _)) = at.rsplit_once('/') {
+            if owned.contains(parent) {
+                return Err("Plan has overlapping file and directory ownership".into());
+            }
+            at = parent;
+        }
+    }
+    Ok(())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn partial_upgrades_preserve_old_version_dependencies_and_ownership() {
+        let mut plan = BTreeMap::from([
+            (
+                "a".into(),
+                serde_json::json!({"version":"1.0", "dependencies":{"runtime":"2.0"}, "owned_files":["tools/a"]}),
+            ),
+            (
+                "runtime".into(),
+                serde_json::json!({"version":"1.0", "owned_files":["tools/runtime"]}),
+            ),
+        ]);
+        assert!(validate_plan(&plan).is_err());
+        plan.get_mut("runtime").unwrap()["version"] = serde_json::json!("2.0");
+        assert!(validate_plan(&plan).is_ok());
+        plan.get_mut("runtime").unwrap()["owned_files"] = serde_json::json!(["tools/A"]);
+        assert!(validate_plan(&plan).is_err());
+        plan.remove("runtime");
+        assert!(validate_plan(&plan).is_err());
+    }
     #[test]
     fn portable_paths_reject_windows_aliases_and_traversal() {
         for name in [

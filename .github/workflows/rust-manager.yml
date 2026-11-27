@@ -83,6 +83,24 @@ jobs:
           if [ "$RUNNER_OS" = Linux ]; then prefix=(xvfb-run -a); fi
           "${prefix[@]}" python -u tools/check_rust_manager.py --app "$app" --baseline build/rust-real/baseline/current/*.zip --candidate build/rust-real/candidate/current/*.zip --work build/rust-real/native --report build/rust-real/report.json
       - uses: actions/upload-artifact@v4
+        with:
+          name: rust-manager-fixture-demo-${{ matrix.os }}
+          retention-days: 14
+          path: |
+            build/rust-manager/manager-application.zip
+            build/rust-fixture/baseline/*.zip
+            build/rust-fixture/candidate/*.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
+        with:
+          name: rust-manager-real-demo-${{ matrix.os }}
+          retention-days: 14
+          path: |
+            build/rust-real/manager-application.zip
+            build/rust-real/baseline/current/*.zip
+            build/rust-real/candidate/current/*.zip
+          if-no-files-found: error
+      - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: rust-manager-evidence-${{ matrix.os }}
