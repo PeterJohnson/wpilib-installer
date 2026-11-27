@@ -13,10 +13,10 @@ import sys
 import time
 import zipfile
 
-from installer_prototype.common import digest
-from installer_prototype.manager import executable, inventory
-from installer_prototype.offline_acceptance import windows_firewall
-from installer_prototype.payload import verify_installed
+from installer_tooling.common import digest
+from installer_tooling.qt_engine import executable, inventory
+from installer_tooling.offline_acceptance import windows_firewall
+from installer_tooling.payload import verify_installed
 
 
 def app_path(root):

@@ -86,7 +86,7 @@ Protect the authority key and arrange periodic renewal before online expiry.
 Example publication using demo files (the live bootstrap remains unchanged):
 
 ```sh
-python -m installer_prototype publish-registry --registry build/demo/registry.json --source build/demo/registry-source.json --key build/demo/keys/registry.pem --revision 2 --output build/demo/store/linux-x64/registry
+python -m installer_tooling publish-registry --registry build/demo/registry.json --source build/demo/registry-source.json --key build/demo/keys/registry.pem --revision 2 --output build/demo/store/linux-x64/registry
 ```
 
 The assembly workflow resolves the bootstrap and pins the returned signed document.

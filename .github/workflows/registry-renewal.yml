@@ -43,7 +43,7 @@ jobs:
           python3 - <<'PY'
           import json, os
           from pathlib import Path
-          from installer_prototype.publication_storage import publication_key
+          from installer_tooling.publication_storage import publication_key
           paths = sorted(Path('deployment/registry-publications').glob('*.json'))
           selected = os.environ.get('ONLY_CONFIGURATION')
           if selected:
@@ -92,7 +92,7 @@ jobs:
         run: |
           extra=()
           if [[ "$INITIALIZE" == true ]]; then extra+=(--initialize); fi
-          python -m installer_prototype.ci_publication registry \
+          python -m installer_tooling.ci_publication registry \
             --config "$PUBLICATION_CONFIG" --mode "$PUBLICATION_MODE" \
             --output build/publication.json "${extra[@]}"
       - name: Name audit artifact

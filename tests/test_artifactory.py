@@ -10,9 +10,9 @@ from unittest.mock import patch
 from urllib.error import HTTPError
 from urllib.parse import parse_qs, unquote, urlsplit
 
-from installer_prototype.ci_publication import publisher_release, registry_release
-from installer_prototype.common import atomic_json, keygen, verify
-from installer_prototype.publication_storage import (ArtifactoryStore, NoRedirect,
+from installer_tooling.ci_publication import publisher_release, registry_release
+from installer_tooling.common import atomic_json, keygen, verify
+from installer_tooling.publication_storage import (ArtifactoryStore, NoRedirect,
     PublicationConflict, publication_key, require_serialized_writer, storage_from_config)
 
 
@@ -84,7 +84,7 @@ class ArtifactoryTests(unittest.TestCase):
         self.env.start()
         self.addCleanup(self.env.stop)
         self.server = FakeArtifactory()
-        self.opener = patch("installer_prototype.publication_storage.build_opener", return_value=self.server)
+        self.opener = patch("installer_tooling.publication_storage.build_opener", return_value=self.server)
         self.opener.start()
         self.addCleanup(self.opener.stop)
         self.store = ArtifactoryStore(self.config)
@@ -263,7 +263,7 @@ class ArtifactoryTests(unittest.TestCase):
                 publisher_release(spec, registry, "tools", self.store, key, os.environ["IFW_PATH"])
 
     def test_storage_selection_preserves_existing_s3_configs_and_rejects_unknown_type(self):
-        with patch("installer_prototype.publication_storage.S3Store") as s3:
+        with patch("installer_tooling.publication_storage.S3Store") as s3:
             storage_from_config({"bucket": "existing", "prefix": "packages"})
             s3.assert_called_once()
         with self.assertRaisesRegex(ValueError, "Unknown"):

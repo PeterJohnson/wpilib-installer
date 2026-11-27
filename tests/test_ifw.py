@@ -14,11 +14,12 @@ import unittest
 import xml.etree.ElementTree as ET
 import zipfile
 
-from installer_prototype.bundle import assemble, load_bundle
-from installer_prototype.common import atomic_json, digest, run
-from installer_prototype.demo import create, write_spec
-from installer_prototype.manager import build_installer, check_updates, inventory, launch
-from installer_prototype.repository import publish, select, tool
+from installer_tooling.bundle import assemble, load_bundle
+from installer_tooling.common import atomic_json, digest, run
+from installer_tooling.demo import create, write_spec
+from installer_tooling.qt_engine import build_installer, inventory
+from installer_tooling.reference_client import check_updates, launch
+from installer_tooling.repository import publish, select, tool
 
 
 @unittest.skipUnless(os.environ.get("IFW_PATH"), "Set IFW_PATH to Qt IFW 4.11")
@@ -44,7 +45,7 @@ class NativeTests(unittest.TestCase):
         return destination
 
     def offline(self, bundle, engine, root, command, *packages, registry_path=None):
-        args = [sys.executable, "-m", "installer_prototype", "run", "--registry",
+        args = [sys.executable, "-m", "installer_tooling", "run", "--registry",
                 str(registry_path or self.root / "demo" / "registry.json"), "--bundle", str(bundle),
                 "--cache", str(self.root / "offline-cache"), "--engine", str(engine),
                 "--root", str(root), "--command", command, "--headless", *packages]
@@ -187,7 +188,7 @@ class NativeTests(unittest.TestCase):
         launch(installation / ("maintenancetool" + suffix), snapshots, self.cache, command="update", headless=True)
         self.assertEqual(inventory(installation)["org.robotpy.sdk"], "2.0.0")
         # An old three-repository bundle must not claim completeness for a four-repository registry.
-        from installer_prototype.common import sign
+        from installer_tooling.common import sign
         manifest_path = bundle / "bundle-manifest.json"
         manifest = json.loads(manifest_path.read_text())["signed"]
         del manifest["repositories"]["robotpy"]
@@ -196,7 +197,7 @@ class NativeTests(unittest.TestCase):
             load_bundle(bundle, self.registry, self.cache)
 
     def test_single_custom_publisher_without_default_projects(self):
-        from installer_prototype.common import keygen
+        from installer_tooling.common import keygen
         publisher = "vendor-tools"
         public = keygen(self.root / "vendor.pem")
         bundle_public = keygen(self.root / "bundle.pem")
@@ -215,14 +216,14 @@ class NativeTests(unittest.TestCase):
         self.assertEqual([s.publisher for s in load_bundle(bundle, registry, self.cache)[0]], [publisher])
         manifest = json.loads((bundle / "bundle-manifest.json").read_text())["signed"]
         manifest["repositories"]["untrusted"] = manifest["repositories"][publisher]
-        from installer_prototype.common import sign
+        from installer_tooling.common import sign
         atomic_json(bundle / "bundle-manifest.json", sign(manifest, self.root / "bundle.pem"))
         with self.assertRaisesRegex(ValueError, "Incomplete"):
             load_bundle(bundle, registry, self.cache)
 
     def test_authenticated_registry_addition_and_old_bundle_after_refresh(self):
         import copy
-        from installer_prototype.registry_updates import cache_directory, publish_registry, resolve
+        from installer_tooling.registry_updates import cache_directory, publish_registry, resolve
 
         class Handler(SimpleHTTPRequestHandler):
             def log_message(self, *_args):
@@ -254,13 +255,13 @@ class NativeTests(unittest.TestCase):
         old_bundle = self.unpack(archive)
         suffix = ".exe" if os.name == "nt" else ".app" if sys.platform == "darwin" else ""
         engine = build_installer(self.ifw, self.root / ("installer" + suffix))
-        from installer_prototype.manager import executable
+        from installer_tooling.qt_engine import executable
         engine_hash = digest(executable(engine))
         installation = self.root / "dynamic-install"
         self.offline(old_bundle, engine, installation, "install", "--profile", "tools", registry_path=source_path)
         # Same client/bootstrap, newly authorized publisher and profile.
         publish_registry(self.registry, source, authority_key, 2, feed)
-        cli = [sys.executable, "-m", "installer_prototype"]
+        cli = [sys.executable, "-m", "installer_tooling"]
         refreshed = json.loads(run([*cli, "refresh-registry", "--registry", source_path, "--cache", cache]))
         self.assertEqual(refreshed["revision"], 2)
         self.assertIn("robotpy", refreshed["publishers"])

@@ -5,11 +5,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from installer_prototype.archival import INDEFINITE_POLICY, authorization, verify_archival
-from installer_prototype.common import atomic_json, keygen, sign
-from installer_prototype.registry_updates import (cache_directory, publish_registry, refresh,
+from installer_tooling.archival import INDEFINITE_POLICY, authorization, verify_archival
+from installer_tooling.common import atomic_json, keygen, sign
+from installer_tooling.registry_updates import (cache_directory, publish_registry, refresh,
     registry_identity, resolve, verified_record)
-from installer_prototype.tuf_repository import demo_trust
+from installer_tooling.tuf_repository import demo_trust
 
 
 class IndefiniteArchivalTests(unittest.TestCase):
@@ -49,8 +49,8 @@ class IndefiniteArchivalTests(unittest.TestCase):
         for now in (0, self.record["signed"]["issued_at"] + 366 * 86400, 4_102_444_800):  # 2100
             for directory in (cache, self.root / "cold-cache"):
                 with self.subTest(now=now, cache=directory.name), patch(
-                    "installer_prototype.tuf_repository.Fetcher._fetch", side_effect=AssertionError("network used")
-                ), patch("installer_prototype.archival.time.time", return_value=now):
+                    "installer_tooling.tuf_repository.Fetcher._fetch", side_effect=AssertionError("network used")
+                ), patch("installer_tooling.archival.time.time", return_value=now):
                     view = resolve(self.source, directory, bundle=self.bundle)
                     self.assertEqual(view.record, self.record)
                     verify_archival(self.manifest, view.registry, view.record)
@@ -120,8 +120,8 @@ class IndefiniteArchivalTests(unittest.TestCase):
             verified_record(record, self.source, mode="offline", now=expiry)
 
     def test_ci_renewal_keeps_indefinite_authorization_and_rejects_stale_day_setting(self):
-        from installer_prototype.ci_publication import tuf_registry_release
-        from installer_prototype.tuf_repository import DirectoryStore, ROLES
+        from installer_tooling.ci_publication import tuf_registry_release
+        from installer_tooling.tuf_repository import DirectoryStore, ROLES
         keys = {role: [self.root / "registry-tuf" / (role + ".pem")] for role in ROLES}
         with self.assertRaisesRegex(ValueError, "offline_days conflicts"):
             publish_registry(self.registry, self.source, self.authority, 2, self.root / "feed", offline_days=365)
@@ -135,7 +135,7 @@ class IndefiniteArchivalTests(unittest.TestCase):
         self.assertEqual(verified_record(renewed, self.source, mode="offline", now=4_102_444_800), self.registry)
 
     def test_download_page_reports_indefinite_authorization_and_round_trips(self):
-        from installer_prototype.bundle_publication import read_page, render_page
+        from installer_tooling.bundle_publication import read_page, render_page
         publication = {"kind": "offline-download", "schema": 1, "id": "fixture",
             "target": "linux-x64", "season": "2027", "channel": "stable", "size": 100,
             "sha256": "c" * 64, "registry": registry_identity(self.record),

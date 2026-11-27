@@ -8,7 +8,7 @@ mod ui;
 use clap::Parser;
 use std::path::PathBuf;
 #[derive(Parser, Clone)]
-#[command(version, about = "WPILib single-application package manager prototype")]
+#[command(version, about = "WPILib package manager (development build)")]
 pub struct Args {
     /// Run a JSON CLI operation instead of opening a window.
     #[arg(long,value_parser=["verify","install","update","remove","list","check-updates"])]

@@ -1,6 +1,22 @@
 name: Real dashboards on clean Ubuntu Desktop
 on:
   workflow_dispatch:
+  push:
+    paths:
+      - 'packaging/**'
+      - 'tools/check_dashboard_releases.py'
+      - 'tools/check_desktop*.py'
+      - 'tooling/installer_tooling/dashboard_packages.py'
+      - '.github/workflows/desktop-real.yml'
+      - '.github/workflows/desktop-acceptance.yml'
+  pull_request:
+    paths:
+      - 'packaging/**'
+      - 'tools/check_dashboard_releases.py'
+      - 'tools/check_desktop*.py'
+      - 'tooling/installer_tooling/dashboard_packages.py'
+      - '.github/workflows/desktop-real.yml'
+      - '.github/workflows/desktop-acceptance.yml'
 permissions:
   contents: read
   actions: read
@@ -10,6 +26,8 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+      - name: Free space on the disposable build host
+        run: sudo rm -rf /usr/local/lib/android /opt/ghc
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
@@ -19,7 +37,7 @@ jobs:
       - name: Package pinned real release pairs and assemble signed offline bundles
         run: python -u tools/check_dashboard_releases.py --ifw .tools/ifw --work build/desktop-real --prepare-only
       - name: Build standalone application with matching public trust bootstrap
-        run: python tools/build_rust_manager.py --source build/desktop-real/registry-source.json --ifw .tools/ifw --assets build/desktop-real/assets --output build/desktop-real/download
+        run: python tools/build_client.py --source build/desktop-real/registry-source.json --ifw .tools/ifw --assets build/desktop-real/assets --output build/desktop-real/download
       - name: Prepare browser media for isolated Desktop guests
         run: |
           python - <<'PYTHON'
@@ -53,7 +71,7 @@ jobs:
           if-no-files-found: warn
   desktop:
     needs: packages
-    uses: ./.github/workflows/rust-desktop.yml
+    uses: ./.github/workflows/desktop-acceptance.yml
     with:
       application_run: ${{ format('{0}', github.run_id) }}
       release: all

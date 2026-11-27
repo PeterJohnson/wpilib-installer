@@ -5,9 +5,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from installer_prototype.common import cached_file, digest, keygen, safe_path, sign, verify, version
-from installer_prototype.repository import Snapshot, compatible, select, validate_packages
-from installer_prototype.registry import validate_registry
+from installer_tooling.common import cached_file, digest, keygen, safe_path, sign, verify, version
+from installer_tooling.repository import Snapshot, compatible, select, validate_packages
+from installer_tooling.registry import validate_registry
 
 
 class CoreTests(unittest.TestCase):
@@ -53,10 +53,10 @@ class CoreTests(unittest.TestCase):
     def test_selection_obeys_configured_precedence_and_bounds_search(self):
         first = Snapshot({"publisher": "vendor", "revision": 1, "packages": []}, {}, "")
         second = Snapshot({"publisher": "robotpy", "revision": 1, "packages": []}, {}, "")
-        with patch("installer_prototype.repository.candidates", return_value={"vendor": [first], "robotpy": [second]}):
+        with patch("installer_tooling.repository.candidates", return_value={"vendor": [first], "robotpy": [second]}):
             self.assertEqual(select({})[0], [first, second])
         candidates = {f"vendor{i}": [first] * 8 for i in range(5)}
-        with patch("installer_prototype.repository.candidates", return_value=candidates), patch("installer_prototype.repository.compatible", return_value=False):
+        with patch("installer_tooling.repository.candidates", return_value=candidates), patch("installer_tooling.repository.compatible", return_value=False):
             with self.assertRaisesRegex(ValueError, "4096"):
                 select({})
 
@@ -110,7 +110,7 @@ class CoreTests(unittest.TestCase):
         c1, c2 = snapshot("core", 1), snapshot("core", 2)
         e1, e2, e3 = snapshot("elastic", 1), snapshot("elastic", 2, "2.0.0"), snapshot("elastic", 3, "9.0.0")
         a1 = snapshot("advantagescope", 1)
-        with patch("installer_prototype.repository.candidates", return_value={
+        with patch("installer_tooling.repository.candidates", return_value={
             "core": [c2, c1], "elastic": [e3, e2, e1], "advantagescope": [a1]
         }):
             selected, held = select({})

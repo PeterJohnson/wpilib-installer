@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     paths:
-      - 'installer_prototype/**'
+      - 'tooling/installer_tooling/**'
       - 'tools/check_dashboard_releases.py'
       - 'packaging/**'
       - 'tests/test_payloads.py'
@@ -11,7 +11,7 @@ on:
       - 'pyproject.toml'
   pull_request:
     paths:
-      - 'installer_prototype/**'
+      - 'tooling/installer_tooling/**'
       - 'tools/check_dashboard_releases.py'
       - 'packaging/**'
       - 'tests/test_payloads.py'

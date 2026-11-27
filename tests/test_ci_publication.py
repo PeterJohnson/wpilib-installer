@@ -10,9 +10,9 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from installer_prototype.ci_publication import (Object, PublicationConflict, S3Store,
+from installer_tooling.ci_publication import (Object, PublicationConflict, S3Store,
     json_bytes, publisher_release, registry_release, secret_key)
-from installer_prototype.common import atomic_json, keygen, sign, verify
+from installer_tooling.common import atomic_json, keygen, sign, verify
 from tools.unpack_release import unpack
 
 

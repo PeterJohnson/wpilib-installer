@@ -1,4 +1,4 @@
-name: Rust Ubuntu Desktop acceptance
+name: Clean Ubuntu Desktop acceptance
 on:
   workflow_dispatch:
     inputs:
@@ -67,7 +67,7 @@ jobs:
           PYTHON
       - name: Install stock Ubuntu Desktop and test host graphics
         run: |
-          sg kvm -c "python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm ${{ inputs.require_real && '--require-real' || '' }}"
+          sg kvm -c "python -u tools/check_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm ${{ inputs.require_real && '--require-real' || '' }}"
       - uses: actions/upload-artifact@v4
         if: always()
         with:

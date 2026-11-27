@@ -10,10 +10,10 @@ from unittest.mock import patch
 from tuf.api import exceptions
 from tuf.api.metadata import Metadata
 
-from installer_prototype.common import atomic_json, canonical, keygen, sign
-from installer_prototype.registry_updates import (cache_directory, publish_registry, refresh, resolve,
+from installer_tooling.common import atomic_json, canonical, keygen, sign
+from installer_tooling.registry_updates import (cache_directory, publish_registry, refresh, resolve,
     validated_tuf_record, verified_record)
-from installer_prototype.tuf_repository import (DirectoryStore, Fetcher, ROLES, RootUpdatePending,
+from installer_tooling.tuf_repository import (DirectoryStore, Fetcher, ROLES, RootUpdatePending,
     create_root, encoded, fetch_catalog, origin_state, publish_catalog)
 
 
@@ -37,7 +37,7 @@ class LongRootHistoryTests(unittest.TestCase):
             keys = cls.keys[version >= 257]
             if version == 257:
                 keys = {**keys, "old_root": cls.keys[0]["root"]}
-            with patch("installer_prototype.tuf_repository.datetime") as clock:
+            with patch("installer_tooling.tuf_repository.datetime") as clock:
                 clock.now.return_value = (datetime(2018, 1, 1, tzinfo=timezone.utc) if version < 520
                                          else datetime.now(timezone.utc))
                 previous = create_root(keys, version=version, previous=previous, root_threshold=2)
@@ -115,7 +115,7 @@ class LongRootHistoryTests(unittest.TestCase):
         path.write_bytes(original)
         metadata = Metadata.from_file(str(self.origin / "tuf/metadata/520.root.json"))
         metadata.signed.expires = datetime.now(timezone.utc) - timedelta(days=1)
-        from installer_prototype.tuf_repository import signer
+        from installer_tooling.tuf_repository import signer
         for key in self.keys[-1]["root"]:
             metadata.sign(signer(key), append=True)
         (self.origin / "tuf/metadata/520.root.json").write_bytes(encoded(metadata))
@@ -149,7 +149,7 @@ class ArchivalKeyRotationTests(unittest.TestCase):
         self.new_public = keygen(self.new_key)
 
     def rotate(self):
-        from installer_prototype.ci_publication import tuf_registry_release
+        from installer_tooling.ci_publication import tuf_registry_release
         return tuf_registry_release(self.source, self.store, self.new_key, self.keys)
 
     def test_online_cold_warm_and_fallback_survive_archival_key_rotation(self):
@@ -250,10 +250,10 @@ class ArchivalKeyRotationTests(unittest.TestCase):
             validated_tuf_record(self.record, {k: v for k, v in self.source.items() if k != "tuf"})
 
     def test_offline_bundle_publication_requires_its_own_matching_pin(self):
-        from installer_prototype.bundle_publication import prepare_bundle
+        from installer_tooling.bundle_publication import prepare_bundle
         from tests.test_ci_publication import MemoryStore
         self.rotate()
-        with patch("installer_prototype.bundle_publication.assemble") as assemble:
+        with patch("installer_tooling.bundle_publication.assemble") as assemble:
             with self.assertRaisesRegex(ValueError, "signature"):
                 prepare_bundle(self.source, MemoryStore(), self.bundle_key, self.cache,
                                self.root / "candidate", "https://example.org/downloads", initialize=True)

@@ -12,11 +12,11 @@ import tempfile
 import unittest
 import zipfile
 
-from installer_prototype.common import digest
-from installer_prototype.dashboard_packages import binary_architectures, package_release
-from installer_prototype.payload import inventory, verify_installed, validate_ownership
-from installer_prototype.release_archive import extract
-from installer_prototype.macos_metadata import records, restore_script, verify
+from installer_tooling.common import digest
+from installer_tooling.dashboard_packages import binary_architectures, package_release
+from installer_tooling.payload import inventory, verify_installed, validate_ownership
+from installer_tooling.release_archive import extract
+from installer_tooling.macos_metadata import records, restore_script, verify
 
 
 class PayloadTests(unittest.TestCase):

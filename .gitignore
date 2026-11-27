@@ -9,4 +9,4 @@ build/
 *.swp
 *.swo
 
-manager/target/
+client/target/

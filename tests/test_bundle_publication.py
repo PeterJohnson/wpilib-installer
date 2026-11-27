@@ -12,12 +12,12 @@ from unittest.mock import patch
 import zipfile
 from email.message import Message
 
-from installer_prototype.bundle_publication import (paths, prepare_bundle, publish_candidate, read_page,
+from installer_tooling.bundle_publication import (paths, prepare_bundle, publish_candidate, read_page,
                                                      verify_public_files, verify_record)
-from installer_prototype.offline_acceptance import CHECKS, report_identity
-from installer_prototype.common import atomic_json, canonical, keygen, sign
-from installer_prototype.publication_storage import ArtifactoryStore, PublicationConflict, S3Store, publication_key
-from installer_prototype.registry_updates import publish_registry, registry_identity
+from installer_tooling.offline_acceptance import CHECKS, report_identity
+from installer_tooling.common import atomic_json, canonical, keygen, sign
+from installer_tooling.publication_storage import ArtifactoryStore, PublicationConflict, S3Store, publication_key
+from installer_tooling.registry_updates import publish_registry, registry_identity
 from tests.test_artifactory import FakeArtifactory
 from tests.test_ci_publication import MemoryStore
 
@@ -39,7 +39,7 @@ class BundlePublicationTests(unittest.TestCase):
         publish_registry(self.registry, self.source, self.authority, 1, self.root / "feed")
         self.revision, self.corrupt = 1, False
         self.store = MemoryStore()
-        self.assembler = patch("installer_prototype.bundle_publication.assemble", side_effect=self.archive)
+        self.assembler = patch("installer_tooling.bundle_publication.assemble", side_effect=self.archive)
         self.assembler.start()
         self.addCleanup(self.assembler.stop)
 
@@ -87,7 +87,7 @@ class BundlePublicationTests(unittest.TestCase):
             path.write_bytes(data)
             return path
 
-        with patch("installer_prototype.bundle_publication.cached_file", side_effect=fetch):
+        with patch("installer_tooling.bundle_publication.cached_file", side_effect=fetch):
             plan = prepare_bundle(self.source, self.store, self.key, self.root / "cache", directory,
                                   "https://downloads.example.org/linux-x64", **kwargs)
         return directory, plan
@@ -166,7 +166,7 @@ class BundlePublicationTests(unittest.TestCase):
     def test_assembly_or_archive_validation_failure_preserves_every_published_file(self):
         self.run_publication(initialize=True)
         original = dict(self.store.objects)
-        with patch("installer_prototype.bundle_publication.assemble", side_effect=ValueError("assembly failed")):
+        with patch("installer_tooling.bundle_publication.assemble", side_effect=ValueError("assembly failed")):
             with self.assertRaisesRegex(ValueError, "assembly failed"):
                 self.run_publication()
         self.assertEqual(self.store.objects, original)
@@ -188,7 +188,7 @@ class BundlePublicationTests(unittest.TestCase):
                     destination.writestr(entry, data)
             return path
 
-        with patch("installer_prototype.bundle_publication.assemble", side_effect=linked):
+        with patch("installer_tooling.bundle_publication.assemble", side_effect=linked):
             with self.assertRaisesRegex(ValueError, "regular files"):
                 self.run_publication(initialize=True)
         self.assertFalse(self.store.objects)
@@ -280,7 +280,7 @@ class BundlePublicationTests(unittest.TestCase):
         self.server = FakeArtifactory()
         env = {"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "example/installer", "ARTIFACTORY_ACCESS_TOKEN": "test-token",
                "PUBLICATION_SERIALIZATION_KEY": publication_key(config)}
-        with patch.dict(os.environ, env), patch("installer_prototype.publication_storage.build_opener", return_value=self.server):
+        with patch.dict(os.environ, env), patch("installer_tooling.publication_storage.build_opener", return_value=self.server):
             self.store = ArtifactoryStore(config)
             self.run_publication(initialize=True)
             original = dict(self.server.files)
@@ -296,8 +296,8 @@ class BundlePublicationTests(unittest.TestCase):
 
     @unittest.skipUnless(os.environ.get("IFW_PATH"), "Set IFW_PATH to Qt IFW 4.11")
     def test_real_qt_repositories_assemble_publish_and_retain_pinned_registry(self):
-        from installer_prototype.demo import create, write_spec
-        from installer_prototype.repository import publish
+        from installer_tooling.demo import create, write_spec
+        from installer_tooling.repository import publish
 
         self.assembler.stop()
         demo = self.root / "native"
@@ -334,7 +334,7 @@ class PublicDownloadTests(unittest.TestCase):
                 response.headers["Content-Disposition"] = "inline"
                 return response
 
-            with patch("installer_prototype.bundle_publication.urlopen", side_effect=open_response):
+            with patch("installer_tooling.bundle_publication.urlopen", side_effect=open_response):
                 verify_public_files("https://example.org", files)
             self.assertEqual(requests, ["HEAD", "GET"])
 
@@ -343,7 +343,7 @@ class PublicDownloadTests(unittest.TestCase):
                 result.headers.replace_header("Content-Disposition", "attachment")
                 return result
 
-            with patch("installer_prototype.bundle_publication.urlopen", side_effect=attachment):
+            with patch("installer_tooling.bundle_publication.urlopen", side_effect=attachment):
                 with self.assertRaisesRegex(ValueError, "serve HTML inline"):
                     verify_public_files("https://example.org", files)
 

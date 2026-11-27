@@ -4,11 +4,11 @@ import json
 from pathlib import Path
 import shutil
 
-from installer_prototype.bundle_publication import paths, prepare_bundle, render_page
-from installer_prototype.demo import create, write_spec
-from installer_prototype.offline_acceptance import check_candidate, host_target
-from installer_prototype.publication_storage import Object
-from installer_prototype.repository import publish
+from installer_tooling.bundle_publication import paths, prepare_bundle, render_page
+from installer_tooling.demo import create, write_spec
+from installer_tooling.offline_acceptance import check_candidate, host_target
+from installer_tooling.publication_storage import Object
+from installer_tooling.repository import publish
 
 
 def fixture(ifw, root, report):

@@ -1,4 +1,4 @@
-"""Fail builds whose manager/private worker needs a non-bundled platform runtime."""
+"""Fail builds whose client/private worker needs a non-bundled platform runtime."""
 import argparse
 import json
 from pathlib import Path

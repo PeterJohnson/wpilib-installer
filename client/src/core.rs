@@ -62,7 +62,7 @@ pub fn default_root() -> PathBuf {
     PathBuf::from(
         std::env::var_os(if cfg!(windows) { "USERPROFILE" } else { "HOME" }).unwrap_or_default(),
     )
-    .join("wpilib-rust-prototype")
+    .join("wpilib-packages")
 }
 pub fn qt_executable(path: &Path) -> Result<PathBuf, Error> {
     if path.extension().is_some_and(|p| p == "app") {

@@ -89,5 +89,5 @@ do not upload that workspace as a CI artifact. Reports contain outcomes and
 public identities/digests only. Binary sizes in the report describe these
 different probe builds, not a production-manager size/performance comparison.
 
-See the [evaluation and measured results](../../docs/manager-distribution-evaluation.md#native-library-interoperability-results)
+See the [evaluation and measured results](../../docs/history/manager-distribution-evaluation.md#native-library-interoperability-results)
 and [saved report](../../docs/evidence/native-tuf-2026-11-27.json).

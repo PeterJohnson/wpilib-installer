@@ -41,9 +41,9 @@ No production destinations or secrets are supplied. An existing manually uploade
 The workflow uses three separate commands/jobs. The native command runs on the candidate's target platform, with Qt IFW bootstrapped beforehand:
 
 ```sh
-python -m installer_prototype.ci_publication bundle-prepare --config deployment/bundle-publications/linux-x64.json --cache build/cache --candidate build/candidate --output build/preparation.json --initialize
-python -m installer_prototype.offline_acceptance check --candidate build/candidate --source deployment/registries/linux-x64.json --ifw .tools/ifw --work build/native --report build/acceptance.json
-python -m installer_prototype.ci_publication bundle-publish --config deployment/bundle-publications/linux-x64.json --candidate build/candidate --acceptance build/acceptance.json --output build/publication.json
+python -m installer_tooling.ci_publication bundle-prepare --config deployment/bundle-publications/linux-x64.json --cache build/cache --candidate build/candidate --output build/preparation.json --initialize
+python -m installer_tooling.offline_acceptance check --candidate build/candidate --source deployment/registries/linux-x64.json --ifw .tools/ifw --work build/native --report build/acceptance.json
+python -m installer_tooling.ci_publication bundle-publish --config deployment/bundle-publications/linux-x64.json --candidate build/candidate --acceptance build/acceptance.json --output build/publication.json
 ```
 
 Remove `--initialize` after first publication. Candidate/work directories must be new. The old one-step `bundle` publication command has been removed. The workflow retains the candidate and baseline ZIPs in an uncompressed Actions artifact for three days to transfer the exact bytes between jobs; native reports/logs and the final publication audit are also retained. Provision sufficient disk and artifact quota for two ZIPs, their extracted repositories, installed payloads, and temporary verification copies. No signing keys are included in artifacts.

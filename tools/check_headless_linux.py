@@ -10,11 +10,11 @@ import shutil
 import subprocess
 import time
 
-from check_rust_manager import unpack_manifest
-from installer_prototype.common import digest
-from installer_prototype.manager import inventory
-from installer_prototype.payload import verify_installed
-from audit_rust_dependencies import LINUX_BASE
+from check_client_offline import unpack_manifest
+from installer_tooling.common import digest
+from installer_tooling.qt_engine import inventory
+from installer_tooling.payload import verify_installed
+from audit_client_dependencies import LINUX_BASE
 
 
 def run(*args, **kw):

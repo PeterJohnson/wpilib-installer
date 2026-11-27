@@ -14,7 +14,8 @@ import zipfile
 
 from .bundle import load_bundle
 from .common import atomic_json, digest, run, safe_path, version
-from .manager import build_installer, executable, inventory, launch
+from .qt_engine import build_installer, executable, inventory
+from .reference_client import launch
 from .registry_updates import resolve
 from .repository import package_map
 
@@ -213,7 +214,7 @@ def check_candidate(directory, source_path, ifw, work, report_path):
     work.mkdir(parents=True)
     suffix = ".exe" if os.name == "nt" else ".app" if sys.platform == "darwin" else ""
     engine = build_installer(ifw, work / ("installer" + suffix))
-    args = [sys.executable, "-m", "installer_prototype.offline_acceptance", "worker", "--candidate", directory,
+    args = [sys.executable, "-m", "installer_tooling.offline_acceptance", "worker", "--candidate", directory,
             "--source", source_path, "--engine", engine, "--work", work, "--report", report_path]
     if sys.platform == "linux":
         # GitHub's Ubuntu AppArmor profile can prohibit unprivileged namespaces.

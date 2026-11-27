@@ -1,4 +1,4 @@
-name: Rust self-contained application
+name: Installer client
 on:
   workflow_dispatch:
     inputs:
@@ -9,22 +9,28 @@ on:
         options: [all, ubuntu-24.04, windows-2022, macos-15-intel, macos-15]
   push:
     paths:
-      - 'manager/**'
-      - 'tools/*rust*'
+      - 'client/**'
+      - 'tooling/**'
+      - 'pyproject.toml'
+      - '.github/scripts/**'
+      - 'tools/**'
       - '.cargo/**'
       - '.github/containers/**'
-      - 'tools/build_linux_manager.py'
-      - '.github/workflows/rust-contained.yml'
-      - '.github/workflows/rust-desktop.yml'
+      - 'tools/build_linux_client.py'
+      - '.github/workflows/client.yml'
+      - '.github/workflows/desktop-acceptance.yml'
   pull_request:
     paths:
-      - 'manager/**'
-      - 'tools/*rust*'
+      - 'client/**'
+      - 'tooling/**'
+      - 'pyproject.toml'
+      - '.github/scripts/**'
+      - 'tools/**'
       - '.cargo/**'
       - '.github/containers/**'
-      - 'tools/build_linux_manager.py'
-      - '.github/workflows/rust-contained.yml'
-      - '.github/workflows/rust-desktop.yml'
+      - 'tools/build_linux_client.py'
+      - '.github/workflows/client.yml'
+      - '.github/workflows/desktop-acceptance.yml'
 permissions:
   contents: read
   actions: read
@@ -47,7 +53,7 @@ jobs:
           components: rustfmt
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: manager
+          workspaces: client
           cache-on-failure: true
       - run: python -m pip install -e .
       - if: runner.os == 'Linux'
@@ -62,15 +68,15 @@ jobs:
           "C:\Program Files\NASM" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
       - run: python tools/bootstrap_ifw.py
       - name: Prepare signed HTTP fixtures and long root history
-        run: python tools/prepare_rust_online.py --ifw .tools/ifw --work build/online-fixture
+        run: python tools/prepare_client_online.py --ifw .tools/ifw --work build/online-fixture
       - name: Build single application
-        run: python tools/build_rust_manager.py --source build/online-fixture/online-source.json --ifw .tools/ifw --assets build/online-fixture/assets --output build/online-fixture/download
+        run: python tools/build_client.py --source build/online-fixture/online-source.json --ifw .tools/ifw --assets build/online-fixture/assets --output build/online-fixture/download
       - name: Rust formatting and unit tests
         shell: bash
         run: |
-          cargo fmt --manifest-path manager/Cargo.toml --check
+          cargo fmt --manifest-path client/Cargo.toml --check
           if [ "$RUNNER_OS" != Linux ]; then
-            MACOSX_DEPLOYMENT_TARGET=13.0 WPILIB_ASSET_DIR="$PWD/build/online-fixture/assets" cargo test --release --locked --manifest-path manager/Cargo.toml
+            MACOSX_DEPLOYMENT_TARGET=13.0 WPILIB_ASSET_DIR="$PWD/build/online-fixture/assets" cargo test --release --locked --manifest-path client/Cargo.toml
           fi
       - name: Native authenticated refresh, caches, and offline-to-online upgrades
         shell: bash
@@ -80,12 +86,12 @@ jobs:
           if [ "$RUNNER_OS" = macOS ]; then app='build/online-fixture/download/WPILib Manager.app/Contents/MacOS/wpilib-manager'; fi
           prefix=()
           if [ "$RUNNER_OS" = Linux ]; then prefix=(xvfb-run -a); fi
-          "${prefix[@]}" python -u tools/check_rust_online.py --app "$app" --fixture build/online-fixture --work build/online-fixture/native --report build/online-fixture/report.json
+          "${prefix[@]}" python -u tools/check_client_online.py --app "$app" --fixture build/online-fixture --work build/online-fixture/native --report build/online-fixture/report.json
       - name: Headless Linux dependency and offline lifecycle checks
         if: runner.os == 'Linux'
         shell: bash
         run: |
-          python -u tools/check_rust_clean_linux.py --app build/online-fixture/download/wpilib-manager --engine build/online-fixture/assets/engine --baseline build/online-fixture/baseline/*.zip --candidate build/online-fixture/candidate/*.zip --work build/clean-linux --report build/clean-linux-report.json
+          python -u tools/check_headless_linux.py --app build/online-fixture/download/wpilib-manager --engine build/online-fixture/assets/engine --baseline build/online-fixture/baseline/*.zip --candidate build/online-fixture/candidate/*.zip --work build/clean-linux --report build/clean-linux-report.json
       - uses: actions/upload-artifact@v4
         if: runner.os == 'Linux'
         with:
@@ -98,14 +104,14 @@ jobs:
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
-          name: self-contained-application-${{ matrix.os }}
+          name: test-client-${{ matrix.os }}
           retention-days: 14
           path: build/online-fixture/manager-application.zip
           if-no-files-found: error
       - uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: self-contained-evidence-${{ matrix.os }}
+          name: test-client-evidence-${{ matrix.os }}
           retention-days: 14
           path: |
             build/online-fixture/report.json
@@ -124,7 +130,7 @@ jobs:
   desktop:
     needs: native
     if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'ubuntu-24.04' }}
-    uses: ./.github/workflows/rust-desktop.yml
+    uses: ./.github/workflows/desktop-acceptance.yml
     with:
       application_run: ${{ format('{0}', github.run_id) }}
       release: all

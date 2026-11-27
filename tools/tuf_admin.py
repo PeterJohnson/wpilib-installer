@@ -3,8 +3,8 @@ import argparse
 import json
 from pathlib import Path
 
-from installer_prototype.common import atomic_json, keygen
-from installer_prototype.tuf_repository import ROLES, create_root
+from installer_tooling.common import atomic_json, keygen
+from installer_tooling.tuf_repository import ROLES, create_root
 
 
 def main():

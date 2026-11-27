@@ -4,15 +4,15 @@ import json
 from pathlib import Path
 import shutil
 
-from installer_prototype.archival import INDEFINITE_POLICY
-from installer_prototype.bundle_publication import paths, prepare_bundle, render_page
-from installer_prototype.common import atomic_json, keygen, version
-from installer_prototype.dashboard_packages import package_release
-from installer_prototype.offline_acceptance import check_candidate, host_target
-from installer_prototype.publication_storage import Object
-from installer_prototype.registry_updates import publish_registry
-from installer_prototype.repository import publish
-from installer_prototype.tuf_repository import demo_trust
+from installer_tooling.archival import INDEFINITE_POLICY
+from installer_tooling.bundle_publication import paths, prepare_bundle, render_page
+from installer_tooling.common import atomic_json, keygen, version
+from installer_tooling.dashboard_packages import package_release
+from installer_tooling.offline_acceptance import check_candidate, host_target
+from installer_tooling.publication_storage import Object
+from installer_tooling.registry_updates import publish_registry
+from installer_tooling.repository import publish
+from installer_tooling.tuf_repository import demo_trust
 
 
 def check_releases(lock_path, ifw, work, cache, report, *, prepare_only=False):

@@ -4,7 +4,7 @@ from pathlib import Path
 
 
 
-from installer_prototype.release_archive import extract as unpack
+from installer_tooling.release_archive import extract as unpack
 
 
 if __name__ == "__main__":

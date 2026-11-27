@@ -5,10 +5,10 @@ from pathlib import Path
 import sys
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from installer_prototype.bundle import assemble
-from installer_prototype.common import TARGETS
-from installer_prototype.demo import create
-from installer_prototype.registry_updates import resolve, verified_record
+from installer_tooling.bundle import assemble
+from installer_tooling.common import TARGETS
+from installer_tooling.demo import create
+from installer_tooling.registry_updates import resolve, verified_record
 
 p = argparse.ArgumentParser(description=__doc__)
 p.add_argument("--ifw", type=Path, required=True)

@@ -32,7 +32,7 @@ def check(a):
     work=a.work.resolve();work.mkdir(parents=True)
     share=work/'share';share.mkdir();share.chmod(0o777)
     for name,p in [('wpilib-manager',a.app),('baseline.zip',a.baseline),('candidate.zip',a.candidate),
-                   ('check_rust_desktop_guest.py',Path(__file__).with_name('check_rust_desktop_guest.py'))]:
+                   ('check_desktop_guest.py',Path(__file__).with_name('check_desktop_guest.py'))]:
         shutil.copy2(p,share/name)
     (share/'wpilib-manager').chmod(0o755)
     (share/'acceptance.json').write_text(json.dumps({'require_real':a.require_real}))
@@ -67,7 +67,7 @@ cat > /target/home/tester/.config/autostart/wpilib-acceptance.desktop <<'EOF'
 [Desktop Entry]
 Type=Application
 Name=WPILib acceptance
-Exec=/usr/bin/python3 /mnt/wpilib-test/check_rust_desktop_guest.py
+Exec=/usr/bin/python3 /mnt/wpilib-test/check_desktop_guest.py
 X-GNOME-Autostart-enabled=true
 EOF
 cat > /target/etc/systemd/system/wpilib-test-diagnostics.service <<'EOF'

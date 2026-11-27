@@ -37,10 +37,10 @@ jobs:
           python - <<'PY'
           import json, os
           from pathlib import Path
-          from installer_prototype.publication_storage import publication_key
-          from installer_prototype.ci_publication import contained
-          from installer_prototype.registry_updates import validate_source
-          from installer_prototype.offline_acceptance import runner_for
+          from installer_tooling.publication_storage import publication_key
+          from installer_tooling.ci_publication import contained
+          from installer_tooling.registry_updates import validate_source
+          from installer_tooling.offline_acceptance import runner_for
           paths = sorted(Path('deployment/bundle-publications').glob('*.json'))
           selected = os.environ.get('ONLY_CONFIGURATION')
           if selected:
@@ -132,7 +132,7 @@ jobs:
         run: |
           extra=()
           if [[ "$INITIALIZE" == true ]]; then extra+=(--initialize); fi
-          python -m installer_prototype.ci_publication bundle-prepare \
+          python -m installer_tooling.ci_publication bundle-prepare \
             --config "$PUBLICATION_CONFIG" --cache build/cache --candidate build/candidate \
             --output build/preparation.json "${extra[@]}"
       - uses: actions/upload-artifact@v4
@@ -173,7 +173,7 @@ jobs:
         env:
           REGISTRY_SOURCE: ${{ matrix.source }}
         run: |
-          python -m installer_prototype.offline_acceptance check \
+          python -m installer_tooling.offline_acceptance check \
             --candidate build/candidate --source "$REGISTRY_SOURCE" --ifw .tools/ifw \
             --work build/native --report build/acceptance.json
       - uses: actions/upload-artifact@v4
@@ -223,7 +223,7 @@ jobs:
           PUBLICATION_SERIALIZATION_KEY: ${{ matrix.publication_key }}
           PUBLICATION_CONFIG: ${{ matrix.configuration }}
         run: |
-          python -m installer_prototype.ci_publication bundle-publish \
+          python -m installer_tooling.ci_publication bundle-publish \
             --config "$PUBLICATION_CONFIG" --candidate build/candidate \
             --acceptance build/acceptance/acceptance.json --output build/publication.json
       - uses: actions/upload-artifact@v4

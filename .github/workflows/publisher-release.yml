@@ -4,7 +4,7 @@ on:
   workflow_call:
     inputs:
       tooling_repository:
-        description: Repository containing the installer prototype
+        description: Repository containing the installer publishing tooling
         required: true
         type: string
       tooling_ref:
@@ -81,7 +81,7 @@ jobs:
         env:
           PUBLICATION_CONFIG: ${{ inputs.publication_config }}
         run: |
-          key=$(python -m installer_prototype.ci_publication identity --root caller --config "$PUBLICATION_CONFIG")
+          key=$(python -m installer_tooling.ci_publication identity --root caller --config "$PUBLICATION_CONFIG")
           echo "key=$key" >> "$GITHUB_OUTPUT"
   publish:
     needs: prepare
@@ -147,7 +147,7 @@ jobs:
           extra=(--artifact release-input --spec "$SPEC_PATH" --ifw tooling/.tools/ifw)
           if [[ "$RENEW_ONLY" == true ]]; then command=publisher-renew; extra=(); fi
           if [[ "$INITIALIZE" == true ]]; then extra+=(--initialize); fi
-          python -m installer_prototype.ci_publication "$command" \
+          python -m installer_tooling.ci_publication "$command" \
             --root caller --config "$PUBLICATION_CONFIG" \
             --output build/publication.json "${extra[@]}"
       - uses: actions/upload-artifact@v4

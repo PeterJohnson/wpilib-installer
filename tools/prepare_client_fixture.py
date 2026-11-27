@@ -2,11 +2,11 @@
 import argparse
 import json
 from pathlib import Path
-from installer_prototype.demo import create, write_spec
-from installer_prototype.repository import publish
-from installer_prototype.registry_updates import refresh
-from installer_prototype.bundle import assemble
-from installer_prototype.offline_acceptance import host_target
+from installer_tooling.demo import create, write_spec
+from installer_tooling.repository import publish
+from installer_tooling.registry_updates import refresh
+from installer_tooling.bundle import assemble
+from installer_tooling.offline_acceptance import host_target
 
 
 def prepare(ifw, work):

@@ -3,11 +3,11 @@ import argparse
 import json
 from pathlib import Path
 import shutil
-from installer_prototype.common import atomic_json, keygen
-from installer_prototype.registry_updates import publish_registry
-from installer_prototype.repository import publish
-from installer_prototype.tuf_repository import demo_trust
-from prepare_rust_fixture import prepare
+from installer_tooling.common import atomic_json, keygen
+from installer_tooling.registry_updates import publish_registry
+from installer_tooling.repository import publish
+from installer_tooling.tuf_repository import demo_trust
+from prepare_client_fixture import prepare
 from check_native_tuf import generate
 
 

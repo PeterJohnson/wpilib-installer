@@ -10,8 +10,8 @@ from unittest.mock import patch
 from tuf.api import exceptions
 from tuf.api.metadata import Metadata
 
-from installer_prototype.common import canonical, keygen
-from installer_prototype.tuf_repository import (DirectoryStore, ROLES, create_root, demo_trust,
+from installer_tooling.common import canonical, keygen
+from installer_tooling.tuf_repository import (DirectoryStore, ROLES, create_root, demo_trust,
     encoded, fetch_catalog, origin_state, publish_catalog)
 from tests.test_ci_publication import MemoryStore
 
@@ -61,14 +61,14 @@ class TUFTests(unittest.TestCase):
     def test_transport_fallback_reverifies_cache_and_never_ignores_expiry(self):
         self.publish({"revision": 1}, initialize=True)
         self.fetch()
-        with patch("installer_prototype.tuf_repository.Fetcher._fetch",
+        with patch("installer_tooling.tuf_repository.Fetcher._fetch",
                    side_effect=exceptions.DownloadError("offline")):
             self.assertEqual(self.fetch(fallback=True)[1], "verified-cache")
         for path in self.cache.rglob("timestamp.json"):
             bad = json.loads(path.read_text())
             bad["signed"]["expires"] = "2100-01-01T00:00:00Z"
             path.write_bytes(canonical(bad))
-        with patch("installer_prototype.tuf_repository.Fetcher._fetch",
+        with patch("installer_tooling.tuf_repository.Fetcher._fetch",
                    side_effect=exceptions.DownloadError("offline")):
             with self.assertRaises(exceptions.UnsignedMetadataError):
                 self.fetch(fallback=True)
@@ -135,8 +135,8 @@ class TUFTests(unittest.TestCase):
             fetch_catalog(trust, self.cache)
 
     def test_archival_authority_cannot_exceed_bootstrap_policy(self):
-        from installer_prototype.registry_updates import publish_registry, verified_record
-        from installer_prototype.common import sign
+        from installer_tooling.registry_updates import publish_registry, verified_record
+        from installer_tooling.common import sign
         authority = self.root / "archive-authority.pem"
         source = {"kind": "registry-source", "schema": 1, "registry_id": "archive-test",
                   "target": "linux-x64", "season": "2027", "channel": "stable",
@@ -181,7 +181,7 @@ class TUFTests(unittest.TestCase):
             self.fetch()
 
     def test_artifactory_promotes_tuf_metadata_before_timestamp_and_preserves_old_head_on_failure(self):
-        from installer_prototype.publication_storage import ArtifactoryStore, publication_key
+        from installer_tooling.publication_storage import ArtifactoryStore, publication_key
         from tests.test_artifactory import FakeArtifactory
         config = {"type": "artifactory", "api_url": "https://example.org/artifactory",
                   "staging_repository": "staging-local", "release_repository": "release-local",
@@ -189,7 +189,7 @@ class TUFTests(unittest.TestCase):
         env = {"GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "test/publisher",
                "PUBLICATION_SERIALIZATION_KEY": publication_key(config), "ARTIFACTORY_ACCESS_TOKEN": "test-token"}
         server = FakeArtifactory()
-        with patch.dict(os.environ, env), patch("installer_prototype.publication_storage.build_opener", return_value=server):
+        with patch.dict(os.environ, env), patch("installer_tooling.publication_storage.build_opener", return_value=server):
             store = ArtifactoryStore(config)
             publish_catalog(store, self.trust, self.keys, {"revision": 1}, initialize=True)
             old = store.get("tuf/metadata/timestamp.json")
@@ -209,12 +209,13 @@ class NativeTUFTests(unittest.TestCase):
         import threading
         import zipfile
         import sys
-        from installer_prototype.bundle import assemble, load_bundle
-        from installer_prototype.demo import create, write_spec
-        from installer_prototype.manager import build_installer, inventory, launch
-        from installer_prototype.offline_acceptance import host_target
-        from installer_prototype.registry_updates import resolve
-        from installer_prototype.repository import publish, select
+        from installer_tooling.bundle import assemble, load_bundle
+        from installer_tooling.demo import create, write_spec
+        from installer_tooling.qt_engine import build_installer, inventory
+        from installer_tooling.reference_client import launch
+        from installer_tooling.offline_acceptance import host_target
+        from installer_tooling.registry_updates import resolve
+        from installer_tooling.repository import publish, select
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             requests = []
@@ -255,7 +256,7 @@ class NativeTUFTests(unittest.TestCase):
             launch(install / ("maintenancetool" + suffix), select(registry, cache)[0], cache,
                    root=install, command="update", headless=True)
             self.assertEqual(inventory(install)["org.wpilib.elastic"], "2.0.0")
-            from installer_prototype.ci_publication import tuf_publisher_release, tuf_registry_release
+            from installer_tooling.ci_publication import tuf_publisher_release, tuf_registry_release
             publisher_keys = {role: [root / "demo/keys/elastic-tuf" / (role + ".pem")] for role in ROLES}
             result = tuf_publisher_release(write_spec(root / "demo/specs", "elastic", target, 3), registry,
                 "elastic", DirectoryStore(root / "demo/store" / target / "elastic"), root / "demo/keys/elastic.pem",
@@ -281,8 +282,8 @@ class NativeTUFTests(unittest.TestCase):
             with self.assertRaises(exceptions.ExpiredMetadataError):
                 resolve(source, cache)
             saved = {str(p.relative_to(cache)): p.read_bytes() for p in (cache / "tuf").rglob("*") if p.is_file()}
-            with patch("installer_prototype.tuf_repository.Fetcher._fetch", side_effect=AssertionError("Offline must not fetch TUF")), \
-                    patch("installer_prototype.archival.time.time", return_value=4_102_444_800):  # 2100
+            with patch("installer_tooling.tuf_repository.Fetcher._fetch", side_effect=AssertionError("Offline must not fetch TUF")), \
+                    patch("installer_tooling.archival.time.time", return_value=4_102_444_800):  # 2100
                 cold = root / "offline-cache"
                 offline = resolve(source, cold, bundle=bundle)
                 snapshots, _ = load_bundle(bundle, offline.registry, cold)

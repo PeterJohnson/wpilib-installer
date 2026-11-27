@@ -5,7 +5,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from installer_prototype.offline_acceptance import (CHECKS, check_candidate, profile_closure,
+from installer_tooling.offline_acceptance import (CHECKS, check_candidate, profile_closure,
     runner_for, windows_firewall)
 
 
@@ -24,7 +24,7 @@ class OfflineAcceptanceTests(unittest.TestCase):
             profile_closure(packages, ["missing"])
 
     def test_windows_firewall_restored_when_install_or_rule_setup_fails(self):
-        with patch("installer_prototype.offline_acceptance.subprocess.run") as command:
+        with patch("installer_tooling.offline_acceptance.subprocess.run") as command:
             with self.assertRaisesRegex(RuntimeError, "installation failed"):
                 with windows_firewall([Path("C:/python.exe"), Path("C:/installer.exe")]):
                     raise RuntimeError("installation failed")
@@ -33,7 +33,7 @@ class OfflineAcceptanceTests(unittest.TestCase):
             self.assertIn("New-NetFirewallRule", calls[0].args[0][-1])
             self.assertIn("Remove-NetFirewallRule", calls[1].args[0][-1])
             self.assertEqual(calls[0].kwargs["env"]["OFFLINE_RULE_GROUP"], calls[1].kwargs["env"]["OFFLINE_RULE_GROUP"])
-        with patch("installer_prototype.offline_acceptance.subprocess.run",
+        with patch("installer_tooling.offline_acceptance.subprocess.run",
                    side_effect=[subprocess.CalledProcessError(1, "pwsh"), None]) as command:
             with self.assertRaises(subprocess.CalledProcessError):
                 with windows_firewall([]):

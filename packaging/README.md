@@ -27,8 +27,8 @@ identity.
 From the repository root with the project installed:
 
 ```sh
-python -m installer_prototype.dashboard_packages --publisher elastic --target linux-x64 --release v2026.1.2 --revision 2 --output build/elastic-release --release-tar build/elastic-artifact/release.tar
-python -m installer_prototype.dashboard_packages --publisher advantagescope --target linux-x64 --release v26.0.2 --revision 2 --output build/advantagescope-release --release-tar build/advantagescope-artifact/release.tar
+python -m installer_tooling.dashboard_packages --publisher elastic --target linux-x64 --release v2026.1.2 --revision 2 --output build/elastic-release --release-tar build/elastic-artifact/release.tar
+python -m installer_tooling.dashboard_packages --publisher advantagescope --target linux-x64 --release v26.0.2 --revision 2 --output build/advantagescope-release --release-tar build/advantagescope-artifact/release.tar
 ```
 
 Use native runners for the target platform. `--season` defaults to `2026` and
@@ -99,10 +99,10 @@ Windows rules cover Python and Qt; no dashboard process is launched by this gate
 relevant pushes/PRs and manual dispatch on all four native runners. Logs,
 provenance, and acceptance reports are retained as `real-dashboard-results-<runner>`
 artifacts for 14 days. The large application payloads, test private keys, and
-throwaway installation trees are not uploaded. The ordinary prototype regression
+throwaway installation trees are not uploaded. The tooling regression
 matrix still runs separately.
 
-[Recorded four-platform CI results](../docs/prototype-status.md#real-dashboard-validation)
+[Recorded four-platform CI results](../docs/history/prototype-status.md#real-dashboard-validation)
 include the pinned real upgrade pairs and verified payload entry counts.
 
 This validates real installation and maintenance payloads. GUI startup, renderer
@@ -111,3 +111,5 @@ quarantine/notarization policy, and applications running during an upgrade remai
 separate acceptance work. It is not a claim that all application features function
 offline. Production bundle publication continues to require its exact candidate
 checks and configured storage/signing workflows.
+
+The [clean Desktop real-package workflow](../.github/workflows/desktop-real.yml) also exercises the native Rust manager with both pinned upgrades on freshly installed Ubuntu 24.04 and 26.04. It removes the original installer and all bundle copies before cached removal/reinstallation of each dashboard, under both Wayland and X11. See [the recorded real Desktop evidence](../docs/evidence/real-desktop-2026-11-27.json). Dashboard application startup remains outside this installer gate.

@@ -3,9 +3,9 @@ requires = ["setuptools>=77"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "wpilib-installer-prototype"
-version = "0.1.0"
-description = "Qt IFW multi-repository installation and offline bundle prototype"
+name = "wpilib-installer-tooling"
+version = "0.1.0.dev0"
+description = "WPILib package publication, offline assembly, and acceptance tooling"
 requires-python = ">=3.11"
 dependencies = ["cryptography>=48,<51", "tuf==7.0.1", "securesystemslib[crypto]==1.6.0"]
 
@@ -13,10 +13,11 @@ dependencies = ["cryptography>=48,<51", "tuf==7.0.1", "securesystemslib[crypto]=
 ci = ["boto3>=1.40,<2"]
 
 [project.scripts]
-wpilib-manager = "installer_prototype.cli:main"
+wpilib-installer-tools = "installer_tooling.cli:main"
 
 [tool.setuptools.packages.find]
-include = ["installer_prototype*"]
+where = ["tooling"]
+include = ["installer_tooling*"]
 
 [tool.setuptools.package-data]
-installer_prototype = ["assets/*"]
+installer_tooling = ["assets/*"]

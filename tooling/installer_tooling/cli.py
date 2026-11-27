@@ -6,13 +6,14 @@ import sys
 from .bundle import assemble, load_bundle
 from .common import TARGETS
 from .demo import create
-from .manager import build_installer, check_updates, launch
+from .qt_engine import build_installer
+from .reference_client import check_updates, launch
 from .repository import publish, select
 from .registry_updates import publish_registry, resolve
 
 
 def parser():
-    p = argparse.ArgumentParser(description="WPILib Qt IFW prototype")
+    p = argparse.ArgumentParser(description="WPILib package publishing and development tools")
     sub = p.add_subparsers(dest="action", required=True)
     demo = sub.add_parser("demo", help="Generate synthetic repositories and throwaway signing keys")
     demo.add_argument("--output", type=Path, required=True)

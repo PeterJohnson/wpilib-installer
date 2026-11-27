@@ -17,7 +17,7 @@ First create independent TUF roots and role keys using [the TUF setup guide](tuf
 Generate a distinct Ed25519 key for each publisher, one for the registry authority, and one for the bundle assembler. On a trusted administrative machine, this command writes a mode-0600 PKCS#8 PEM file and prints only the public key:
 
 ```sh
-python -c 'from installer_prototype.common import keygen; print(keygen("/secure/location/registry.pem"))'
+python -c 'from installer_tooling.common import keygen; print(keygen("/secure/location/registry.pem"))'
 ```
 
 Repeat with distinct paths for the other roles. Keep recovery copies outside GitHub; do not use demo keys. Git ignores PEM files, but that is not a substitute for keeping them outside the checkout and artifacts. Place the authority public key in the trusted `deployment/registries/<target>.json` bootstrap. Place each publisher public key and the bundle public key in the approved registry configuration. PEM private keys go into Actions secrets as their complete multiline text; do not base64-wrap them.

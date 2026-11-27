@@ -12,11 +12,11 @@ import sys
 import threading
 import time
 
-from check_rust_manager import app_path, unpack_manifest
-from installer_prototype.common import atomic_json, digest
-from installer_prototype.manager import inventory
-from installer_prototype.payload import verify_installed
-from installer_prototype.tuf_repository import DirectoryStore, publish_catalog
+from check_client_offline import app_path, unpack_manifest
+from installer_tooling.common import atomic_json, digest
+from installer_tooling.qt_engine import inventory
+from installer_tooling.payload import verify_installed
+from installer_tooling.tuf_repository import DirectoryStore, publish_catalog
 
 
 def check(a):

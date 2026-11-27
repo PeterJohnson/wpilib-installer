@@ -6,8 +6,8 @@ import unittest
 from unittest.mock import patch
 from urllib.error import URLError
 
-from installer_prototype.common import atomic_json, keygen, sign
-from installer_prototype.registry_updates import (cache_directory, cache_lock, publish_registry,
+from installer_tooling.common import atomic_json, keygen, sign
+from installer_tooling.registry_updates import (cache_directory, cache_lock, publish_registry,
                                                 refresh, registry_identity, resolve)
 
 
@@ -65,7 +65,7 @@ class RegistryUpdateTests(unittest.TestCase):
     def test_network_failure_uses_only_unexpired_verified_cache(self):
         self.publish(1, valid_days=1, offline_days=30)
         refresh(self.source, self.cache, now=self.now)
-        with patch("installer_prototype.registry_updates.read_json_url", side_effect=URLError("unavailable")):
+        with patch("installer_tooling.registry_updates.read_json_url", side_effect=URLError("unavailable")):
             view = refresh(self.source, self.cache, now=self.now + 10)
             self.assertEqual(view.status, "verified-cache")
             self.assertTrue(view.warning)
@@ -148,7 +148,7 @@ class RegistryUpdateTests(unittest.TestCase):
         self.publish(2)
         refresh(self.source, self.cache, now=self.now)
         saved = self.current().read_bytes()
-        with patch("installer_prototype.registry_updates.read_json_url", side_effect=AssertionError("network used")):
+        with patch("installer_tooling.registry_updates.read_json_url", side_effect=AssertionError("network used")):
             view = resolve(self.source, self.cache, bundle=bundle, now=self.now + 2 * 86400)
             self.assertEqual(view.summary()["revision"], 1)
             self.assertNotIn("new-profile", view.registry.get("profiles", {}))

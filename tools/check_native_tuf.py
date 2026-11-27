@@ -19,8 +19,8 @@ import sys
 from urllib.parse import urlparse, unquote
 from unittest.mock import patch
 
-from installer_prototype.common import atomic_json, canonical, digest, keygen, sign
-from installer_prototype.tuf_repository import (DirectoryStore, ROLES, create_root,
+from installer_tooling.common import atomic_json, canonical, digest, keygen, sign
+from installer_tooling.tuf_repository import (DirectoryStore, ROLES, create_root,
     encoded, fetch_catalog, publish_catalog, signer)
 from tuf.api.metadata import Metadata
 
@@ -40,7 +40,7 @@ def generate(root, count):
         k = keys[int(version >= 257)]
         if version == 257:
             k = {**k, 'old_root': keys[0]['root']}
-        with patch('installer_prototype.tuf_repository.datetime') as clock:
+        with patch('installer_tooling.tuf_repository.datetime') as clock:
             clock.now.return_value = datetime.now(timezone.utc) if version == count else datetime(2018, 1, 1, tzinfo=timezone.utc)
             previous = create_root(k, version=version, previous=previous, root_threshold=2)
         files[f'tuf/metadata/{version}.root.json'] = canonical(previous)
@@ -243,10 +243,10 @@ class Evaluation:
 
     def archival_cases(self, long_keys):
         from tests.test_archival import IndefiniteArchivalTests
-        from installer_prototype.registry_updates import resolve, validated_tuf_record, verified_record
-        from installer_prototype.archival import verify_archival
-        from installer_prototype.ci_publication import tuf_registry_release
-        from installer_prototype.tuf_repository import Fetcher
+        from installer_tooling.registry_updates import resolve, validated_tuf_record, verified_record
+        from installer_tooling.archival import verify_archival
+        from installer_tooling.ci_publication import tuf_registry_release
+        from installer_tooling.tuf_repository import Fetcher
 
         def boundary():
             f=IndefiniteArchivalTests();f.setUp()
@@ -270,7 +270,7 @@ class Evaluation:
                 assert verified_record(online,{**source,'public_key':new_public},mode='offline')==f.registry
                 before={p.relative_to(state).as_posix():p.read_bytes() for p in state.rglob('*') if p.is_file()}
                 # Existing archival implementation deliberately has no native-TUF call.
-                with patch.object(Fetcher,'_fetch',side_effect=AssertionError('archival network access')), patch('installer_prototype.archival.time.time',return_value=4102444800):
+                with patch.object(Fetcher,'_fetch',side_effect=AssertionError('archival network access')), patch('installer_tooling.archival.time.time',return_value=4102444800):
                     view=resolve(source,self.work/'archive-offline-cache',bundle=f.bundle)
                     assert view.record==f.record
                     assert self.ok(source_file,f.bundle,archive_state,mode='archive')['registry_revision']==1
@@ -294,7 +294,7 @@ class Evaluation:
         self.case('archival-signer-cannot-authorize-online-catalog',forged)
 
         def old_media_to_online():
-            from installer_prototype.registry_updates import registry_identity
+            from installer_tooling.registry_updates import registry_identity
             f=IndefiniteArchivalTests();f.setUp()
             try:
                 d,r,o,state=self.fixture('archival-to-long-online',long=True)
@@ -322,8 +322,8 @@ class Evaluation:
 
     def native_archival_cases(self):
         from tests.test_archival import IndefiniteArchivalTests
-        from installer_prototype.registry_updates import registry_identity, resolve
-        from installer_prototype.archival import verify_archival
+        from installer_tooling.registry_updates import registry_identity, resolve
+        from installer_tooling.archival import verify_archival
         for mutation in ('none','unicode','registry-signature','bundle-signature','wrong-pin','registry-binding','policy','publisher-identity'):
             def test(mutation=mutation):
                 f=IndefiniteArchivalTests();f.setUp()
@@ -371,7 +371,7 @@ class Evaluation:
 
     def existing_cases(self):
         if not self.existing:return
-        from installer_prototype.registry_updates import resolve
+        from installer_tooling.registry_updates import resolve
         source=json.loads(self.existing.read_text())
         view=resolve(source,self.work/'python-existing-cache')
         trusts={'registry':source['tuf'],**{name:repo['tuf'] for name,repo in view.registry['repositories'].items()}}

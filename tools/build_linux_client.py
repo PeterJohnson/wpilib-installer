@@ -15,9 +15,9 @@ def build_linux(assets):
     subprocess.run(['docker', 'run', '--rm', '--user', f'{os.getuid()}:{os.getgid()}',
                     '-v', f'{repo}:/work', '-v', f'{assets}:/assets', '-v', f'{cache}:/cargo',
                     '-e', 'CARGO_HOME=/cargo', '-e', 'WPILIB_ASSET_DIR=/assets',
-                    '-e', 'CARGO_TARGET_DIR=/work/manager/target/linux-contained',
+                    '-e', 'CARGO_TARGET_DIR=/work/client/target/linux-contained',
                     image, 'bash', '-euc',
-                    'python3 tools/package_rust_runtime.py --engine /assets/engine --output /assets/runtime.zip\n'
-                    'cargo build --locked --release --manifest-path manager/Cargo.toml\n'
-                    'cargo test --locked --release --manifest-path manager/Cargo.toml'], check=True)
-    return repo / 'manager/target/linux-contained/release/wpilib-manager'
+                    'python3 tools/package_linux_runtime.py --engine /assets/engine --output /assets/runtime.zip\n'
+                    'cargo build --locked --release --manifest-path client/Cargo.toml\n'
+                    'cargo test --locked --release --manifest-path client/Cargo.toml'], check=True)
+    return repo / 'client/target/linux-contained/release/wpilib-manager'
