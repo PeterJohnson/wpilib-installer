@@ -1,6 +1,6 @@
 """Collect the Linux runtime on the oldest supported build OS (Ubuntu 22.04).
-Build-time tool only: all dependency closure, fonts, software graphics and notices
-are embedded in the native executable. glibc and the OS loader stay host supplied.
+Build-time tool only: the Qt dependency closure, fonts and notices are embedded.
+The GUI uses host graphics; glibc and the OS loader stay host supplied.
 """
 import argparse
 import hashlib
@@ -14,12 +14,6 @@ import zipfile
 
 BASE = {'libc.so.6', 'libm.so.6', 'libpthread.so.0', 'libdl.so.2', 'librt.so.1',
         'libutil.so.1', 'libresolv.so.2', 'ld-linux-x86-64.so.2'}
-# dlopen dependencies are invisible to a simple ldd audit of the manager.
-DYNAMIC = ['libX11.so.6', 'libX11-xcb.so.1', 'libXcursor.so.1', 'libXi.so.6',
-           'libXrandr.so.2', 'libXinerama.so.1', 'libXrender.so.1', 'libXext.so.6',
-           'libXfixes.so.3', 'libxkbcommon.so.0', 'libwayland-client.so.0',
-           'libwayland-cursor.so.0', 'libwayland-egl.so.1', 'libGL.so.1',
-           'libEGL.so.1', 'libGLX_mesa.so.0', 'libEGL_mesa.so.0', 'libgcc_s.so.1']
 
 
 def run(*args):
@@ -49,15 +43,8 @@ def dependencies(path):
 def package(engine, output):
     if 'VERSION_ID="22.04"' not in Path('/etc/os-release').read_text():
         raise ValueError('Build the Linux runtime in the pinned Ubuntu 22.04 builder')
-    paths = {}
-    for line in run('/sbin/ldconfig', '-p').splitlines():
-        m = re.match(r'\s*(\S+) \(.*x86-64.*\) => (.+)', line)
-        if m:
-            paths.setdefault(m[1], Path(m[2]))
     libraries = {}
-    pending = [Path(engine), *(paths[name] for name in DYNAMIC)]
-    driver = Path('/usr/lib/x86_64-linux-gnu/dri/swrast_dri.so')
-    pending.append(driver)
+    pending = [Path(engine)]
     visited = set()
     while pending:
         p = pending.pop()
@@ -68,24 +55,19 @@ def package(engine, output):
             if name not in BASE:
                 libraries[name] = source.resolve()
                 pending.append(source)
-    for name in DYNAMIC:
-        libraries[name] = paths[name].resolve()
+    forbidden = ('libLLVM', 'libGL.', 'libGLX', 'libEGL', 'libglapi', 'libgbm', 'libdrm', 'libicu', 'libxml2')
+    if any(name.startswith(forbidden) for name in libraries):
+        raise ValueError('Qt worker unexpectedly depends on a graphics driver stack')
     with tempfile.TemporaryDirectory() as tmp:
         root = Path(tmp)
         (root / 'lib').mkdir()
         for name, source in sorted(libraries.items()):
             shutil.copy2(source, root / 'lib' / name)
-        (root / 'dri').mkdir()
-        shutil.copy2(driver.resolve(), root / 'dri/swrast_dri.so')
         shutil.copytree('/usr/share/fonts/truetype/dejavu', root / 'share/fonts')
-        shutil.copytree('/usr/share/X11/xkb', root / 'share/X11/xkb')
-        shutil.copytree('/usr/share/X11/locale', root / 'share/X11/locale')
         (root / 'share/fonts.conf').write_text('''<?xml version="1.0"?>
 <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
 <fontconfig><dir prefix="relative">fonts</dir><cachedir prefix="xdg">fontconfig</cachedir></fontconfig>
 ''')
-        (root / 'share/egl.json').write_text(json.dumps({'file_format_version': '1.0.0',
-                                                       'ICD': {'library_path': 'libEGL_mesa.so.0'}}))
         # Preserve notices for all packages in the build environment, a superset
         # of the shipped runtime. The exact runtime files are hashed below.
         notices = root / 'licenses'
@@ -96,8 +78,8 @@ def package(engine, output):
         packages = run('dpkg-query', '-W', '-f=${binary:Package}\t${Version}\t${source:Package}\t${source:Version}\n')
         (notices / 'build-packages.tsv').write_text(packages)
         report = {'schema': 1, 'baseline': 'Ubuntu 22.04 / glibc 2.35, x86-64',
-                  'base_libraries': sorted(BASE), 'dynamic_dependencies': DYNAMIC,
-                  'graphics': 'bundled Mesa llvmpipe; no GPU driver or FUSE required',
+                  'base_libraries': sorted(BASE), 'scope': 'private headless Qt worker only',
+                  'graphics': 'host OpenGL/EGL and X11/Wayland for GUI; no graphics required for CLI',
                   'files': {p.relative_to(root).as_posix(): {'sha256': digest(p), 'size': p.stat().st_size}
                             for p in sorted(root.rglob('*')) if p.is_file()}}
         (root / 'runtime-manifest.json').write_text(json.dumps(report, indent=2))
@@ -107,7 +89,7 @@ def package(engine, output):
                 if p.is_file():
                     archive.write(p, p.relative_to(root))
         output.with_suffix('.json').write_text(json.dumps(report, indent=2))
-        print(f'Bundled {len(libraries)} libraries and software rendering: {output.stat().st_size} bytes', flush=True)
+        print(f'Bundled {len(libraries)} private Qt worker libraries: {output.stat().st_size} bytes', flush=True)
 
 
 if __name__ == '__main__':

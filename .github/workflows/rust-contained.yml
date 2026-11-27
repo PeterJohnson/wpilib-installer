@@ -78,11 +78,21 @@ jobs:
           prefix=()
           if [ "$RUNNER_OS" = Linux ]; then prefix=(xvfb-run -a); fi
           "${prefix[@]}" python -u tools/check_rust_online.py --app "$app" --fixture build/online-fixture --work build/online-fixture/native --report build/online-fixture/report.json
-      - name: Clean Linux dependency and offline lifecycle checks
+      - name: Headless Linux dependency and offline lifecycle checks
         if: runner.os == 'Linux'
         shell: bash
         run: |
           python -u tools/check_rust_clean_linux.py --app build/online-fixture/download/wpilib-manager --engine build/online-fixture/assets/engine --baseline build/online-fixture/baseline/*.zip --candidate build/online-fixture/candidate/*.zip --work build/clean-linux --report build/clean-linux-report.json
+      - uses: actions/upload-artifact@v4
+        if: runner.os == 'Linux'
+        with:
+          name: ubuntu-desktop-test-input
+          retention-days: 14
+          path: |
+            build/online-fixture/manager-application.zip
+            build/online-fixture/baseline/*.zip
+            build/online-fixture/candidate/*.zip
+          if-no-files-found: error
       - uses: actions/upload-artifact@v4
         with:
           name: self-contained-application-${{ matrix.os }}
@@ -106,4 +116,58 @@ jobs:
             build/clean-linux/*/*.png
             build/clean-linux/*/*.log
             build/clean-linux/*/base-packages.txt
+          if-no-files-found: warn
+
+  desktop:
+    needs: native
+    if: ${{ !inputs.platform || inputs.platform == 'all' || inputs.platform == 'ubuntu-24.04' }}
+    strategy:
+      fail-fast: false
+      matrix:
+        release: ['24.04.4', '26.04.1']
+    runs-on: ubuntu-24.04
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+      - name: Prepare the disposable VM host
+        run: |
+          # Free space for a Desktop ISO and an installed disk on this disposable runner.
+          sudo rm -rf /usr/local/lib/android /opt/ghc
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends qemu-system-x86 qemu-utils xorriso
+          sudo setfacl -m "u:$(id -u):rw" /dev/kvm
+      - uses: actions/download-artifact@v4
+        with:
+          name: ubuntu-desktop-test-input
+          path: build/desktop-input
+      - name: Unpack the delivered executable
+        run: |
+          python - <<'PYTHON'
+          from pathlib import Path
+          import zipfile
+          out=Path('build/desktop-input/application')
+          with zipfile.ZipFile('build/desktop-input/manager-application.zip') as z:
+              z.extractall(out)
+          (out/'wpilib-manager').chmod(0o755)
+          PYTHON
+      - name: Install stock Ubuntu Desktop and test host graphics
+        run: |
+          python -u tools/check_rust_desktop_vm.py --release '${{ matrix.release }}' --app build/desktop-input/application/wpilib-manager --baseline build/desktop-input/baseline/*.zip --candidate build/desktop-input/candidate/*.zip --iso-dir build/desktop-isos --work build/desktop-vm
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: ubuntu-desktop-evidence-${{ matrix.release }}
+          retention-days: 14
+          path: |
+            build/desktop-vm/report.json
+            build/desktop-vm/vm.json
+            build/desktop-vm/*-serial.log
+            build/desktop-vm/*-qemu.log
+            build/desktop-vm/install-sources.yaml
+            build/desktop-vm/share/*.json
+            build/desktop-vm/share/*.png
+            build/desktop-vm/share/*.log
+            build/desktop-vm/share/base-packages.txt
+            build/desktop-vm/share/install-logs/**
+            build/desktop-vm/share/install-error-logs/**
           if-no-files-found: warn

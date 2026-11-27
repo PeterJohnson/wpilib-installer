@@ -385,6 +385,7 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
         req.command,
         selected.iter().cloned().collect::<Vec<_>>().join(", ")
     ));
+    let _worker_runtime = crate::runtime::WorkerRuntime::prepare(&mut cmd)?;
     let mut child = cmd.spawn()?;
     let out = child.stdout.take().ok_or("Missing Qt output")?;
     let err = child.stderr.take().ok_or("Missing Qt error output")?;

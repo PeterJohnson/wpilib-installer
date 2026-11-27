@@ -20,7 +20,7 @@ The primary distribution requirement is **one user-facing application, preferabl
 | UX-8 | Authenticate the distributed manager and its executable contents, use platform signing/notarization where required, and provide a recoverable self-update handoff. Replacement must preserve discovery paths and the verified maintenance entry point. Cancelled/failed updates leave a usable manager or an explicit repair path. |
 | UX-9 | Preserve independent publisher trust, authenticated registry changes, verified caches, indefinitely authorized archival bundles, and sequential root catch-up beyond 256 rotations. No GUI, CLI, maintenance, or self-update route may silently bypass verification. |
 
-The [self-contained runtime implementation](self-contained-runtime.md) defines the platform baselines, embedded Linux runtime, static Windows CRT, dependency audits and clean-OS checks for UX-7.
+The [self-contained runtime implementation](self-contained-runtime.md) defines the platform baselines, Linux host graphics with private Qt worker libraries, static Windows CRT, dependency audits and clean-OS checks for UX-7.
 
 The single-application requirement concerns what the user downloads and operates, not a prohibition on internal processes, libraries, Qt inventory files, or installed packages. Hidden extraction must still preserve UX-2/5/7/8; it is not a blanket exemption. A separate GUI/CLI is the fallback ceiling, not permission to expose a third installer engine.
 

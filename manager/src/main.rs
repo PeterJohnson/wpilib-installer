@@ -50,14 +50,6 @@ impl Args {
     }
 }
 fn main() {
-    match runtime::run() {
-        Ok(Some(code)) => std::process::exit(code),
-        Ok(None) => {}
-        Err(e) => {
-            eprintln!("Unable to start the private runtime: {e}");
-            std::process::exit(1);
-        }
-    }
     let args = Args::parse();
     if let Some(command) = &args.command {
         match core::execute(&args.request(command), &|s| eprintln!("{s}")) {
