@@ -4465,6 +4465,7 @@ dependencies = [
  "fs2",
  "futures",
  "image",
+ "libloading",
  "reqwest",
  "roxmltree",
  "serde_json",

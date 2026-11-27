@@ -107,7 +107,10 @@ def main(shared):
                         worker_libs.add(library)
                     else:
                         assert '/wpilib-qt-runtime-' not in library, (label,library)
-                        assert library.startswith(('/lib/','/lib64/','/usr/lib/')), (label,library)
+                        if '/wpilib-x11-compat-' in library:
+                            assert backend == 'x11' and Path(library).name in ['libxcb-xkb.so.1','libxkbcommon-x11.so.0'], (label,library)
+                        else:
+                            assert library.startswith(('/lib/','/lib64/','/usr/lib/')), (label,library)
                         manager_libs.add(library)
                 shutil.copy2(log,shared/(backend+'-'+log.name+'.log'))
             assert bool(worker_libs) == worker,(label,worker_libs)

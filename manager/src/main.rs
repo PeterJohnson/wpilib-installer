@@ -62,8 +62,17 @@ fn main() {
                 std::process::exit(1)
             }
         }
-    } else if let Err(e) = ui::run(args) {
-        eprintln!("{e}");
-        std::process::exit(1)
+    } else {
+        let _gui_runtime = match runtime::GuiRuntime::prepare() {
+            Ok(runtime) => runtime,
+            Err(e) => {
+                eprintln!("Could not prepare the desktop runtime: {e}");
+                std::process::exit(1)
+            }
+        };
+        if let Err(e) = ui::run(args) {
+            eprintln!("{e}");
+            std::process::exit(1)
+        }
     }
 }
