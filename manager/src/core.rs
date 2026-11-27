@@ -162,9 +162,8 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
         .iter()
         .filter_map(|(id, current)| bundle.packages.get(id).map(|p| (id, current, p)))
         .filter(|(_, v, p)| {
-            bundle::version(v).unwrap() > vec![]
-                && bundle::version(bundle::strval(&p["version"]).unwrap()).unwrap()
-                    > bundle::version(v).unwrap()
+            bundle::version(bundle::strval(&p["version"]).unwrap()).unwrap()
+                > bundle::version(v).unwrap()
         })
         .map(|(id, current, p)| json!({"id":id,"installed":current,"available":p["version"]}))
         .collect::<Vec<_>>();
@@ -260,7 +259,7 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
         qt_executable(&engine_path(&root))?
     } else {
         bundle::extract(std::io::Cursor::new(ENGINE), &private.0, true)?;
-        qt_executable(&&private.0.join(if cfg!(windows) {
+        qt_executable(&private.0.join(if cfg!(windows) {
             "engine.exe"
         } else if cfg!(target_os = "macos") {
             "engine.app"
@@ -324,6 +323,15 @@ pub fn execute(req: &Request, log: &(dyn Fn(String) + Sync)) -> Result<Value, Er
     let status = child.wait()?;
     if !status.success() {
         return Err(format!("Qt operation failed ({status}). Previous bundle cache was retained; inspect installation before retrying.").into());
+    }
+    // IFW 4.11 uses QFileInfo::baseName while writing the data sidecar,
+    // which strips a leading-dot maintenance basename to an empty string.
+    // Its reader expects the complete basename. Normalize this private sidecar
+    // after every successful operation, including maintenance rewrites.
+    let short_data = root.join(".dat");
+    if short_data.is_file() {
+        atomic(&root.join(".wpilib-engine.dat"), &fs::read(&short_data)?)?;
+        fs::remove_file(short_data)?;
     }
     let after = bundle::inventory(&root)?;
     for id in &selected {

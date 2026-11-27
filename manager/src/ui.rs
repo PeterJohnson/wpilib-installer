@@ -106,13 +106,14 @@ impl App {
         let phase = phase.to_owned();
         let image_path = report.with_extension(format!("{phase}.png"));
         let result = self.result.clone();
+        let logs = self.logs.clone();
         let error = self.error.clone();
         let first = self.start_capture.clone();
         let elapsed = self.started.elapsed().as_millis();
         let ctx = ctx.clone();
         let ctx_done = ctx.clone();
         ctx.request_screenshot(move|pixels|{let run=||->Result<(),Box<dyn std::error::Error>>{if let Some(p)=report.parent(){std::fs::create_dir_all(p)?;}let data:Vec<u8>=pixels.pixels.iter().flat_map(|p|p.to_array()).collect();image::save_buffer(&image_path,&data,pixels.size[0] as u32,pixels.size[1] as u32,image::ColorType::Rgba8)?;
-            std::fs::write(if phase=="startup"{report.with_extension("startup.json")}else{report.clone()},serde_json::to_vec_pretty(&json!({"native_window":native,"phase":phase,"elapsed_ms":elapsed,"size":pixels.size,"screenshot":image_path,"result":result,"error":error}))?)?;Ok(())};if let Err(e)=run(){eprintln!("Screenshot/report failed: {e}");}first.store(true,Ordering::SeqCst);if phase=="final"{ctx_done.send_viewport_cmd(egui::ViewportCommand::Close)}ctx_done.request_repaint();});
+            std::fs::write(if phase=="startup"{report.with_extension("startup.json")}else{report.clone()},serde_json::to_vec_pretty(&json!({"native_window":native,"phase":phase,"elapsed_ms":elapsed,"size":pixels.size,"screenshot":image_path,"result":result,"error":error,"logs":logs}))?)?;Ok(())};if let Err(e)=run(){eprintln!("Screenshot/report failed: {e}");}first.store(true,Ordering::SeqCst);if phase=="final"{ctx_done.send_viewport_cmd(egui::ViewportCommand::Close)}ctx_done.request_repaint();});
     }
 }
 impl eframe::App for App {
