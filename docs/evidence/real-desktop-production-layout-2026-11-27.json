@@ -1,0 +1,786 @@
+{
+  "schema": 1,
+  "workflow_run": 46082377041,
+  "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041",
+  "source_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+  "real_packages": true,
+  "checks_passed": 44,
+  "desktop": [
+    {
+      "release": "24.04.4",
+      "report_sha256": "2bd90674d47f6f4ca36738e07f8e10ec173280a776b0b87cbc7ba2f1a7a057c2",
+      "iso": {
+        "url": "https://releases.ubuntu.com/24.04/ubuntu-24.04.4-desktop-amd64.iso",
+        "sha256": "3a4c9877b483ab46d7c3fbe165a0db275e1ae3cfe56a5657e5a47c2f99a99d1e"
+      },
+      "hypervisor": "qemu-kvm",
+      "installation_source": "ubuntu-desktop",
+      "guest_added_packages": [],
+      "network": "no virtual network interface during installation or acceptance",
+      "install_seconds": 382.0,
+      "desktop_seconds": 135.1,
+      "application_sha256": "8cda4efbb5aa795af2406478285b1f8e4b7e752574b0aa6391ffd421d6db101c",
+      "os_release": "PRETTY_NAME=\"Ubuntu 24.04.4 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.4 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+      "root_mount": "/dev/vda2 / ext4 rw,relatime 0 0",
+      "kernel_cmdline": "BOOT_IMAGE=/boot/vmlinuz-6.17.0-14-generic root=UUID=783192d5-58fd-4fba-96c2-0081003fd1c6 ro quiet splash vt.handoff=7\n",
+      "network_interfaces": [
+        "lo"
+      ],
+      "client_environment": {
+        "PATH": "/no-external-runtimes",
+        "DISPLAY": ":0",
+        "WAYLAND_DISPLAY": "wayland-0"
+      },
+      "session": {
+        "XDG_SESSION_TYPE": "wayland",
+        "DISPLAY": ":0",
+        "WAYLAND_DISPLAY": "wayland-0"
+      },
+      "bundles": {
+        "baseline": "991efea54d89a7ca0d34ec9f379feb0b2efd4e8f4f826bc2c4690fe11ca8ea3b",
+        "candidate": "5bcb3067f05eb216fd93a2250381e137005ad492702792983fea16422acb3067"
+      },
+      "packages": {
+        "org.wpilib.advantagescope": {
+          "baseline": "26.0.1",
+          "candidate": "26.0.2",
+          "baseline_upstream": {
+            "asset": {
+              "sha256": "7945c042624191b56c1bc559017d108d5d0b5533c1eb72359dfd13a92f70b2bf",
+              "size": 173731546,
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-linux-x64.zip"
+            },
+            "executable": "tools/advantagescope/advantagescope-wpilib",
+            "license": {
+              "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+              "size": 1600,
+              "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.1/LICENSE"
+            },
+            "repository": "Mechanical-Advantage/AdvantageScope",
+            "tag": "v26.0.1"
+          },
+          "candidate_upstream": {
+            "asset": {
+              "sha256": "23fb0979dd7af489922aee974755713b63250ed74af79d291089098f7ad37428",
+              "size": 173769652,
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-linux-x64.zip"
+            },
+            "executable": "tools/advantagescope/advantagescope-wpilib",
+            "license": {
+              "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+              "size": 1600,
+              "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.2/LICENSE"
+            },
+            "repository": "Mechanical-Advantage/AdvantageScope",
+            "tag": "v26.0.2"
+          },
+          "baseline_files": 137,
+          "candidate_files": 137
+        },
+        "org.wpilib.elastic": {
+          "baseline": "2026.1.1",
+          "candidate": "2026.1.2",
+          "baseline_upstream": {
+            "asset": {
+              "sha256": "143c64f54a2533f6559486dfcaf1e084dc0f45b25a0b667252577c788b1a140a",
+              "size": 38423343,
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-Linux.zip"
+            },
+            "executable": "tools/elastic/elastic_dashboard",
+            "license": {
+              "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+              "size": 1099,
+              "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.1/LICENSE"
+            },
+            "repository": "Gold872/elastic_dashboard",
+            "tag": "v2026.1.1"
+          },
+          "candidate_upstream": {
+            "asset": {
+              "sha256": "eaae0808e244a34dc1b584ab82321fd109c6193a784a961a294af20d531d88af",
+              "size": 38423280,
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-Linux.zip"
+            },
+            "executable": "tools/elastic/elastic_dashboard",
+            "license": {
+              "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+              "size": 1099,
+              "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.2/LICENSE"
+            },
+            "repository": "Gold872/elastic_dashboard",
+            "tag": "v2026.1.2"
+          },
+          "baseline_files": 183,
+          "candidate_files": 183
+        }
+      },
+      "maintenance_without_media": {
+        "wayland": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "26.0.2",
+            "org.wpilib.elastic": "2026.1.2"
+          },
+          "obsolete_files_checked": 0
+        },
+        "x11": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "26.0.2",
+            "org.wpilib.elastic": "2026.1.2"
+          },
+          "obsolete_files_checked": 0
+        }
+      },
+      "checks": [
+        {
+          "name": "wayland-startup",
+          "passed": true,
+          "wall_seconds": 0.589
+        },
+        {
+          "name": "wayland-offline-install",
+          "passed": true,
+          "wall_seconds": 13.086
+        },
+        {
+          "name": "wayland-installed-startup",
+          "passed": true,
+          "wall_seconds": 0.295
+        },
+        {
+          "name": "wayland-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.574
+        },
+        {
+          "name": "wayland-discover-updates",
+          "passed": true,
+          "wall_seconds": 0.547
+        },
+        {
+          "name": "wayland-offline-upgrade",
+          "passed": true,
+          "wall_seconds": 9.277
+        },
+        {
+          "name": "wayland-cached-remove",
+          "passed": true,
+          "wall_seconds": 2.328
+        },
+        {
+          "name": "wayland-cached-reinstall",
+          "passed": true,
+          "wall_seconds": 6.313
+        },
+        {
+          "name": "wayland-cached-remove-elastic",
+          "passed": true,
+          "wall_seconds": 3.228
+        },
+        {
+          "name": "wayland-cached-reinstall-elastic",
+          "passed": true,
+          "wall_seconds": 2.897
+        },
+        {
+          "name": "wayland-final-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.918
+        },
+        {
+          "name": "x11-startup",
+          "passed": true,
+          "wall_seconds": 1.414
+        },
+        {
+          "name": "x11-offline-install",
+          "passed": true,
+          "wall_seconds": 10.953
+        },
+        {
+          "name": "x11-installed-startup",
+          "passed": true,
+          "wall_seconds": 0.273
+        },
+        {
+          "name": "x11-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.55
+        },
+        {
+          "name": "x11-discover-updates",
+          "passed": true,
+          "wall_seconds": 0.542
+        },
+        {
+          "name": "x11-offline-upgrade",
+          "passed": true,
+          "wall_seconds": 10.871
+        },
+        {
+          "name": "x11-cached-remove",
+          "passed": true,
+          "wall_seconds": 1.868
+        },
+        {
+          "name": "x11-cached-reinstall",
+          "passed": true,
+          "wall_seconds": 7.265
+        },
+        {
+          "name": "x11-cached-remove-elastic",
+          "passed": true,
+          "wall_seconds": 2.951
+        },
+        {
+          "name": "x11-cached-reinstall-elastic",
+          "passed": true,
+          "wall_seconds": 2.283
+        },
+        {
+          "name": "x11-final-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.551
+        }
+      ],
+      "manager_library_origins": [
+        "/lib/x86_64-linux-gnu/libEGL.so.1",
+        "/lib/x86_64-linux-gnu/libEGL_mesa.so.0",
+        "/lib/x86_64-linux-gnu/libGL.so.1",
+        "/lib/x86_64-linux-gnu/libGLX.so.0",
+        "/lib/x86_64-linux-gnu/libGLX_mesa.so.0",
+        "/lib/x86_64-linux-gnu/libGLdispatch.so.0",
+        "/lib/x86_64-linux-gnu/libLLVM.so.20.1",
+        "/lib/x86_64-linux-gnu/libVkLayer_MESA_device_select.so",
+        "/lib/x86_64-linux-gnu/libX11-xcb.so.1",
+        "/lib/x86_64-linux-gnu/libX11.so.6",
+        "/lib/x86_64-linux-gnu/libXau.so.6",
+        "/lib/x86_64-linux-gnu/libXcursor.so.1",
+        "/lib/x86_64-linux-gnu/libXdmcp.so.6",
+        "/lib/x86_64-linux-gnu/libXext.so.6",
+        "/lib/x86_64-linux-gnu/libXfixes.so.3",
+        "/lib/x86_64-linux-gnu/libXi.so.6",
+        "/lib/x86_64-linux-gnu/libXrender.so.1",
+        "/lib/x86_64-linux-gnu/libXxf86vm.so.1",
+        "/lib/x86_64-linux-gnu/libbsd.so.0",
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libdrm.so.2",
+        "/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1",
+        "/lib/x86_64-linux-gnu/libdrm_intel.so.1",
+        "/lib/x86_64-linux-gnu/libedit.so.2",
+        "/lib/x86_64-linux-gnu/libelf.so.1",
+        "/lib/x86_64-linux-gnu/libexpat.so.1",
+        "/lib/x86_64-linux-gnu/libffi.so.8",
+        "/lib/x86_64-linux-gnu/libgallium-25.2.8-0ubuntu0.24.04.1.so",
+        "/lib/x86_64-linux-gnu/libgbm.so.1",
+        "/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "/lib/x86_64-linux-gnu/libicudata.so.74",
+        "/lib/x86_64-linux-gnu/libicuuc.so.74",
+        "/lib/x86_64-linux-gnu/liblzma.so.5",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib/x86_64-linux-gnu/libmd.so.0",
+        "/lib/x86_64-linux-gnu/libpciaccess.so.0",
+        "/lib/x86_64-linux-gnu/libsensors.so.5",
+        "/lib/x86_64-linux-gnu/libstdc++.so.6",
+        "/lib/x86_64-linux-gnu/libtinfo.so.6",
+        "/lib/x86_64-linux-gnu/libvulkan.so.1",
+        "/lib/x86_64-linux-gnu/libvulkan_asahi.so",
+        "/lib/x86_64-linux-gnu/libvulkan_gfxstream.so",
+        "/lib/x86_64-linux-gnu/libvulkan_intel.so",
+        "/lib/x86_64-linux-gnu/libvulkan_intel_hasvk.so",
+        "/lib/x86_64-linux-gnu/libvulkan_lvp.so",
+        "/lib/x86_64-linux-gnu/libvulkan_nouveau.so",
+        "/lib/x86_64-linux-gnu/libvulkan_radeon.so",
+        "/lib/x86_64-linux-gnu/libvulkan_virtio.so",
+        "/lib/x86_64-linux-gnu/libwayland-client.so.0",
+        "/lib/x86_64-linux-gnu/libwayland-egl.so.1",
+        "/lib/x86_64-linux-gnu/libxcb-dri3.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-glx.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-present.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-randr.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-sync.so.1",
+        "/lib/x86_64-linux-gnu/libxcb-xfixes.so.0",
+        "/lib/x86_64-linux-gnu/libxcb-xkb.so.1",
+        "/lib/x86_64-linux-gnu/libxcb.so.1",
+        "/lib/x86_64-linux-gnu/libxkbcommon-x11.so.0",
+        "/lib/x86_64-linux-gnu/libxkbcommon.so.0",
+        "/lib/x86_64-linux-gnu/libxml2.so.2",
+        "/lib/x86_64-linux-gnu/libxshmfence.so.1",
+        "/lib/x86_64-linux-gnu/libz.so.1",
+        "/lib/x86_64-linux-gnu/libzstd.so.1",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "worker_library_origins": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libdl.so.2",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib/x86_64-linux-gnu/libpthread.so.0",
+        "/lib/x86_64-linux-gnu/libresolv.so.2",
+        "/lib/x86_64-linux-gnu/librt.so.1",
+        "/lib/x86_64-linux-gnu/libutil.so.1",
+        "/lib64/ld-linux-x86-64.so.2",
+        "<private-qt-runtime>/lib/libX11-xcb.so.1",
+        "<private-qt-runtime>/lib/libX11.so.6",
+        "<private-qt-runtime>/lib/libXau.so.6",
+        "<private-qt-runtime>/lib/libXdmcp.so.6",
+        "<private-qt-runtime>/lib/libbrotlicommon.so.1",
+        "<private-qt-runtime>/lib/libbrotlidec.so.1",
+        "<private-qt-runtime>/lib/libbsd.so.0",
+        "<private-qt-runtime>/lib/libbz2.so.1",
+        "<private-qt-runtime>/lib/libcap.so.2",
+        "<private-qt-runtime>/lib/libdbus-1.so.3",
+        "<private-qt-runtime>/lib/libexpat.so.1",
+        "<private-qt-runtime>/lib/libfontconfig.so.1",
+        "<private-qt-runtime>/lib/libfreetype.so.6",
+        "<private-qt-runtime>/lib/libgcc_s.so.1",
+        "<private-qt-runtime>/lib/libgcrypt.so.20",
+        "<private-qt-runtime>/lib/libgpg-error.so.0",
+        "<private-qt-runtime>/lib/liblz4.so.1",
+        "<private-qt-runtime>/lib/liblzma.so.5",
+        "<private-qt-runtime>/lib/libmd.so.0",
+        "<private-qt-runtime>/lib/libpng16.so.16",
+        "<private-qt-runtime>/lib/libstdc++.so.6",
+        "<private-qt-runtime>/lib/libsystemd.so.0",
+        "<private-qt-runtime>/lib/libuuid.so.1",
+        "<private-qt-runtime>/lib/libxcb-icccm.so.4",
+        "<private-qt-runtime>/lib/libxcb-image.so.0",
+        "<private-qt-runtime>/lib/libxcb-keysyms.so.1",
+        "<private-qt-runtime>/lib/libxcb-randr.so.0",
+        "<private-qt-runtime>/lib/libxcb-render-util.so.0",
+        "<private-qt-runtime>/lib/libxcb-render.so.0",
+        "<private-qt-runtime>/lib/libxcb-shape.so.0",
+        "<private-qt-runtime>/lib/libxcb-shm.so.0",
+        "<private-qt-runtime>/lib/libxcb-sync.so.1",
+        "<private-qt-runtime>/lib/libxcb-util.so.1",
+        "<private-qt-runtime>/lib/libxcb-xfixes.so.0",
+        "<private-qt-runtime>/lib/libxcb-xkb.so.1",
+        "<private-qt-runtime>/lib/libxcb.so.1",
+        "<private-qt-runtime>/lib/libxkbcommon-x11.so.0",
+        "<private-qt-runtime>/lib/libxkbcommon.so.0",
+        "<private-qt-runtime>/lib/libz.so.1",
+        "<private-qt-runtime>/lib/libzstd.so.1"
+      ],
+      "package_inventory_sha256": "15ba5d58355319f27c2255964022d9e0f7273dc38afb7a798427fdacced873da",
+      "screenshots": {
+        "wayland-cached-remove-elastic.final.png": "f26d8caa00ee3bb29b3380c178107757396aba99ca975e313797b2ecba2d71d7",
+        "wayland-cached-remove-elastic.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-cached-remove.final.png": "c9b38724d29ae882ecfd068cb0e0d62e6a94cc6078774eade11d48942367e28f",
+        "wayland-cached-remove.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-installed-startup.final.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-installed-startup.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-offline-install.final.png": "7a41dc0d848a04fb3d5759d1b3d670810ea05d298d4958873bd40ae0cb228da3",
+        "wayland-offline-install.startup.png": "c1a0d4ac162b4adb6c6b651cf5981bb4a31311848634f1ff0912652238e17214",
+        "wayland-offline-upgrade.final.png": "daf5a9233a10721cb39db9fd4e8246d2befd85910022c78c21cbfe250ab5c4e7",
+        "wayland-offline-upgrade.startup.png": "c1a0d4ac162b4adb6c6b651cf5981bb4a31311848634f1ff0912652238e17214",
+        "wayland-startup.final.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-startup.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "x11-cached-remove-elastic.final.png": "6406849813f53599c70d56721f385dbac1ce95a3d5d288df585650881954aabc",
+        "x11-cached-remove-elastic.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-cached-remove.final.png": "1c08153fd337cb69311e381f65a4d4bdc6723cdf34aea0555db77788fc4d1bc4",
+        "x11-cached-remove.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-installed-startup.final.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-installed-startup.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-offline-install.final.png": "1d1c601e2f990c63199d64f7e46c7415bfc315bee9e1b2b836eb2ff644d9905f",
+        "x11-offline-install.startup.png": "776ee8db2f2ec8dd37b19e433ff223d6e7019e6f798fa543b52a431d54239957",
+        "x11-offline-upgrade.final.png": "36244d4b13d4d7048c6d76b9e47abef810b575be5edb291f306cb1fbcfc2ff6f",
+        "x11-offline-upgrade.startup.png": "83b6b9d956c8298289b523e712ae94d0c31491081bdd2524f4d1d8893b45fc1a",
+        "x11-startup.final.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-startup.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8"
+      }
+    },
+    {
+      "release": "26.04.1",
+      "report_sha256": "0919c1d5d37ecd8e4c78a40ee7c48743e0359f912eda6e69f07d3678d95e3d41",
+      "iso": {
+        "url": "https://releases.ubuntu.com/26.04/ubuntu-26.04.1-desktop-amd64.iso",
+        "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f"
+      },
+      "hypervisor": "qemu-kvm",
+      "installation_source": "ubuntu-desktop",
+      "guest_added_packages": [],
+      "network": "no virtual network interface during installation or acceptance",
+      "install_seconds": 472.1,
+      "desktop_seconds": 108.4,
+      "application_sha256": "8cda4efbb5aa795af2406478285b1f8e4b7e752574b0aa6391ffd421d6db101c",
+      "os_release": "PRETTY_NAME=\"Ubuntu 26.04.1 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"26.04\"\nVERSION=\"26.04.1 LTS (Resolute Raccoon)\"\nVERSION_CODENAME=resolute\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=resolute\nLOGO=ubuntu-logo\n",
+      "root_mount": "/dev/vda2 / ext4 rw,relatime 0 0",
+      "kernel_cmdline": "BOOT_IMAGE=/boot/vmlinuz-7.0.0-30-generic root=UUID=60c26049-1c56-4e8e-bd40-482997185272 ro console=ttyS0,115200n8 crashkernel=2G-4G:320M,4G-32G:512M,32G-64G:1024M,64G-128G:2048M,128G-:4096M\n",
+      "network_interfaces": [
+        "lo"
+      ],
+      "client_environment": {
+        "PATH": "/no-external-runtimes",
+        "DISPLAY": ":0",
+        "WAYLAND_DISPLAY": "wayland-0"
+      },
+      "session": {
+        "XDG_SESSION_TYPE": "wayland",
+        "DISPLAY": ":0",
+        "WAYLAND_DISPLAY": "wayland-0"
+      },
+      "bundles": {
+        "baseline": "991efea54d89a7ca0d34ec9f379feb0b2efd4e8f4f826bc2c4690fe11ca8ea3b",
+        "candidate": "5bcb3067f05eb216fd93a2250381e137005ad492702792983fea16422acb3067"
+      },
+      "packages": {
+        "org.wpilib.advantagescope": {
+          "baseline": "26.0.1",
+          "candidate": "26.0.2",
+          "baseline_upstream": {
+            "asset": {
+              "sha256": "7945c042624191b56c1bc559017d108d5d0b5533c1eb72359dfd13a92f70b2bf",
+              "size": 173731546,
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.1/advantagescope-wpilib-linux-x64.zip"
+            },
+            "executable": "tools/advantagescope/advantagescope-wpilib",
+            "license": {
+              "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+              "size": 1600,
+              "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.1/LICENSE"
+            },
+            "repository": "Mechanical-Advantage/AdvantageScope",
+            "tag": "v26.0.1"
+          },
+          "candidate_upstream": {
+            "asset": {
+              "sha256": "23fb0979dd7af489922aee974755713b63250ed74af79d291089098f7ad37428",
+              "size": 173769652,
+              "url": "https://github.com/Mechanical-Advantage/AdvantageScope/releases/download/v26.0.2/advantagescope-wpilib-linux-x64.zip"
+            },
+            "executable": "tools/advantagescope/advantagescope-wpilib",
+            "license": {
+              "sha256": "e803095555f5a2a7198296cafdc3e691f398a8024cc75146f9e6502e48354e9a",
+              "size": 1600,
+              "url": "https://raw.githubusercontent.com/Mechanical-Advantage/AdvantageScope/v26.0.2/LICENSE"
+            },
+            "repository": "Mechanical-Advantage/AdvantageScope",
+            "tag": "v26.0.2"
+          },
+          "baseline_files": 137,
+          "candidate_files": 137
+        },
+        "org.wpilib.elastic": {
+          "baseline": "2026.1.1",
+          "candidate": "2026.1.2",
+          "baseline_upstream": {
+            "asset": {
+              "sha256": "143c64f54a2533f6559486dfcaf1e084dc0f45b25a0b667252577c788b1a140a",
+              "size": 38423343,
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.1/Elastic-WPILib-Linux.zip"
+            },
+            "executable": "tools/elastic/elastic_dashboard",
+            "license": {
+              "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+              "size": 1099,
+              "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.1/LICENSE"
+            },
+            "repository": "Gold872/elastic_dashboard",
+            "tag": "v2026.1.1"
+          },
+          "candidate_upstream": {
+            "asset": {
+              "sha256": "eaae0808e244a34dc1b584ab82321fd109c6193a784a961a294af20d531d88af",
+              "size": 38423280,
+              "url": "https://github.com/Gold872/elastic_dashboard/releases/download/v2026.1.2/Elastic-WPILib-Linux.zip"
+            },
+            "executable": "tools/elastic/elastic_dashboard",
+            "license": {
+              "sha256": "b5473e2bcf08d0745aec6703747e57e4bca592e04a3a06c6fb55c93a8822081d",
+              "size": 1099,
+              "url": "https://raw.githubusercontent.com/Gold872/elastic_dashboard/v2026.1.2/LICENSE"
+            },
+            "repository": "Gold872/elastic_dashboard",
+            "tag": "v2026.1.2"
+          },
+          "baseline_files": 183,
+          "candidate_files": 183
+        }
+      },
+      "maintenance_without_media": {
+        "wayland": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "26.0.2",
+            "org.wpilib.elastic": "2026.1.2"
+          },
+          "obsolete_files_checked": 0
+        },
+        "x11": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "26.0.2",
+            "org.wpilib.elastic": "2026.1.2"
+          },
+          "obsolete_files_checked": 0
+        }
+      },
+      "checks": [
+        {
+          "name": "wayland-startup",
+          "passed": true,
+          "wall_seconds": 0.304
+        },
+        {
+          "name": "wayland-offline-install",
+          "passed": true,
+          "wall_seconds": 8.358
+        },
+        {
+          "name": "wayland-installed-startup",
+          "passed": true,
+          "wall_seconds": 0.216
+        },
+        {
+          "name": "wayland-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.598
+        },
+        {
+          "name": "wayland-discover-updates",
+          "passed": true,
+          "wall_seconds": 0.601
+        },
+        {
+          "name": "wayland-offline-upgrade",
+          "passed": true,
+          "wall_seconds": 7.417
+        },
+        {
+          "name": "wayland-cached-remove",
+          "passed": true,
+          "wall_seconds": 1.237
+        },
+        {
+          "name": "wayland-cached-reinstall",
+          "passed": true,
+          "wall_seconds": 4.612
+        },
+        {
+          "name": "wayland-cached-remove-elastic",
+          "passed": true,
+          "wall_seconds": 1.239
+        },
+        {
+          "name": "wayland-cached-reinstall-elastic",
+          "passed": true,
+          "wall_seconds": 1.412
+        },
+        {
+          "name": "wayland-final-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.597
+        },
+        {
+          "name": "x11-startup",
+          "passed": true,
+          "wall_seconds": 0.226
+        },
+        {
+          "name": "x11-offline-install",
+          "passed": true,
+          "wall_seconds": 8.013
+        },
+        {
+          "name": "x11-installed-startup",
+          "passed": true,
+          "wall_seconds": 0.234
+        },
+        {
+          "name": "x11-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.602
+        },
+        {
+          "name": "x11-discover-updates",
+          "passed": true,
+          "wall_seconds": 0.605
+        },
+        {
+          "name": "x11-offline-upgrade",
+          "passed": true,
+          "wall_seconds": 7.833
+        },
+        {
+          "name": "x11-cached-remove",
+          "passed": true,
+          "wall_seconds": 1.327
+        },
+        {
+          "name": "x11-cached-reinstall",
+          "passed": true,
+          "wall_seconds": 4.59
+        },
+        {
+          "name": "x11-cached-remove-elastic",
+          "passed": true,
+          "wall_seconds": 1.297
+        },
+        {
+          "name": "x11-cached-reinstall-elastic",
+          "passed": true,
+          "wall_seconds": 1.402
+        },
+        {
+          "name": "x11-final-cached-verification",
+          "passed": true,
+          "wall_seconds": 0.598
+        }
+      ],
+      "manager_library_origins": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib/x86_64-linux-gnu/libEGL.so.1",
+        "/usr/lib/x86_64-linux-gnu/libEGL_mesa.so.0",
+        "/usr/lib/x86_64-linux-gnu/libGL.so.1",
+        "/usr/lib/x86_64-linux-gnu/libGLX.so.0",
+        "/usr/lib/x86_64-linux-gnu/libGLX_mesa.so.0",
+        "/usr/lib/x86_64-linux-gnu/libGLdispatch.so.0",
+        "/usr/lib/x86_64-linux-gnu/libLLVM.so.21.1",
+        "/usr/lib/x86_64-linux-gnu/libVkLayer_MESA_device_select.so",
+        "/usr/lib/x86_64-linux-gnu/libX11-xcb.so.1",
+        "/usr/lib/x86_64-linux-gnu/libX11.so.6",
+        "/usr/lib/x86_64-linux-gnu/libXau.so.6",
+        "/usr/lib/x86_64-linux-gnu/libXcursor.so.1",
+        "/usr/lib/x86_64-linux-gnu/libXdmcp.so.6",
+        "/usr/lib/x86_64-linux-gnu/libXext.so.6",
+        "/usr/lib/x86_64-linux-gnu/libXfixes.so.3",
+        "/usr/lib/x86_64-linux-gnu/libXi.so.6",
+        "/usr/lib/x86_64-linux-gnu/libXrender.so.1",
+        "/usr/lib/x86_64-linux-gnu/libXxf86vm.so.1",
+        "/usr/lib/x86_64-linux-gnu/libbsd.so.0",
+        "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "/usr/lib/x86_64-linux-gnu/libdisplay-info.so.3",
+        "/usr/lib/x86_64-linux-gnu/libdrm.so.2",
+        "/usr/lib/x86_64-linux-gnu/libdrm_amdgpu.so.1",
+        "/usr/lib/x86_64-linux-gnu/libdrm_intel.so.1",
+        "/usr/lib/x86_64-linux-gnu/libedit.so.2",
+        "/usr/lib/x86_64-linux-gnu/libelf.so.1",
+        "/usr/lib/x86_64-linux-gnu/libexpat.so.1",
+        "/usr/lib/x86_64-linux-gnu/libffi.so.8",
+        "/usr/lib/x86_64-linux-gnu/libgallium-26.0.8-1ubuntu0.3.so",
+        "/usr/lib/x86_64-linux-gnu/libgbm.so.1",
+        "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+        "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "/usr/lib/x86_64-linux-gnu/libmd.so.0",
+        "/usr/lib/x86_64-linux-gnu/libpciaccess.so.0",
+        "/usr/lib/x86_64-linux-gnu/libsensors.so.5",
+        "/usr/lib/x86_64-linux-gnu/libstdc++.so.6",
+        "/usr/lib/x86_64-linux-gnu/libtinfo.so.6",
+        "/usr/lib/x86_64-linux-gnu/libvulkan.so.1",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_asahi.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_gfxstream.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_intel.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_intel_hasvk.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_lvp.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_nouveau.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_radeon.so",
+        "/usr/lib/x86_64-linux-gnu/libvulkan_virtio.so",
+        "/usr/lib/x86_64-linux-gnu/libwayland-client.so.0",
+        "/usr/lib/x86_64-linux-gnu/libwayland-egl.so.1",
+        "/usr/lib/x86_64-linux-gnu/libxcb-dri3.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb-glx.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb-present.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb-randr.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb-shm.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb-sync.so.1",
+        "/usr/lib/x86_64-linux-gnu/libxcb-xfixes.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxcb.so.1",
+        "/usr/lib/x86_64-linux-gnu/libxkbcommon.so.0",
+        "/usr/lib/x86_64-linux-gnu/libxml2.so.16",
+        "/usr/lib/x86_64-linux-gnu/libxshmfence.so.1",
+        "/usr/lib/x86_64-linux-gnu/libz.so.1",
+        "/usr/lib/x86_64-linux-gnu/libzstd.so.1",
+        "<private-x11-compat>/libxcb-xkb.so.1",
+        "<private-x11-compat>/libxkbcommon-x11.so.0",
+        "<private-x11-compat>/libxkbcommon.so.0"
+      ],
+      "worker_library_origins": [
+        "/lib64/ld-linux-x86-64.so.2",
+        "/usr/lib/x86_64-linux-gnu/libc.so.6",
+        "/usr/lib/x86_64-linux-gnu/libdl.so.2",
+        "/usr/lib/x86_64-linux-gnu/libm.so.6",
+        "/usr/lib/x86_64-linux-gnu/libpthread.so.0",
+        "/usr/lib/x86_64-linux-gnu/libresolv.so.2",
+        "/usr/lib/x86_64-linux-gnu/librt.so.1",
+        "/usr/lib/x86_64-linux-gnu/libutil.so.1",
+        "<private-qt-runtime>/lib/libX11-xcb.so.1",
+        "<private-qt-runtime>/lib/libX11.so.6",
+        "<private-qt-runtime>/lib/libXau.so.6",
+        "<private-qt-runtime>/lib/libXdmcp.so.6",
+        "<private-qt-runtime>/lib/libbrotlicommon.so.1",
+        "<private-qt-runtime>/lib/libbrotlidec.so.1",
+        "<private-qt-runtime>/lib/libbsd.so.0",
+        "<private-qt-runtime>/lib/libbz2.so.1",
+        "<private-qt-runtime>/lib/libcap.so.2",
+        "<private-qt-runtime>/lib/libdbus-1.so.3",
+        "<private-qt-runtime>/lib/libexpat.so.1",
+        "<private-qt-runtime>/lib/libfontconfig.so.1",
+        "<private-qt-runtime>/lib/libfreetype.so.6",
+        "<private-qt-runtime>/lib/libgcc_s.so.1",
+        "<private-qt-runtime>/lib/libgcrypt.so.20",
+        "<private-qt-runtime>/lib/libgpg-error.so.0",
+        "<private-qt-runtime>/lib/liblz4.so.1",
+        "<private-qt-runtime>/lib/liblzma.so.5",
+        "<private-qt-runtime>/lib/libmd.so.0",
+        "<private-qt-runtime>/lib/libpng16.so.16",
+        "<private-qt-runtime>/lib/libstdc++.so.6",
+        "<private-qt-runtime>/lib/libsystemd.so.0",
+        "<private-qt-runtime>/lib/libuuid.so.1",
+        "<private-qt-runtime>/lib/libxcb-icccm.so.4",
+        "<private-qt-runtime>/lib/libxcb-image.so.0",
+        "<private-qt-runtime>/lib/libxcb-keysyms.so.1",
+        "<private-qt-runtime>/lib/libxcb-randr.so.0",
+        "<private-qt-runtime>/lib/libxcb-render-util.so.0",
+        "<private-qt-runtime>/lib/libxcb-render.so.0",
+        "<private-qt-runtime>/lib/libxcb-shape.so.0",
+        "<private-qt-runtime>/lib/libxcb-shm.so.0",
+        "<private-qt-runtime>/lib/libxcb-sync.so.1",
+        "<private-qt-runtime>/lib/libxcb-util.so.1",
+        "<private-qt-runtime>/lib/libxcb-xfixes.so.0",
+        "<private-qt-runtime>/lib/libxcb-xkb.so.1",
+        "<private-qt-runtime>/lib/libxcb.so.1",
+        "<private-qt-runtime>/lib/libxkbcommon-x11.so.0",
+        "<private-qt-runtime>/lib/libxkbcommon.so.0",
+        "<private-qt-runtime>/lib/libz.so.1",
+        "<private-qt-runtime>/lib/libzstd.so.1"
+      ],
+      "package_inventory_sha256": "f2f91e5cd78fee22cd3719808ee268a1d3edc25232d740a16e278ee2a20bcd83",
+      "screenshots": {
+        "wayland-cached-remove-elastic.final.png": "6d6258bc47c2c19dfa94353821edfe2cd57efaea09586774914b577c6f8095ca",
+        "wayland-cached-remove-elastic.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-cached-remove.final.png": "16924555c4ac8bac5fc5bda9d82c1fb7646608f8c4f44d2d94616e84de61bc32",
+        "wayland-cached-remove.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-installed-startup.final.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-installed-startup.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-offline-install.final.png": "d371347a69292617f6bb3a082bbdef560e24ddc048efe82a74f16a942095c737",
+        "wayland-offline-install.startup.png": "c1a0d4ac162b4adb6c6b651cf5981bb4a31311848634f1ff0912652238e17214",
+        "wayland-offline-upgrade.final.png": "b634154f42fc7fa15d045a201b8c618ac9f253d72bb7ad42b61b644372de89fd",
+        "wayland-offline-upgrade.startup.png": "c1a0d4ac162b4adb6c6b651cf5981bb4a31311848634f1ff0912652238e17214",
+        "wayland-startup.final.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "wayland-startup.startup.png": "2fffee0c90e20cfcc4fc56220958d51aacef1743c2155d600109fbe5a6232444",
+        "x11-cached-remove-elastic.final.png": "493e15fe8406f6fbc011ee995ea034b0e86ae2a6bfad2354d5a91676fd1d9db7",
+        "x11-cached-remove-elastic.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-cached-remove.final.png": "b4ce28dd00000f85178230b68a23ab3242d942c6a93fac6e52d6ea724386eaee",
+        "x11-cached-remove.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-installed-startup.final.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-installed-startup.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-offline-install.final.png": "92f259afddae2618b9f15a79ca1a046249e69ffa1bcc69ef11d9b4ed9f0b17ac",
+        "x11-offline-install.startup.png": "776ee8db2f2ec8dd37b19e433ff223d6e7019e6f798fa543b52a431d54239957",
+        "x11-offline-upgrade.final.png": "f5d9f907515930dd3c55243d2c7403a67a13c2eb272b59728906ef8c1f76db87",
+        "x11-offline-upgrade.startup.png": "83b6b9d956c8298289b523e712ae94d0c31491081bdd2524f4d1d8893b45fc1a",
+        "x11-startup.final.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8",
+        "x11-startup.startup.png": "f289d36e867e03ead5cddbc267534c3d339bb682cba4efebd93477825179e1e8"
+      }
+    }
+  ],
+  "scope": "Installer startup, offline installation/upgrades and retained-cache maintenance of actual upstream payloads. Dashboard applications are not launched. No guest packages or network interface added."
+}

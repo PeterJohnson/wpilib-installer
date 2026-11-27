@@ -1,0 +1,1282 @@
+{
+  "schema": 1,
+  "source_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+  "pre_migration_real_gate": {
+    "run": 46079025954,
+    "evidence": "real-desktop-2026-11-27.json"
+  },
+  "runs": {
+    "client": {
+      "id": 46082370013,
+      "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "native (windows-2022)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140784028867"
+        },
+        {
+          "name": "native (ubuntu-24.04)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140784029057"
+        },
+        {
+          "name": "native (macos-15-intel)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140784029117"
+        },
+        {
+          "name": "native (macos-15)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140784029124"
+        },
+        {
+          "name": "desktop / desktop (26.04.1)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140789681311"
+        },
+        {
+          "name": "desktop / desktop (24.04.4)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013/job/140789681438"
+        }
+      ]
+    },
+    "tooling": {
+      "id": 46082373513,
+      "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "native (macos-15, wpilib-installer.app)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513/job/140784039168"
+        },
+        {
+          "name": "native (ubuntu-24.04, wpilib-installer)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513/job/140784039463"
+        },
+        {
+          "name": "native (macos-15-intel, wpilib-installer.app)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513/job/140784039482"
+        },
+        {
+          "name": "native (windows-2022, wpilib-installer.exe)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513/job/140784039584"
+        }
+      ]
+    },
+    "real": {
+      "id": 46082377041,
+      "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041",
+      "conclusion": "success",
+      "jobs": [
+        {
+          "name": "packages",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041/job/140784049427"
+        },
+        {
+          "name": "desktop / desktop (24.04.4)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041/job/140787856875"
+        },
+        {
+          "name": "desktop / desktop (26.04.1)",
+          "conclusion": "success",
+          "url": "https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041/job/140787856957"
+        }
+      ]
+    }
+  },
+  "client": [
+    {
+      "target": "linux-x64",
+      "application_sha256": "35044a2a67a6e2ad11f925f344c2f6436a667fd14c34119af8bc57fb09543984",
+      "checks": [
+        "offline-install-no-server",
+        "long-root-history-pending",
+        "resume-expired-root-through-1030",
+        "online-gui-discovery",
+        "renewed-metadata-accepted",
+        "timestamp-rollback-after-key-rotation",
+        "invalid-signature-no-fallback",
+        "independent-publisher-signature-rejected",
+        "partial-refresh-missing-snapshot",
+        "partial-refresh-floor-retained",
+        "partial-refresh-recovered",
+        "authenticated-registry-rollback",
+        "same-registry-revision-mutation",
+        "registry-recovered",
+        "bad-download-before-mutation",
+        "offline-to-online-upgrade",
+        "installed-default-online-source",
+        "http-503-verified-cache",
+        "http-404-not-cache-fallback",
+        "short-lived-cache-populated",
+        "expired-cache-rejected",
+        "expired-history-renewed",
+        "poisoned-root-cache",
+        "poisoned-checkpoint",
+        "poisoned-metadata-cache",
+        "corrupt-payload-cache-rejected",
+        "uncached-payload-fails-before-mutation",
+        "dynamic-publisher-profile",
+        "fresh-online-root-catchup",
+        "fresh-online-installation",
+        "connection-refused-verified-cache",
+        "verified-cache-remove",
+        "verified-cache-reinstall",
+        "archival-verification-after-online",
+        "online-floor-after-archival-use"
+      ],
+      "dependency_audit": {
+        "schema": 1,
+        "manager": {
+          "kind": "ELF",
+          "imports": [
+            "libgcc_s.so.1",
+            "libm.so.6",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "maximum_glibc": [
+            2,
+            35
+          ],
+          "policy": "base GNU/Linux ABI; worker dependencies embedded"
+        },
+        "private_qt_worker": {
+          "kind": "ELF",
+          "imports": [
+            "libutil.so.1",
+            "libbz2.so.1",
+            "liblzma.so.5",
+            "libxkbcommon-x11.so.0",
+            "libxcb-icccm.so.4",
+            "libxcb-image.so.0",
+            "libxcb-util.so.1",
+            "libxcb-keysyms.so.1",
+            "libxcb-randr.so.0",
+            "libxcb-render-util.so.0",
+            "libxcb-shm.so.0",
+            "libxcb-sync.so.1",
+            "libxcb-xfixes.so.0",
+            "libxcb-render.so.0",
+            "libxcb-shape.so.0",
+            "libxcb-xkb.so.1",
+            "libxcb.so.1",
+            "libX11-xcb.so.1",
+            "libX11.so.6",
+            "libfreetype.so.6",
+            "libfontconfig.so.1",
+            "libdbus-1.so.3",
+            "libxkbcommon.so.0",
+            "libresolv.so.2",
+            "libz.so.1",
+            "libzstd.so.1",
+            "libdl.so.2",
+            "librt.so.1",
+            "libpthread.so.0",
+            "libstdc++.so.6",
+            "libm.so.6",
+            "libgcc_s.so.1",
+            "libc.so.6",
+            "ld-linux-x86-64.so.2"
+          ],
+          "maximum_glibc": [
+            2,
+            28
+          ],
+          "policy": "base GNU/Linux ABI; worker dependencies embedded"
+        }
+      }
+    },
+    {
+      "target": "windows-x64",
+      "application_sha256": "a5eda56608b27c86bd29816486f3194e995413441bb000d83520224542213ec0",
+      "checks": [
+        "offline-install-no-server",
+        "long-root-history-pending",
+        "resume-expired-root-through-1030",
+        "online-gui-discovery",
+        "renewed-metadata-accepted",
+        "timestamp-rollback-after-key-rotation",
+        "invalid-signature-no-fallback",
+        "independent-publisher-signature-rejected",
+        "partial-refresh-missing-snapshot",
+        "partial-refresh-floor-retained",
+        "partial-refresh-recovered",
+        "authenticated-registry-rollback",
+        "same-registry-revision-mutation",
+        "registry-recovered",
+        "bad-download-before-mutation",
+        "offline-to-online-upgrade",
+        "installed-default-online-source",
+        "http-503-verified-cache",
+        "http-404-not-cache-fallback",
+        "short-lived-cache-populated",
+        "expired-cache-rejected",
+        "expired-history-renewed",
+        "poisoned-root-cache",
+        "poisoned-checkpoint",
+        "poisoned-metadata-cache",
+        "corrupt-payload-cache-rejected",
+        "uncached-payload-fails-before-mutation",
+        "dynamic-publisher-profile",
+        "fresh-online-root-catchup",
+        "fresh-online-installation",
+        "connection-refused-verified-cache",
+        "verified-cache-remove",
+        "verified-cache-reinstall",
+        "archival-verification-after-online",
+        "online-floor-after-archival-use"
+      ],
+      "dependency_audit": {
+        "schema": 1,
+        "manager": {
+          "kind": "PE",
+          "imports": [
+            "advapi32.dll",
+            "api-ms-win-core-synch-l1-2-0.dll",
+            "bcrypt.dll",
+            "bcryptprimitives.dll",
+            "combase.dll",
+            "dwmapi.dll",
+            "dxgi.dll",
+            "gdi32.dll",
+            "imm32.dll",
+            "kernel32.dll",
+            "ntdll.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "opengl32.dll",
+            "setupapi.dll",
+            "shell32.dll",
+            "user32.dll",
+            "uxtheme.dll",
+            "ws2_32.dll"
+          ],
+          "policy": "Windows 10/11 inbox DLLs only; no VC redistributable"
+        },
+        "private_qt_worker": {
+          "kind": "PE",
+          "imports": [
+            "advapi32.dll",
+            "api-ms-win-core-synch-l1-2-0.dll",
+            "api-ms-win-core-winrt-l1-1-0.dll",
+            "api-ms-win-core-winrt-string-l1-1-0.dll",
+            "api-ms-win-shcore-scaling-l1-1-1.dll",
+            "authz.dll",
+            "bcrypt.dll",
+            "comdlg32.dll",
+            "crypt32.dll",
+            "d3d11.dll",
+            "d3d12.dll",
+            "d3d9.dll",
+            "dwmapi.dll",
+            "dwrite.dll",
+            "dxgi.dll",
+            "gdi32.dll",
+            "imm32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "mpr.dll",
+            "ncrypt.dll",
+            "netapi32.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "secur32.dll",
+            "setupapi.dll",
+            "shell32.dll",
+            "shlwapi.dll",
+            "uiautomationcore.dll",
+            "user32.dll",
+            "userenv.dll",
+            "uxtheme.dll",
+            "version.dll",
+            "winhttp.dll",
+            "winmm.dll",
+            "ws2_32.dll",
+            "wtsapi32.dll"
+          ],
+          "policy": "Windows 10/11 inbox DLLs only; no VC redistributable"
+        }
+      }
+    },
+    {
+      "target": "macos-x64",
+      "application_sha256": "df103d65b97b89fae8034f652838952a02459ef955be973f7e61f59602d5600b",
+      "checks": [
+        "offline-install-no-server",
+        "long-root-history-pending",
+        "resume-expired-root-through-1030",
+        "online-gui-discovery",
+        "renewed-metadata-accepted",
+        "timestamp-rollback-after-key-rotation",
+        "invalid-signature-no-fallback",
+        "independent-publisher-signature-rejected",
+        "partial-refresh-missing-snapshot",
+        "partial-refresh-floor-retained",
+        "partial-refresh-recovered",
+        "authenticated-registry-rollback",
+        "same-registry-revision-mutation",
+        "registry-recovered",
+        "bad-download-before-mutation",
+        "offline-to-online-upgrade",
+        "installed-default-online-source",
+        "http-503-verified-cache",
+        "http-404-not-cache-fallback",
+        "short-lived-cache-populated",
+        "expired-cache-rejected",
+        "expired-history-renewed",
+        "poisoned-root-cache",
+        "poisoned-checkpoint",
+        "poisoned-metadata-cache",
+        "corrupt-payload-cache-rejected",
+        "uncached-payload-fails-before-mutation",
+        "dynamic-publisher-profile",
+        "fresh-online-root-catchup",
+        "fresh-online-installation",
+        "connection-refused-verified-cache",
+        "verified-cache-remove",
+        "verified-cache-reinstall",
+        "archival-verification-after-online",
+        "online-floor-after-archival-use"
+      ],
+      "dependency_audit": {
+        "schema": 1,
+        "manager": {
+          "kind": "Mach-O",
+          "imports": [
+            "/usr/lib/libobjc.A.dylib",
+            "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            "/usr/lib/libSystem.B.dylib",
+            "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+            "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+            "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+            "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+            "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+            "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+            "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+            "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+            "/usr/lib/libiconv.2.dylib",
+            "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+            "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices"
+          ],
+          "minimum_os": [
+            "13.0"
+          ],
+          "policy": "macOS inbox frameworks/libraries only"
+        },
+        "private_qt_worker": {
+          "kind": "Mach-O",
+          "imports": [
+            "/usr/lib/libbz2.1.0.dylib",
+            "/usr/lib/liblzma.5.dylib",
+            "/usr/lib/libiconv.2.dylib",
+            "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+            "/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface",
+            "/usr/lib/libz.1.dylib",
+            "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+            "/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO",
+            "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+            "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+            "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+            "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+            "/System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork",
+            "/usr/lib/libresolv.9.dylib",
+            "/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration",
+            "/System/Library/Frameworks/GSS.framework/Versions/A/GSS",
+            "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+            "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+            "/System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration",
+            "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+            "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+            "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+            "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+            "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+            "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+            "/usr/lib/libc++.1.dylib",
+            "/usr/lib/libSystem.B.dylib",
+            "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+            "/usr/lib/libobjc.A.dylib"
+          ],
+          "minimum_os": [
+            "12.0"
+          ],
+          "policy": "macOS inbox frameworks/libraries only"
+        }
+      }
+    },
+    {
+      "target": "macos-arm64",
+      "application_sha256": "a0bcddb7763e0c54d46da32ddf77a2fb21433db6da3ecf4b6b72558e1b4af343",
+      "checks": [
+        "offline-install-no-server",
+        "long-root-history-pending",
+        "resume-expired-root-through-1030",
+        "online-gui-discovery",
+        "renewed-metadata-accepted",
+        "timestamp-rollback-after-key-rotation",
+        "invalid-signature-no-fallback",
+        "independent-publisher-signature-rejected",
+        "partial-refresh-missing-snapshot",
+        "partial-refresh-floor-retained",
+        "partial-refresh-recovered",
+        "authenticated-registry-rollback",
+        "same-registry-revision-mutation",
+        "registry-recovered",
+        "bad-download-before-mutation",
+        "offline-to-online-upgrade",
+        "installed-default-online-source",
+        "http-503-verified-cache",
+        "http-404-not-cache-fallback",
+        "short-lived-cache-populated",
+        "expired-cache-rejected",
+        "expired-history-renewed",
+        "poisoned-root-cache",
+        "poisoned-checkpoint",
+        "poisoned-metadata-cache",
+        "corrupt-payload-cache-rejected",
+        "uncached-payload-fails-before-mutation",
+        "dynamic-publisher-profile",
+        "fresh-online-root-catchup",
+        "fresh-online-installation",
+        "connection-refused-verified-cache",
+        "verified-cache-remove",
+        "verified-cache-reinstall",
+        "archival-verification-after-online",
+        "online-floor-after-archival-use"
+      ],
+      "dependency_audit": {
+        "schema": 1,
+        "manager": {
+          "kind": "Mach-O",
+          "imports": [
+            "/usr/lib/libobjc.A.dylib",
+            "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            "/usr/lib/libSystem.B.dylib",
+            "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+            "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+            "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+            "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+            "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+            "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+            "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+            "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+            "/usr/lib/libiconv.2.dylib",
+            "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+            "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices"
+          ],
+          "minimum_os": [
+            "13.0"
+          ],
+          "policy": "macOS inbox frameworks/libraries only"
+        },
+        "private_qt_worker": {
+          "kind": "Mach-O",
+          "imports": [
+            "/usr/lib/libbz2.1.0.dylib",
+            "/usr/lib/liblzma.5.dylib",
+            "/usr/lib/libiconv.2.dylib",
+            "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+            "/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface",
+            "/usr/lib/libz.1.dylib",
+            "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+            "/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO",
+            "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+            "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+            "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+            "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+            "/System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork",
+            "/usr/lib/libresolv.9.dylib",
+            "/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration",
+            "/System/Library/Frameworks/GSS.framework/Versions/A/GSS",
+            "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+            "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+            "/System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration",
+            "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+            "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+            "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+            "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+            "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+            "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+            "/usr/lib/libc++.1.dylib",
+            "/usr/lib/libSystem.B.dylib",
+            "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+            "/usr/lib/libobjc.A.dylib",
+            "/usr/lib/libbz2.1.0.dylib",
+            "/usr/lib/liblzma.5.dylib",
+            "/usr/lib/libiconv.2.dylib",
+            "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+            "/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface",
+            "/usr/lib/libz.1.dylib",
+            "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+            "/System/Library/Frameworks/ImageIO.framework/Versions/A/ImageIO",
+            "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+            "/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText",
+            "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+            "/System/Library/Frameworks/Metal.framework/Versions/A/Metal",
+            "/System/Library/Frameworks/CFNetwork.framework/Versions/A/CFNetwork",
+            "/usr/lib/libresolv.9.dylib",
+            "/System/Library/Frameworks/SystemConfiguration.framework/Versions/A/SystemConfiguration",
+            "/System/Library/Frameworks/GSS.framework/Versions/A/GSS",
+            "/System/Library/Frameworks/IOKit.framework/Versions/A/IOKit",
+            "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+            "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+            "/System/Library/Frameworks/DiskArbitration.framework/Versions/A/DiskArbitration",
+            "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+            "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+            "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices",
+            "/System/Library/Frameworks/Security.framework/Versions/A/Security",
+            "/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers",
+            "/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL",
+            "/usr/lib/libc++.1.dylib",
+            "/usr/lib/libSystem.B.dylib",
+            "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+            "/usr/lib/libobjc.A.dylib"
+          ],
+          "minimum_os": [
+            "12.0",
+            "12.0"
+          ],
+          "policy": "macOS inbox frameworks/libraries only"
+        }
+      }
+    }
+  ],
+  "tooling": [
+    {
+      "runner": "ubuntu-24.04",
+      "tests": 110,
+      "passed": 109,
+      "skipped": 1,
+      "skip_reasons": [
+        "Native macOS xattr round trip"
+      ],
+      "test_log_sha256": "313481679fa4445fc33d1ad8dc6c0a39e7fb98759b1c120d9973b880f09f5a45",
+      "publication_gate": {
+        "baseline_sha256": "b2b735221c148cfd503031ec0619fbaab0d7f091b93f5ce7700e41340e7168c0",
+        "candidate_sha256": "849936d9b3857edfaff3b5cf580ebafb16627e3922b1d51776ba389003f25df9",
+        "checks": [
+          "fresh-install",
+          "profiles",
+          "baseline-install",
+          "offline-upgrade",
+          "older-bundle-no-downgrade"
+        ],
+        "host_target": "linux-x64",
+        "inventory": {
+          "org.robotpy.deploy": "1.0.0",
+          "org.robotpy.python": "1.0.0",
+          "org.robotpy.sdk": "1.0.0",
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.cpp": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.java": "1.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        },
+        "kind": "offline-acceptance",
+        "network_isolation": "network-namespace",
+        "schema": 1,
+        "sha256": "760c6d635021e417ecaafea013b9fd17605da7795ad6dd70334bf0ea000b0c21",
+        "status": "passed",
+        "suite": 2,
+        "target": "linux-x64",
+        "upgrade_mode": "previous-bundle",
+        "upstream_releases": {}
+      }
+    },
+    {
+      "runner": "windows-2022",
+      "tests": 110,
+      "passed": 108,
+      "skipped": 2,
+      "skip_reasons": [
+        "macOS symlink payloads are packaged on POSIX hosts",
+        "Native macOS xattr round trip"
+      ],
+      "test_log_sha256": "1773aa850f043bfafe648179092c9a4927e4defc90c4ce39c3fd3546097b9056",
+      "publication_gate": {
+        "baseline_sha256": "75917e1b6ca15ae5e7e487f310efce177d4853272d858b249e53a4237d2cc7f8",
+        "candidate_sha256": "57b4234a7e5c84ea1507b9d50f96cb515ead93189a44e72dcc7b62606546516e",
+        "checks": [
+          "fresh-install",
+          "profiles",
+          "baseline-install",
+          "offline-upgrade",
+          "older-bundle-no-downgrade"
+        ],
+        "host_target": "windows-x64",
+        "inventory": {
+          "org.robotpy.deploy": "1.0.0",
+          "org.robotpy.python": "1.0.0",
+          "org.robotpy.sdk": "1.0.0",
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.cpp": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.java": "1.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        },
+        "kind": "offline-acceptance",
+        "network_isolation": "program-firewall",
+        "schema": 1,
+        "sha256": "b345e69b6e85472c09cacb8f859c43b696444f19de2b66c66255652af8d571c1",
+        "status": "passed",
+        "suite": 2,
+        "target": "windows-x64",
+        "upgrade_mode": "previous-bundle",
+        "upstream_releases": {}
+      }
+    },
+    {
+      "runner": "macos-15-intel",
+      "tests": 110,
+      "passed": 110,
+      "skipped": 0,
+      "skip_reasons": [],
+      "test_log_sha256": "c370649f1312cfc8490a02f19f051ac7f4b23cb1201e80ef579b2b0e6580f7a1",
+      "publication_gate": {
+        "baseline_sha256": "f89659a0fb76308b8c362b72b8c4efdc4f86db5b06eca2f705f268785385f57a",
+        "candidate_sha256": "3fc5affdbebd6bd55c2ebf68197b0dd64afb6ce3073892f8d4407e42025d77e4",
+        "checks": [
+          "fresh-install",
+          "profiles",
+          "baseline-install",
+          "offline-upgrade",
+          "older-bundle-no-downgrade"
+        ],
+        "host_target": "macos-x64",
+        "inventory": {
+          "org.robotpy.deploy": "1.0.0",
+          "org.robotpy.python": "1.0.0",
+          "org.robotpy.sdk": "1.0.0",
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.cpp": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.java": "1.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        },
+        "kind": "offline-acceptance",
+        "network_isolation": "sandbox-exec",
+        "schema": 1,
+        "sha256": "8a6114cbb7a4b718367a2e19ce89b67b730df819be4c921a5f96934f40e887ac",
+        "status": "passed",
+        "suite": 2,
+        "target": "macos-x64",
+        "upgrade_mode": "previous-bundle",
+        "upstream_releases": {}
+      }
+    },
+    {
+      "runner": "macos-15",
+      "tests": 110,
+      "passed": 110,
+      "skipped": 0,
+      "skip_reasons": [],
+      "test_log_sha256": "4c115c96150cac6f99c52709345aab376c44d745efe9f951b523aef38752a904",
+      "publication_gate": {
+        "baseline_sha256": "f228200be28342072b855e91f8e93bc2a03c211d148bdd55db54f2715453b843",
+        "candidate_sha256": "07fa2a0fb790d2cc1bf9aea1e69a961ebbd0f5b02870e2f6b9ecaab3291e09e9",
+        "checks": [
+          "fresh-install",
+          "profiles",
+          "baseline-install",
+          "offline-upgrade",
+          "older-bundle-no-downgrade"
+        ],
+        "host_target": "macos-arm64",
+        "inventory": {
+          "org.robotpy.deploy": "1.0.0",
+          "org.robotpy.python": "1.0.0",
+          "org.robotpy.sdk": "1.0.0",
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.cpp": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.java": "1.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        },
+        "kind": "offline-acceptance",
+        "network_isolation": "sandbox-exec",
+        "schema": 1,
+        "sha256": "1e95ef74a9da5b6288a90a9904dc9468e0a4e8307232772c866964aa9cf43e37",
+        "status": "passed",
+        "suite": 2,
+        "target": "macos-arm64",
+        "upgrade_mode": "previous-bundle",
+        "upstream_releases": {}
+      }
+    }
+  ],
+  "scope": "Production-development layout migration; no production release or deployment enabled.",
+  "headless": {
+    "schema": 2,
+    "application_sha256": "35044a2a67a6e2ad11f925f344c2f6436a667fd14c34119af8bc57fb09543984",
+    "images": [
+      {
+        "image": "ubuntu:22.04",
+        "image_id": "sha256:4c738ec33362ed21d54f5e6ca4eadc9f2707fd6516cd7eb5be2a772dfdfaa938",
+        "digests": [
+          "ubuntu@sha256:b000e69a50ff940390233025e7a337fb8469b509e2334fa4d018ac30f3e18cdb"
+        ],
+        "checks": [
+          {
+            "name": "unbundled-worker-negative-control",
+            "passed": true,
+            "error": "/control/engine: error while loading shared libraries: libxkbcommon-x11.so.0: cannot open shared object file: No such file or directory\n"
+          },
+          {
+            "name": "verify-without-worker-runtime",
+            "passed": true,
+            "wall_seconds": 0.093
+          },
+          {
+            "name": "offline-install",
+            "passed": true,
+            "wall_seconds": 0.497
+          },
+          {
+            "name": "installed-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.093
+          },
+          {
+            "name": "discover-offline-updates",
+            "passed": true,
+            "wall_seconds": 0.096
+          },
+          {
+            "name": "offline-upgrade",
+            "passed": true,
+            "wall_seconds": 0.218
+          },
+          {
+            "name": "cached-remove",
+            "passed": true,
+            "wall_seconds": 0.215
+          },
+          {
+            "name": "cached-reinstall",
+            "passed": true,
+            "wall_seconds": 0.22
+          },
+          {
+            "name": "final-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.089
+          }
+        ],
+        "loaded_libraries": [
+          "ld-linux-x86-64.so.2",
+          "libX11-xcb.so.1",
+          "libX11.so.6",
+          "libXau.so.6",
+          "libXdmcp.so.6",
+          "libbrotlicommon.so.1",
+          "libbrotlidec.so.1",
+          "libbsd.so.0",
+          "libbz2.so.1",
+          "libc.so.6",
+          "libcap.so.2",
+          "libdbus-1.so.3",
+          "libdl.so.2",
+          "libexpat.so.1",
+          "libfontconfig.so.1",
+          "libfreetype.so.6",
+          "libgcc_s.so.1",
+          "libgcrypt.so.20",
+          "libgpg-error.so.0",
+          "liblz4.so.1",
+          "liblzma.so.5",
+          "libm.so.6",
+          "libmd.so.0",
+          "libpng16.so.16",
+          "libpthread.so.0",
+          "libresolv.so.2",
+          "librt.so.1",
+          "libstdc++.so.6",
+          "libsystemd.so.0",
+          "libutil.so.1",
+          "libuuid.so.1",
+          "libxcb-icccm.so.4",
+          "libxcb-image.so.0",
+          "libxcb-keysyms.so.1",
+          "libxcb-randr.so.0",
+          "libxcb-render-util.so.0",
+          "libxcb-render.so.0",
+          "libxcb-shape.so.0",
+          "libxcb-shm.so.0",
+          "libxcb-sync.so.1",
+          "libxcb-util.so.1",
+          "libxcb-xfixes.so.0",
+          "libxcb-xkb.so.1",
+          "libxcb.so.1",
+          "libxkbcommon-x11.so.0",
+          "libxkbcommon.so.0",
+          "libz.so.1",
+          "libzstd.so.1"
+        ],
+        "inventory": {
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        }
+      },
+      {
+        "image": "ubuntu:24.04",
+        "image_id": "sha256:2b147973fd863c93ced60f325461fe0e262b91317b008e6a2d961f13e81af0e4",
+        "digests": [
+          "ubuntu@sha256:562111b88caa79c71391c0c4d3c2114a7d5c35915c20561fd893cb1e07929e6b"
+        ],
+        "checks": [
+          {
+            "name": "unbundled-worker-negative-control",
+            "passed": true,
+            "error": "/control/engine: error while loading shared libraries: libxkbcommon-x11.so.0: cannot open shared object file: No such file or directory\n"
+          },
+          {
+            "name": "verify-without-worker-runtime",
+            "passed": true,
+            "wall_seconds": 0.16
+          },
+          {
+            "name": "offline-install",
+            "passed": true,
+            "wall_seconds": 0.55
+          },
+          {
+            "name": "installed-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.092
+          },
+          {
+            "name": "discover-offline-updates",
+            "passed": true,
+            "wall_seconds": 0.091
+          },
+          {
+            "name": "offline-upgrade",
+            "passed": true,
+            "wall_seconds": 0.221
+          },
+          {
+            "name": "cached-remove",
+            "passed": true,
+            "wall_seconds": 0.213
+          },
+          {
+            "name": "cached-reinstall",
+            "passed": true,
+            "wall_seconds": 0.23
+          },
+          {
+            "name": "final-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.093
+          }
+        ],
+        "loaded_libraries": [
+          "ld-linux-x86-64.so.2",
+          "libX11-xcb.so.1",
+          "libX11.so.6",
+          "libXau.so.6",
+          "libXdmcp.so.6",
+          "libbrotlicommon.so.1",
+          "libbrotlidec.so.1",
+          "libbsd.so.0",
+          "libbz2.so.1",
+          "libc.so.6",
+          "libcap.so.2",
+          "libdbus-1.so.3",
+          "libdl.so.2",
+          "libexpat.so.1",
+          "libfontconfig.so.1",
+          "libfreetype.so.6",
+          "libgcc_s.so.1",
+          "libgcrypt.so.20",
+          "libgpg-error.so.0",
+          "liblz4.so.1",
+          "liblzma.so.5",
+          "libm.so.6",
+          "libmd.so.0",
+          "libpng16.so.16",
+          "libpthread.so.0",
+          "libresolv.so.2",
+          "librt.so.1",
+          "libstdc++.so.6",
+          "libsystemd.so.0",
+          "libutil.so.1",
+          "libuuid.so.1",
+          "libxcb-icccm.so.4",
+          "libxcb-image.so.0",
+          "libxcb-keysyms.so.1",
+          "libxcb-randr.so.0",
+          "libxcb-render-util.so.0",
+          "libxcb-render.so.0",
+          "libxcb-shape.so.0",
+          "libxcb-shm.so.0",
+          "libxcb-sync.so.1",
+          "libxcb-util.so.1",
+          "libxcb-xfixes.so.0",
+          "libxcb-xkb.so.1",
+          "libxcb.so.1",
+          "libxkbcommon-x11.so.0",
+          "libxkbcommon.so.0",
+          "libz.so.1",
+          "libzstd.so.1"
+        ],
+        "inventory": {
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        }
+      },
+      {
+        "image": "ubuntu:26.04",
+        "image_id": "sha256:a8acf325a119cb4859b1ceb593341dd917bfdad2114561165e91a607ea2ba0c3",
+        "digests": [
+          "ubuntu@sha256:d66b366dac61b575bee2aef07e9c26e8070096fbe84a3d4d3eb0da069b5d76db"
+        ],
+        "checks": [
+          {
+            "name": "unbundled-worker-negative-control",
+            "passed": true,
+            "error": "/control/engine: error while loading shared libraries: libxkbcommon-x11.so.0: cannot open shared object file: No such file or directory\n"
+          },
+          {
+            "name": "verify-without-worker-runtime",
+            "passed": true,
+            "wall_seconds": 0.095
+          },
+          {
+            "name": "offline-install",
+            "passed": true,
+            "wall_seconds": 0.482
+          },
+          {
+            "name": "installed-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.088
+          },
+          {
+            "name": "discover-offline-updates",
+            "passed": true,
+            "wall_seconds": 0.085
+          },
+          {
+            "name": "offline-upgrade",
+            "passed": true,
+            "wall_seconds": 0.222
+          },
+          {
+            "name": "cached-remove",
+            "passed": true,
+            "wall_seconds": 0.211
+          },
+          {
+            "name": "cached-reinstall",
+            "passed": true,
+            "wall_seconds": 0.226
+          },
+          {
+            "name": "final-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.094
+          }
+        ],
+        "loaded_libraries": [
+          "ld-linux-x86-64.so.2",
+          "libX11-xcb.so.1",
+          "libX11.so.6",
+          "libXau.so.6",
+          "libXdmcp.so.6",
+          "libbrotlicommon.so.1",
+          "libbrotlidec.so.1",
+          "libbsd.so.0",
+          "libbz2.so.1",
+          "libc.so.6",
+          "libcap.so.2",
+          "libdbus-1.so.3",
+          "libdl.so.2",
+          "libexpat.so.1",
+          "libfontconfig.so.1",
+          "libfreetype.so.6",
+          "libgcc_s.so.1",
+          "libgcrypt.so.20",
+          "libgpg-error.so.0",
+          "liblz4.so.1",
+          "liblzma.so.5",
+          "libm.so.6",
+          "libmd.so.0",
+          "libpng16.so.16",
+          "libpthread.so.0",
+          "libresolv.so.2",
+          "librt.so.1",
+          "libstdc++.so.6",
+          "libsystemd.so.0",
+          "libutil.so.1",
+          "libuuid.so.1",
+          "libxcb-icccm.so.4",
+          "libxcb-image.so.0",
+          "libxcb-keysyms.so.1",
+          "libxcb-randr.so.0",
+          "libxcb-render-util.so.0",
+          "libxcb-render.so.0",
+          "libxcb-shape.so.0",
+          "libxcb-shm.so.0",
+          "libxcb-sync.so.1",
+          "libxcb-util.so.1",
+          "libxcb-xfixes.so.0",
+          "libxcb-xkb.so.1",
+          "libxcb.so.1",
+          "libxkbcommon-x11.so.0",
+          "libxkbcommon.so.0",
+          "libz.so.1",
+          "libzstd.so.1"
+        ],
+        "inventory": {
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        }
+      },
+      {
+        "image": "debian:12",
+        "image_id": "sha256:a36824f1b4c6892ddfeb448726ace7f338ee14b4113288ecc813e266370d5c90",
+        "digests": [
+          "debian@sha256:1d04200c2ece1d4d75a2a6f8e11ebce7d86a2ae28b34bb2c9cbb3ee9f4953e75"
+        ],
+        "checks": [
+          {
+            "name": "unbundled-worker-negative-control",
+            "passed": true,
+            "error": "/control/engine: error while loading shared libraries: libxkbcommon-x11.so.0: cannot open shared object file: No such file or directory\n"
+          },
+          {
+            "name": "verify-without-worker-runtime",
+            "passed": true,
+            "wall_seconds": 0.089
+          },
+          {
+            "name": "offline-install",
+            "passed": true,
+            "wall_seconds": 0.389
+          },
+          {
+            "name": "installed-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.084
+          },
+          {
+            "name": "discover-offline-updates",
+            "passed": true,
+            "wall_seconds": 0.092
+          },
+          {
+            "name": "offline-upgrade",
+            "passed": true,
+            "wall_seconds": 0.221
+          },
+          {
+            "name": "cached-remove",
+            "passed": true,
+            "wall_seconds": 0.212
+          },
+          {
+            "name": "cached-reinstall",
+            "passed": true,
+            "wall_seconds": 0.219
+          },
+          {
+            "name": "final-cached-verify",
+            "passed": true,
+            "wall_seconds": 0.091
+          }
+        ],
+        "loaded_libraries": [
+          "ld-linux-x86-64.so.2",
+          "libX11-xcb.so.1",
+          "libX11.so.6",
+          "libXau.so.6",
+          "libXdmcp.so.6",
+          "libbrotlicommon.so.1",
+          "libbrotlidec.so.1",
+          "libbsd.so.0",
+          "libbz2.so.1",
+          "libc.so.6",
+          "libcap.so.2",
+          "libdbus-1.so.3",
+          "libdl.so.2",
+          "libexpat.so.1",
+          "libfontconfig.so.1",
+          "libfreetype.so.6",
+          "libgcc_s.so.1",
+          "libgcrypt.so.20",
+          "libgpg-error.so.0",
+          "liblz4.so.1",
+          "liblzma.so.5",
+          "libm.so.6",
+          "libmd.so.0",
+          "libpng16.so.16",
+          "libpthread.so.0",
+          "libresolv.so.2",
+          "librt.so.1",
+          "libstdc++.so.6",
+          "libsystemd.so.0",
+          "libutil.so.1",
+          "libuuid.so.1",
+          "libxcb-icccm.so.4",
+          "libxcb-image.so.0",
+          "libxcb-keysyms.so.1",
+          "libxcb-randr.so.0",
+          "libxcb-render-util.so.0",
+          "libxcb-render.so.0",
+          "libxcb-shape.so.0",
+          "libxcb-shm.so.0",
+          "libxcb-sync.so.1",
+          "libxcb-util.so.1",
+          "libxcb-xfixes.so.0",
+          "libxcb-xkb.so.1",
+          "libxcb.so.1",
+          "libxkbcommon-x11.so.0",
+          "libxkbcommon.so.0",
+          "libz.so.1",
+          "libzstd.so.1"
+        ],
+        "inventory": {
+          "org.wpilib.advantagescope": "1.0.0",
+          "org.wpilib.elastic": "2.0.0",
+          "org.wpilib.runtime": "1.0.0"
+        }
+      }
+    ],
+    "isolation": "unmodified OS images; no network/display/graphics/FUSE; read-only OS; empty client PATH",
+    "scope": "headless CLI; GUI acceptance runs in installed Ubuntu Desktop VMs"
+  },
+  "desktop_fixtures": [
+    {
+      "release": "24.04.4",
+      "iso": {
+        "url": "https://releases.ubuntu.com/24.04/ubuntu-24.04.4-desktop-amd64.iso",
+        "sha256": "3a4c9877b483ab46d7c3fbe165a0db275e1ae3cfe56a5657e5a47c2f99a99d1e"
+      },
+      "application_sha256": "35044a2a67a6e2ad11f925f344c2f6436a667fd14c34119af8bc57fb09543984",
+      "report_sha256": "8f65cdf29e1ab2d849ce4d71897520eef49d56c41aa2cd7491b58f650e887fa1",
+      "checks": [
+        "wayland-startup",
+        "wayland-offline-install",
+        "wayland-installed-startup",
+        "wayland-cached-verification",
+        "wayland-discover-updates",
+        "wayland-offline-upgrade",
+        "wayland-cached-remove",
+        "wayland-cached-reinstall",
+        "wayland-final-cached-verification",
+        "x11-startup",
+        "x11-offline-install",
+        "x11-installed-startup",
+        "x11-cached-verification",
+        "x11-discover-updates",
+        "x11-offline-upgrade",
+        "x11-cached-remove",
+        "x11-cached-reinstall",
+        "x11-final-cached-verification"
+      ],
+      "maintenance_without_media": {
+        "wayland": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "1.0.0",
+            "org.wpilib.elastic": "2.0.0",
+            "org.wpilib.runtime": "1.0.0"
+          },
+          "obsolete_files_checked": 0
+        },
+        "x11": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "1.0.0",
+            "org.wpilib.elastic": "2.0.0",
+            "org.wpilib.runtime": "1.0.0"
+          },
+          "obsolete_files_checked": 0
+        }
+      }
+    },
+    {
+      "release": "26.04.1",
+      "iso": {
+        "url": "https://releases.ubuntu.com/26.04/ubuntu-26.04.1-desktop-amd64.iso",
+        "sha256": "601e30fbf5d97759367c632e2c33630665039b7e2158fd068403da3ccf1bda1f"
+      },
+      "application_sha256": "35044a2a67a6e2ad11f925f344c2f6436a667fd14c34119af8bc57fb09543984",
+      "report_sha256": "bc2ad69576afb0740f0db4938fadb52dec678eb4a07aa449e6e938eac88c7fd1",
+      "checks": [
+        "wayland-startup",
+        "wayland-offline-install",
+        "wayland-installed-startup",
+        "wayland-cached-verification",
+        "wayland-discover-updates",
+        "wayland-offline-upgrade",
+        "wayland-cached-remove",
+        "wayland-cached-reinstall",
+        "wayland-final-cached-verification",
+        "x11-startup",
+        "x11-offline-install",
+        "x11-installed-startup",
+        "x11-cached-verification",
+        "x11-discover-updates",
+        "x11-offline-upgrade",
+        "x11-cached-remove",
+        "x11-cached-reinstall",
+        "x11-final-cached-verification"
+      ],
+      "maintenance_without_media": {
+        "wayland": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "1.0.0",
+            "org.wpilib.elastic": "2.0.0",
+            "org.wpilib.runtime": "1.0.0"
+          },
+          "obsolete_files_checked": 0
+        },
+        "x11": {
+          "original_installer_removed": true,
+          "bundles_removed": true,
+          "shared_inputs_removed": true,
+          "inventory": {
+            "org.wpilib.advantagescope": "1.0.0",
+            "org.wpilib.elastic": "2.0.0",
+            "org.wpilib.runtime": "1.0.0"
+          },
+          "obsolete_files_checked": 0
+        }
+      }
+    }
+  ],
+  "client_acceptance_checks_passed": 212,
+  "client_unit_tests_passed": 44,
+  "real_desktop": {
+    "checks_passed": 44,
+    "evidence": "real-desktop-production-layout-2026-11-27.json"
+  },
+  "workflow_lint": "actionlint passed with only its pre-existing concurrency.queue syntax warning excluded; queue:max is documented by GitHub and preserved with cancel-in-progress:false.",
+  "limitations": [
+    "Real Desktop checks validate installer and payloads; installed dashboard application startup is not exercised.",
+    "Remaining release gates are tracked in docs/production-readiness.md."
+  ]
+}

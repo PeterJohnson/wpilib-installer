@@ -11,6 +11,16 @@ The selected implementation is the Rust client in `client/` with a private Qt in
 - R2/S3 conditional publication and Artifactory staging/promotion with serialized publisher index updates.
 - Cross-platform native fixture and real dashboard installation checks; clean Ubuntu Desktop graphics/worker isolation and headless Linux acceptance. The [runtime policy](self-contained-runtime.md) and [evidence index](README.md) distinguish exact coverage and limitations.
 
+## Validation of the production-development layout
+
+The real dashboard Desktop gate passed before the restructure ([run 46079025954](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46079025954)). The reorganized source at `e40b48f` then passed all three dispatched workflows:
+
+- [Installer client](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082370013): 212 acceptance checks and 44 Rust unit tests across four native targets, four headless Linux images, and two clean Ubuntu Desktop installations.
+- [Publisher tooling](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082373513): 110 tests per target, with 109 passing on Linux, 108 on Windows, and all 110 on each Mac architecture. Skips are macOS-specific payload tests on other hosts. All four native offline publication gates passed.
+- [Real dashboard Desktop](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041): 44 checks across Ubuntu 24.04.4 and 26.04.1, exercising both Wayland and X11, real Elastic/AdvantageScope upgrades, and removal/reinstallation from retained caches after original installers and bundle media were deleted.
+
+The [layout report](evidence/production-layout-2026-11-27.json) and [real-package report](evidence/real-desktop-production-layout-2026-11-27.json) preserve exact source, application, package, and test identities. These runs validate the installer and installed payloads; they do not launch the dashboard applications. The release gates below remain open.
+
 ## Release gates
 
 All unchecked gates below remain required before calling an installer production-ready. A successful fixture build is necessary evidence, not release approval.

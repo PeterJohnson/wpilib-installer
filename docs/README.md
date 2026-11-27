@@ -18,6 +18,8 @@ Machine-readable reports in [evidence/](evidence/) bind test results to exact co
 - [Online/cache acceptance](evidence/rust-online-2026-11-27.json)
 - [Initial self-contained runtime](evidence/self-contained-2026-11-27.json)
 - [Real dashboard clean Desktop acceptance](evidence/real-desktop-2026-11-27.json)
+- [Real dashboard Desktop acceptance after the layout migration](evidence/real-desktop-production-layout-2026-11-27.json)
+- [Production-layout client and tooling validation](evidence/production-layout-2026-11-27.json)
 - [Host graphics and clean Desktop fixtures](evidence/host-graphics-2026-11-27.json)
 
 The [original proposal](history/installer-architecture.md), [implementation comparison](history/manager-distribution-evaluation.md), [prototype status](history/prototype-status.md), [Rust prototype notes](history/rust-manager-prototype.md), and [Python prototype guide](history/python-prototype-guide.md) are preserved under `history/`. Their commands describe earlier revisions; use the current development guide for new work.
