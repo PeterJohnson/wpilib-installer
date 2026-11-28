@@ -201,14 +201,6 @@ class Evaluation:
             assert result['root_version']==1030 and result['new_roots']==5,result
             return {'pending_invocations':4,'final_root':1030,'last_downloaded_roots':5}
         self.case('bounded-catch-up-resumes-without-catalog-at-boundary',resume)
-        if self.client=='tough':
-            def raw_error():
-                d,r,o,s=self.fixture('raw-budget-error',long=True)
-                result=self.reject(r,o,s,budget=256,mode='raw')
-                assert 'expired' in result['error'].lower() and 'root-update-pending' not in result['error'],result
-                return {'expected_limitation':'Initial fetch error is treated as end-of-root-chain; stream-error adapter preserves pending status.'}
-            self.case('raw-fetch-error-loses-root-budget-status',raw_error)
-
         def corrupt_resume():
             d,r,o,s=self.fixture('resume-tamper',long=True)
             self.reject(r,o,s,budget=256)
@@ -388,7 +380,7 @@ class Evaluation:
 
 def main():
     p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--go',type=Path,required=True);p.add_argument('--rust',type=Path,required=True)
+    p.add_argument('--go',type=Path,required=True)
     p.add_argument('--work',type=Path,required=True);p.add_argument('--report',type=Path,required=True)
     p.add_argument('--registry-source',type=Path)
     args=p.parse_args();work=args.work.resolve()
@@ -396,10 +388,10 @@ def main():
     work.mkdir(parents=True)
     normal=work/'normal';_,_,normal_keys=generate(normal,1)
     long=work/'long';_,_,long_keys=generate(long,1030)
-    report={'schema':1,'host':platform.platform(),'libraries':{'go-tuf':'2.5.0','tough':'0.24.0'},
+    report={'schema':1,'host':platform.platform(),'libraries':{'go-tuf':'2.5.0'},
             'scope':'native TUF/local transports, explicit response-cache adapters, native schema-3 indefinite archival authorization against Python oracle; no full bundle loader or HTTP/GUI validation',
             'clients':{}}
-    for name,binary in (('go-tuf',args.go),('tough',args.rust)):
+    for name,binary in (('go-tuf',args.go),):
         e=Evaluation(name,binary,work/name,normal,long,args.registry_source)
         e.work.mkdir()
         e.normal_cases(normal_keys);e.long_cases(long_keys);e.archival_cases(long_keys);e.native_archival_cases();e.existing_cases()

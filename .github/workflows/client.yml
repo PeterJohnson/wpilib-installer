@@ -10,27 +10,21 @@ on:
   push:
     paths:
       - 'client-dotnet/**'
-      - 'client/**'
       - 'tooling/**'
       - 'pyproject.toml'
       - '.github/scripts/**'
       - 'tools/**'
-      - '.cargo/**'
       - '.github/containers/**'
-      - 'tools/build_linux_client.py'
       - '.github/workflows/client.yml'
       - '.github/workflows/desktop-acceptance.yml'
   pull_request:
     paths:
       - 'client-dotnet/**'
-      - 'client/**'
       - 'tooling/**'
       - 'pyproject.toml'
       - '.github/scripts/**'
       - 'tools/**'
-      - '.cargo/**'
       - '.github/containers/**'
-      - 'tools/build_linux_client.py'
       - '.github/workflows/client.yml'
       - '.github/workflows/desktop-acceptance.yml'
 permissions:

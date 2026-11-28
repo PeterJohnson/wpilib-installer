@@ -1,3 +1,0 @@
-# A portable Windows manager must not depend on a separately installed VC runtime.
-[target.x86_64-pc-windows-msvc]
-rustflags = ["-C", "target-feature=+crt-static"]

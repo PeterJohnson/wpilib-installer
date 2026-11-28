@@ -24,7 +24,7 @@ python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/client-fixt
 python tools/build_client.py --source build/client-fixture/demo/registry-source.json --ifw .tools/ifw --assets build/client/assets --output build/client/download
 ```
 
-The selected client lives in `client-dotnet/`. `tools/build_client.py` publishes both the private native application and the public native launcher, then embeds the application, libraries, public bootstrap and Qt assets into that launcher. On Linux both publishes run in Ubuntu 22.04 Docker; on Windows/macOS they run on the native host. Build warnings are errors, including NativeAOT/trimming diagnostics. `client/` and `tools/build_rust_client.py` preserve the Rust reference for comparisons.
+The selected client lives in `client-dotnet/`. `tools/build_client.py` publishes both the private native application and the public native launcher, then embeds the application, libraries, public bootstrap and Qt assets into that launcher. On Linux both publishes run in Ubuntu 22.04 Docker; on Windows/macOS they run on the native host. Build warnings are errors, including NativeAOT/trimming diagnostics. The former Rust client and builders were retired after native C# acceptance; their source remains in Git history.
 
 The executable is `build/client/download/wpilib-manager` on Linux, `WPILibManager.exe` on Windows, or `WPILib Manager.app/Contents/MacOS/wpilib-manager` on macOS. Build output includes a ZIP preserving Unix modes and a dependency audit. The bootstrap supplied to the build fixes public trust, target, season, and channel. Fixture bootstraps authorize disposable test repositories only.
 
@@ -73,7 +73,7 @@ Changes to workflow names require updating any externally configured branch-prot
 
 ## Migration from the prototype layout
 
-`manager/` is now `client/`; the Python package is under `tooling/installer_tooling/`. Build/test scripts use `client` or their platform responsibility instead of `rust-manager` names. Historical comparisons and prototype commands remain under `docs/history/`.
+The installed application is now `client-dotnet/`; the former `manager/` and `client/` Rust trees have been retired. The Python package is under `tooling/installer_tooling/`. Build/test scripts use `client` or their platform responsibility instead of `rust-manager` names. Historical comparisons and prototype commands remain under `docs/history/`.
 
 For an existing development virtualenv, uninstall `wpilib-installer-prototype` before reinstalling this project's tooling. This removes its old Python `wpilib-manager` entry point, which would otherwise conflict with the native application's name:
 

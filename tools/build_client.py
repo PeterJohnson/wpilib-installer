@@ -48,7 +48,7 @@ def build(source, ifw, output, assets):
     if sys.platform=='linux':
         (work / 'runtime-dir').mkdir(mode=0o700,exist_ok=True)
         # Runtime notices/dependencies come from the same minimal image as the Qt worker.
-        runtime='wpilib-installer-linux-runtime:22.04-rust-1.100.0'
+        runtime='wpilib-installer-linux-runtime:22.04'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/linux-runtime.Dockerfile'),'-t',runtime,str(REPO)],check=True)
         subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work:ro','-v',f'{assets}:/assets',runtime,'python3','tools/package_linux_runtime.py','--engine','/assets/engine','--output','/assets/runtime.zip'],check=True)
         image='wpilib-installer-dotnet:22.04-10.0.404'
@@ -57,7 +57,7 @@ def build(source, ifw, output, assets):
     else: publish(assets,work)
     if sys.platform=='darwin':
         app=output / 'WPILib Manager.app';exe=app / 'Contents/MacOS/wpilib-manager';exe.parent.mkdir(parents=True,exist_ok=True)
-        shutil.copy2(REPO / 'client/Info.plist',app / 'Contents/Info.plist')
+        shutil.copy2(REPO / 'client-dotnet/Info.plist',app / 'Contents/Info.plist')
     else:
         exe=output / ('WPILibManager.exe' if os.name=='nt' else 'wpilib-manager');exe.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(work / 'launcher' / ('WPILibManager.exe' if os.name=='nt' else 'WPILibManager'),exe)

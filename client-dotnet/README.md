@@ -14,6 +14,6 @@ The selected client is one NativeAOT executable (one `.app` on macOS), containin
 
 Commands: `verify`, `check-updates`, `list`, `install`, `update`, `remove`, `uninstall`; source selection: `--bundle ZIP`, `--online`, `--cached`, or the last installed source. Use repeated `--package ID` or an install `--profile NAME`. Mutations require `--accept-licenses`. `uninstall` removes every package from installed records without contacting repositories, preserving user files, the manager and caches; this supports later reinstall. A complete manager/cache removal command remains future work.
 
-Public names and installed-state/cache paths remain compatible with the Rust reference. Running a separately downloaded C# manager with `--root EXISTING_ROOT` does not automatically replace the retained manager until a successful modifying operation. The bootstrap's scope/archival key must match; arbitrary test binaries are not interchangeable.
+Public names and installed-state/cache paths remain compatible with earlier Rust installations. Running a separately downloaded C# manager with `--root EXISTING_ROOT` does not automatically replace the retained manager until a successful modifying operation. The bootstrap's scope/archival key must match; arbitrary test binaries are not interchangeable.
 
 See [architecture](../docs/architecture.md), [acceptance and limitations](../docs/avalonia-client.md), and [release gates](../docs/production-readiness.md).

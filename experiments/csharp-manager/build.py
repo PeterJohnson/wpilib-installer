@@ -6,7 +6,7 @@ from installer_tooling.qt_engine import build_installer
 p=argparse.ArgumentParser(description=__doc__)
 p.add_argument('--source',type=Path,required=True);p.add_argument('--ifw',type=Path,required=True)
 p.add_argument('--work',type=Path,required=True);p.add_argument('--assets',type=Path)
-p.add_argument('--baseline',type=Path,required=True)
+p.add_argument('--baseline',type=Path,help='Optional archived application ZIP for size comparison')
 a=p.parse_args();work=a.work.resolve();work.mkdir(parents=True,exist_ok=True)
 root=Path(__file__).resolve().parent
 rid=('win-x64' if os.name=='nt' else ('osx-arm64' if platform.machine()=='arm64' else 'osx-x64') if sys.platform=='darwin' else 'linux-x64')
@@ -25,8 +25,8 @@ if not a.assets:
   for f in sorted(engine.rglob('*')) if engine.is_dir() else [engine]:
    if f.is_file():z.write(f,f.relative_to(assets))
  if sys.platform=='linux':
-  # Match Rust's minimal baseline image, including the exact runtime-notices policy.
-  image='wpilib-installer-linux-runtime:22.04-rust-1.100.0'
+  # Use the shared private Qt runtime image and runtime-notices policy.
+  image='wpilib-installer-linux-runtime:22.04'
   repo=Path.cwd().resolve()
   subprocess.run(['docker','build','-f','.github/containers/linux-runtime.Dockerfile','-t',image,'.'],check=True)
   subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}',
@@ -44,13 +44,14 @@ if sys.platform=='darwin':
 else:exe=download/name
 shutil.copy2(work/'launcher'/name,exe)
 zip_tree(download,work/'csharp-application.zip')
-# Baseline artifact is a ZIP preserving the Rust executable's permissions.
-baseline=work/'rust-baseline';baseline.mkdir(exist_ok=True)
-with zipfile.ZipFile(a.baseline) as z:z.extractall(baseline)
-rust=[f for f in baseline.rglob('*') if f.is_file() and f.name in ('wpilib-manager','WPILibManager.exe')]
-assert len(rust)==1,rust
 native=[{'name':f.relative_to(work/'private').as_posix(),'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in sorted((work/'private').rglob('*')) if f.is_file() and f.suffix not in ('.pdb','.dbg') and '.dSYM' not in str(f)]
-report={'rid':rid,'dotnet_sdk':subprocess.check_output(['dotnet','--version'],text=True).strip(),'host':platform.platform(),'scope':'Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.','csharp':{'executable_bytes':exe.stat().st_size,'download_zip_bytes':(work/'csharp-application.zip').stat().st_size,'executable_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'private_files':native,'payload_zip_bytes':(work/'application.zip').stat().st_size},'rust':{'executable_bytes':rust[0].stat().st_size,'download_zip_bytes':a.baseline.stat().st_size,'executable_sha256':hashlib.sha256(rust[0].read_bytes()).hexdigest(),'baseline_commit':'e40b48f7f369dceb6e46add87102590ca1f3eeb5','baseline_run':46082370013},'assets':{f.name:f.stat().st_size for f in assets.iterdir() if f.suffix=='.zip'}}
+report={'rid':rid,'dotnet_sdk':subprocess.check_output(['dotnet','--version'],text=True).strip(),'host':platform.platform(),'scope':'Experimental catalog/archival manager and GUI+Qt smoke harness, not the selected installation client. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.','csharp':{'executable_bytes':exe.stat().st_size,'download_zip_bytes':(work/'csharp-application.zip').stat().st_size,'executable_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'private_files':native,'payload_zip_bytes':(work/'application.zip').stat().st_size},'assets':{f.name:f.stat().st_size for f in assets.iterdir() if f.suffix=='.zip'}}
+if a.baseline:
+ baseline=work/'comparison-baseline';baseline.mkdir(exist_ok=True)
+ with zipfile.ZipFile(a.baseline) as z:z.extractall(baseline)
+ binaries=[f for f in baseline.rglob('*') if f.is_file() and f.name in ('wpilib-manager','WPILibManager.exe')]
+ assert len(binaries)==1,binaries
+ report['baseline']={'executable_bytes':binaries[0].stat().st_size,'download_zip_bytes':a.baseline.stat().st_size,'executable_sha256':hashlib.sha256(binaries[0].read_bytes()).hexdigest()}
 # Record all private Windows imports too; hosted SDK installs must not hide a VC runtime requirement.
 if os.name=='nt':
  from audit_client_dependencies import pe_imports,WINDOWS_SYSTEM

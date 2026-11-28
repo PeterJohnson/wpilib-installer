@@ -1,6 +1,6 @@
 # C# Native AOT TUF investigation
 
-These are isolated evaluation programs, not installer code. The current Rust client and publisher tooling do not reference them.
+These are isolated evaluation programs, not installer code. The selected C#/Avalonia client and publisher tooling do not reference these probe executables.
 
 - `sigstore/` uses the published **NuGet `Tuf` 1.1.1**, from `mitchdenny/sigstore-dotnet` tag `v1.1.1` (`c0f5ff9747aa9b00c45a964dca275be4066cd489`). Its transitive cryptography package is BouncyCastle.Cryptography 2.7.0.
 - `baronfel/` references **baronfel/tuf-dotnet** at `99ae89aac6e3986e892e8e918d8b02488746bfdf`, built from source. NuGet names are case-insensitive: `dotnet add package TUF` is not a way to select this second implementation. Use its source reference explicitly.

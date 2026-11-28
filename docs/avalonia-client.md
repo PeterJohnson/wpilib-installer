@@ -1,6 +1,6 @@
 # C#/Avalonia installation and maintenance port
 
-The selected client is now `client-dotnet/`: a single NativeAOT C#/Avalonia application with an embedded private Qt engine. `tools/build_client.py` builds it for Windows x64, macOS Intel/ARM64 and Linux x64. Rust remains an explicit reference build in `client/` and `tools/build_rust_client.py`.
+The selected client is now `client-dotnet/`: a single NativeAOT C#/Avalonia application with an embedded private Qt engine. `tools/build_client.py` builds it for Windows x64, macOS Intel/ARM64 and Linux x64. The former Rust client, Cargo configuration, builders and Rust TUF probe have been retired; their source remains available in Git history, and historical evidence is preserved.
 
 The operation layer ports offline archive authorization, publisher manifests, dependency closure, profiles, package ownership, versions/downgrade rejection, Qt inventory, installation locks and retained maintenance state. Online operations authenticate registry renewal and each publisher repository, stage only requested payload archives, and reverify caches before use. Metadata failures never become transport fallback. Partial root and timestamp progress survives failed refreshes; every root transition is verified from the original bootstrap, with a 1,024-new-root per-operation budget and no fixed lifetime rotation limit.
 
