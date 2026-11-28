@@ -64,7 +64,7 @@ public static class TrustHistory
         }
         else Archive.Require(!target,"Target hash required");
     }
-    public static JsonNode Catalog(JsonNode pin,string roots,string proof,int rootVersion)
+    public static JsonNode Catalog(JsonNode pin,string roots,string proof,int rootVersion,string? expectedHash=null)
     {
         var root=Root(pin,roots,rootVersion);
         var timestamp=Storage.Object(Path.Combine(proof,"metadata/timestamp.json"));Verify(timestamp,root,"timestamp");
@@ -75,6 +75,7 @@ public static class TrustHistory
         var targets=Storage.Read(Path.Combine(proof,$"metadata/{targetref["version"]}.targets.json"));Link(targets,targetref);
         var target=Storage.Object(targets);Verify(target,root,"targets");var catalogref=target["signed"]!["targets"]!["catalog.json"]!;
         var data=Storage.Read(Path.Combine(proof,"targets/"+Files.Text(catalogref["hashes"]!["sha256"])+".catalog.json"));Link(data,catalogref,true);
+        if(expectedHash is not null)Archive.Require(Storage.Hash(data)==expectedHash,"Cache catalog identity mismatch");
         return JsonNode.Parse(data)!;
     }
 }

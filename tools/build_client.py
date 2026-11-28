@@ -14,7 +14,7 @@ def zip_tree(source, destination):
 
 def publish(assets, work):
     rid = 'win-x64' if os.name == 'nt' else ('osx-arm64' if platform.machine() == 'arm64' else 'osx-x64') if sys.platform == 'darwin' else 'linux-x64'
-    env = {**os.environ, 'MACOSX_DEPLOYMENT_TARGET':'13.0', 'DOTNET_CLI_TELEMETRY_OPTOUT':'1'}
+    env = {**os.environ, 'MACOSX_DEPLOYMENT_TARGET':'13.0', 'DOTNET_CLI_TELEMETRY_OPTOUT':'1', 'AVALONIA_TELEMETRY_OPTOUT':'1'}
     def project(name, output, prop):
         subprocess.run(['dotnet', 'publish', str(REPO / 'client-dotnet' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop], cwd=REPO / 'client-dotnet', env=env, check=True)
     project('app/App.csproj', work / 'private', f'-p:ManagerAssets={assets}')

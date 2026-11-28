@@ -31,8 +31,8 @@ public static class CatalogStore
     }
     static JsonNode Historical(JsonNode pin,string roots,string directory,JsonObject head)
     {
-        var catalog=TrustHistory.Catalog(pin,roots,Proof(directory,head),head["root_version"]!.GetValue<int>());
-        Archive.Require(Storage.Hash(Archive.Canonical(catalog))==Files.Text(head["generation"]),"Cache catalog identity mismatch");return catalog;
+        var catalog=TrustHistory.Catalog(pin,roots,Proof(directory,head),head["root_version"]!.GetValue<int>(),Files.Text(head["generation"]));
+        return catalog;
     }
     static string Proof(string directory,JsonObject head)
     {
@@ -107,7 +107,7 @@ public static class CatalogStore
                 // Root evidence has its own authenticated history; keep generation proofs small.
                 foreach(var file in System.IO.Directory.EnumerateFiles(cachedRoots,"*.root.json"))File.Delete(file);
                 var files=FileHashes(responses);var proof=Storage.Hash(Archive.Canonical(files));
-                var generation=Storage.Hash(Archive.Canonical(catalog));
+                var generation=Files.Text(result["catalog_sha256"]);
                 var dest=Path.Combine(directory,"generations",generation,proof);System.IO.Directory.CreateDirectory(dest);CopyTree(responses,dest);
                 newHead=new JsonObject { ["generation"]=generation,["proof"]=proof,["root_version"]=result["root_version"]!.DeepClone() };Storage.Write(headPath,Archive.Canonical(newHead));
             }

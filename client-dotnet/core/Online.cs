@@ -42,7 +42,7 @@ public sealed class Online : ITufCache, ITufRepository, IDisposable
             Cache = this, Repository = this, MaxRootRotations = limit == 0 ? 1024 : limit });
         var result = await client.GetTargetAsync("catalog.json");
         if (!reachedEnd) throw new IOException("root-update-pending");
-        return new JsonObject { ["status"] = "ok", ["catalog"] = JsonNode.Parse(result.Content.Span), ["root_version"] = RootVersion, ["new_roots"] = NewRoots };
+        return new JsonObject { ["status"] = "ok", ["catalog"] = JsonNode.Parse(result.Content.Span), ["catalog_sha256"] = Storage.Hash(result.Content.ToArray()), ["root_version"] = RootVersion, ["new_roots"] = NewRoots };
     }
     public byte[]? LoadMetadata(string role)
     {
