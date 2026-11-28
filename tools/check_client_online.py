@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 from functools import partial
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 import json
+import math
 import os
 from pathlib import Path
 import shutil
@@ -79,18 +80,26 @@ def check(a):
         print('PASS', name, flush=True)
         return response
 
+    last_cli_seconds = 0.0
+
     def cli(name, command='verify', *extra, ok=True, install_root=None, implicit=False):
+        nonlocal last_cli_seconds
+        started = time.monotonic()
         args = [str(application), '--command', command]
         if not implicit:
             args += ['--root', str(install_root or root)]
         p = subprocess.run([*args, *map(str, extra)], env=env, cwd=work, capture_output=True, text=True, timeout=900)
+        last_cli_seconds = time.monotonic() - started
         (work / (name + '.log')).write_text(p.stdout + '\n' + p.stderr, encoding='utf-8')
         try:
             value = json.loads(p.stdout)
         except ValueError as e:
             raise AssertionError(f'{name}: {p.returncode}: {p.stdout}\n{p.stderr}') from e
         assert (p.returncode == 0) == ok and (value['status'] == 'ok') == ok, (name, value, p.stderr)
-        return record(name, value)
+        record(name, value)
+        checks[-1]['wall_seconds'] = round(last_cli_seconds, 3)
+        report()
+        return value
 
     def gui(name, command, *extra):
         path = work / (name + '.json')
@@ -209,9 +218,12 @@ def check(a):
         cli('http-404-not-cache-fallback', 'verify', '--online', ok=False)
         mode.update(status=None, path=None)
         # Actual expired cached timestamp, followed by renewal from its historical floor.
-        renew(now=datetime.now(timezone.utc) - timedelta(days=1) + timedelta(seconds=18), timestamp_days=1)
+        # A fresh timestamp must survive the measured root replay on slower native
+        # runners. Still use the real clock and wait past its signed expiry.
+        expires = datetime.now(timezone.utc) + timedelta(seconds=max(18, math.ceil(last_cli_seconds * 3 + 5)))
+        renew(now=expires - timedelta(days=1), timestamp_days=1)
         cli('short-lived-cache-populated', 'verify', '--online')
-        time.sleep(19)
+        time.sleep(max(0, (expires - datetime.now(timezone.utc)).total_seconds()) + 1)
         cli('expired-cache-rejected', 'verify', '--cached', ok=False)
         renew()
         cli('expired-history-renewed', 'verify', '--online')
