@@ -13,12 +13,26 @@ public static class CatalogStore
         Archive.Require(u.Host.Length>0 && u.UserInfo.Length==0 && u.Query.Length==0 && u.Fragment.Length==0 &&
             (u.Scheme=="https" || development && u.Scheme=="http" && u.Host is "127.0.0.1" or "[::1]"),"Repository requires HTTPS");return u;
     }
+    static IEnumerable<string> Walk(string directory)
+    {
+        Files.RejectLink(directory);
+        foreach(var path in System.IO.Directory.EnumerateFileSystemEntries(directory).Order(StringComparer.Ordinal))
+        {
+            Files.RejectLink(path);
+            if(System.IO.Directory.Exists(path)) { foreach(var file in Walk(path))yield return file; }
+            else yield return path;
+        }
+    }
     static JsonObject FileHashes(string directory)
     {
         var files=new JsonObject();
-        foreach(var file in System.IO.Directory.EnumerateFileSystemEntries(directory,"*",SearchOption.AllDirectories).Order(StringComparer.Ordinal))
-        { Files.RejectLink(file);if(File.Exists(file))files[Path.GetRelativePath(directory,file).Replace('\\','/')]=Files.Hash(file); }
+        foreach(var file in Walk(directory))files[Path.GetRelativePath(directory,file).Replace('\\','/')]=Files.Hash(file);
         return files;
+    }
+    static JsonNode Historical(JsonNode pin,string roots,string directory,JsonObject head)
+    {
+        var catalog=TrustHistory.Catalog(pin,roots,Proof(directory,head),head["root_version"]!.GetValue<int>());
+        Archive.Require(Storage.Hash(Archive.Canonical(catalog))==Files.Text(head["generation"]),"Cache catalog identity mismatch");return catalog;
     }
     static string Proof(string directory,JsonObject head)
     {
@@ -29,7 +43,7 @@ public static class CatalogStore
     }
     static void CopyTree(string from,string to)
     {
-        foreach(var file in System.IO.Directory.EnumerateFiles(from,"*",SearchOption.AllDirectories))
+        foreach(var file in Walk(from))
         { Files.RejectLink(file);var dest=Path.Combine(to,Path.GetRelativePath(from,file));System.IO.Directory.CreateDirectory(Path.GetDirectoryName(dest)!);File.Copy(file,dest,true); }
     }
     static bool Unavailable(Exception error) => error is TaskCanceledException || error is HttpRequestException h &&
@@ -47,9 +61,9 @@ public static class CatalogStore
         var checkpoint=File.Exists(checkpointPath)?Storage.Object(checkpointPath):new JsonObject { ["root.json"]=pin.DeepClone() };
         Archive.Require(head is null || File.Exists(checkpointPath),"Missing authenticated checkpoint");TrustHistory.Checkpoint(pin,roots,checkpoint);
         JsonNode? previous=null;
-        if(head is not null) TrustHistory.Catalog(pin,roots,Proof(directory,head),head["root_version"]!.GetValue<int>());
+        if(head is not null) Historical(pin,roots,directory,head);
         var acceptedPath=Path.Combine(directory,"accepted.json");
-        if(File.Exists(acceptedPath)) { Archive.Require(head is not null,"Missing high-water view");var accepted=Storage.Object(acceptedPath);previous=TrustHistory.Catalog(pin,roots,Proof(directory,accepted),accepted["root_version"]!.GetValue<int>()); }
+        if(File.Exists(acceptedPath)) { Archive.Require(head is not null,"Missing high-water view");var accepted=Storage.Object(acceptedPath);previous=Historical(pin,roots,directory,accepted); }
         var origin=Url(Files.Text(trust["url"]),development).AbsoluteUri;bool cached=cacheOnly;
         for(int attempt=0;attempt<2;attempt++)
         {

@@ -22,6 +22,11 @@ def publish(assets, work):
         for name in ('libssl.so.3','libcrypto.so.3'):
             shutil.copy2(Path('/usr/lib/x86_64-linux-gnu') / name, work / 'private' / name)
         shutil.copy2('/usr/share/doc/libssl3/copyright',work / 'private/OpenSSL-NOTICE.txt')
+        compat=work / 'private/x11-compat';compat.mkdir(exist_ok=True)
+        with zipfile.ZipFile(assets / 'runtime.zip') as z:
+            for name in ('libxcb-xkb.so.1','libxkbcommon.so.0','libxkbcommon-x11.so.0'):
+                (compat / name).write_bytes(z.read('lib/'+name))
+
     zip_tree(work / 'private', work / 'application.zip')
     project('launcher/Launcher.csproj', work / 'launcher', f'-p:Payload={work / "application.zip"}')
 
@@ -47,7 +52,7 @@ def build(source, ifw, output, assets):
         subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work:ro','-v',f'{assets}:/assets',runtime,'python3','tools/package_linux_runtime.py','--engine','/assets/engine','--output','/assets/runtime.zip'],check=True)
         image='wpilib-installer-dotnet:22.04-10.0.404'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/dotnet-client.Dockerfile'),'-t',image,str(REPO)],check=True)
-        subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work','-v',f'{assets}:/assets','-v',f'{work}:/aot', '-e','DOTNET_CLI_HOME=/aot/home','-e','NUGET_PACKAGES=/aot/nuget',image,'python3','-c','import sys; sys.path.insert(0,"tools"); from build_client import publish; from pathlib import Path; publish(Path("/assets"),Path("/aot"))'],check=True)
+        subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work','-v',f'{assets}:/assets','-v',f'{work}:/aot', '-v','/etc/passwd:/etc/passwd:ro','-v','/etc/group:/etc/group:ro','-e','DOTNET_CLI_HOME=/aot/home','-e','NUGET_PACKAGES=/aot/nuget',image,'python3','-c','import sys; sys.path.insert(0,"tools"); from build_client import publish; from pathlib import Path; publish(Path("/assets"),Path("/aot"))'],check=True)
     else: publish(assets,work)
     if sys.platform=='darwin':
         app=output / 'WPILib Manager.app';exe=app / 'Contents/MacOS/wpilib-manager';exe.parent.mkdir(parents=True,exist_ok=True)

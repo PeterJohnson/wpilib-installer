@@ -6,6 +6,7 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../core/Core.csproj" />
+    <PackageReference Include="Avalonia.Wayland" Version="12.1.1" />
     <PackageReference Include="Avalonia.Desktop" Version="12.1.1" />
     <PackageReference Include="Avalonia.Themes.Fluent" Version="12.1.1" />
     <EmbeddedResource Include="$(ManagerAssets)/engine.zip" LogicalName="engine.zip" />

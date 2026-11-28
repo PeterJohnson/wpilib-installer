@@ -125,12 +125,14 @@ def main(shared):
                 for library in paths:
                     if is_worker:
                         if Path(library).name not in BASE:
-                            assert '/wpilib-qt-runtime-' in library and '/lib/' in library, (label,library)
+                            assert '/.installation.qt-worker/runtime/lib/' in library, (label,library)
                         worker_libs.add(library)
                     else:
-                        assert '/wpilib-qt-runtime-' not in library, (label,library)
-                        if '/wpilib-x11-compat-' in library:
+                        assert '/.installation.qt-worker/' not in library, (label,library)
+                        if '/wpilib-csharp-app-' in library and '/x11-compat/' in library:
                             assert backend == 'x11' and Path(library).name in ['libxcb-xkb.so.1','libxkbcommon.so.0','libxkbcommon-x11.so.0'], (label,library)
+                        elif '/wpilib-csharp-app-' in library:
+                            assert Path(library).name in ['libSkiaSharp.so','libHarfBuzzSharp.so','libssl.so.3','libcrypto.so.3'], (label,library)
                         else:
                             assert library.startswith(('/lib/','/lib64/','/usr/lib/')), (label,library)
                         manager_libs.add(library)
@@ -169,6 +171,11 @@ def main(shared):
                 assert not (root/name).exists() and not (root/name).is_symlink(), name
             invoke('cached-reinstall-elastic','install','--package',primary,'--accept-licenses',gui=False,worker=True)
             verify(root,current, expected)
+        userfile=root/'user-project.txt';userfile.write_text('Preserved')
+        invoke('uninstall-all','uninstall','--accept-licenses',worker=True)
+        assert not inventory(root) and userfile.read_text()=='Preserved'
+        invoke('reinstall-after-uninstall','install','--package',primary,'--package',secondary,'--accept-licenses',gui=False,worker=True)
+        verify(root,current,expected)
         invoke('final-cached-verification','verify',gui=False)
         assert not download.exists() and not list(usb.iterdir())
         result.setdefault('maintenance_without_media', {})[backend] = {

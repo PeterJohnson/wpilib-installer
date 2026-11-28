@@ -28,7 +28,9 @@ internal static class Program
             {
                 var value=Installation.Execute(Request,Console.Error.WriteLine).GetAwaiter().GetResult();Console.WriteLine(value.ToJsonString());return 0;
             }
-            return AppBuilder.Configure<ManagerApp>().UsePlatformDetect().StartWithClassicDesktopLifetime(args);
+            var builder=AppBuilder.Configure<ManagerApp>().UsePlatformDetect();
+            if(OperatingSystem.IsLinux() && !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY")))builder=builder.UseWayland();
+            return builder.StartWithClassicDesktopLifetime(args);
         }
         catch(Exception e){Console.WriteLine(new JsonObject{["status"]="error",["message"]=e.Message}.ToJsonString());return 1;}
     }

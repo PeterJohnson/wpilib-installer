@@ -18,7 +18,16 @@ try
     var exe = Path.Combine(root, "wpilib-client" + (OperatingSystem.IsWindows() ? ".exe" : ""));
     var command = new ProcessStartInfo(exe) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
     command.Environment["WPILIB_MANAGER_APPLICATION"] = Environment.ProcessPath!;
-    if (OperatingSystem.IsLinux()) command.Environment["LD_LIBRARY_PATH"] = root;
+    if (OperatingSystem.IsLinux())
+    {
+        var paths=root;
+        if (string.IsNullOrEmpty(Environment.GetEnvironmentVariable("WAYLAND_DISPLAY")) && !args.Contains("--command"))
+        {
+            if (System.Runtime.InteropServices.NativeLibrary.TryLoad("libxkbcommon-x11.so.0",out var host)) System.Runtime.InteropServices.NativeLibrary.Free(host);
+            else paths+=":"+Path.Combine(root,"x11-compat");
+        }
+        command.Environment["LD_LIBRARY_PATH"] = paths;
+    }
     foreach (var arg in args) command.ArgumentList.Add(arg);
     using var child = Process.Start(command)!;
     var stdout = child.StandardOutput.BaseStream.CopyToAsync(Console.OpenStandardOutput());
