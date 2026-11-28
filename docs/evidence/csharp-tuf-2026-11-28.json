@@ -1,0 +1,255 @@
+{
+  "schema": 1,
+  "date": "2026-11-28T01:19:16.587776+00:00",
+  "host": "Linux-7.0.0-43-generic-x86_64-with-glibc2.43",
+  "dotnet_sdk": "11.0.100",
+  "target_framework": "net10.0",
+  "runtime_identifier": "linux-x64",
+  "scope": "Native AOT library investigation using directory-backed transports; no installer port, native archival verifier, HTTP, GUI, clean-OS or Windows/macOS acceptance. Characterization cases document application-policy gaps, not unexpected library test failures.",
+  "libraries": {
+    "Tuf": {
+      "package": "Tuf",
+      "version": "1.1.1",
+      "source_commit": "c0f5ff9747aa9b00c45a964dca275be4066cd489"
+    },
+    "baronfel/tuf-dotnet": {
+      "source_commit": "99ae89aac6e3986e892e8e918d8b02488746bfdf",
+      "package": "source reference; not NuGet Tuf"
+    }
+  },
+  "checks": [
+    {
+      "name": "python-catalog",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 5,
+        "catalog": {
+          "revision": 1,
+          "unicode": "Rob\u00f4t \ud83e\udd16 <>&"
+        }
+      }
+    },
+    {
+      "name": "expired-bootstrap-and-1030-roots",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 1034,
+        "catalog": {
+          "revision": 1,
+          "unicode": "Rob\u00f4t \ud83e\udd16 <>&"
+        }
+      }
+    },
+    {
+      "name": "default-1024-budget-before-current-root",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 1024,
+        "error_type": "Tuf.TufExpiredException",
+        "error": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+      }
+    },
+    {
+      "name": "next-process-resumes-library-trusted-cache",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 10,
+        "catalog": {
+          "revision": 1,
+          "unicode": "Rob\u00f4t \ud83e\udd16 <>&"
+        }
+      }
+    },
+    {
+      "name": "current-clock-cache-replay-origin-removed",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 2,
+        "catalog": {
+          "revision": 1,
+          "unicode": "Rob\u00f4t \ud83e\udd16 <>&"
+        }
+      }
+    },
+    {
+      "name": "reject-tampered-response-timestamp",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 2,
+        "error_type": "Tuf.TufException",
+        "error": "Timestamp signature verification failed."
+      }
+    },
+    {
+      "name": "reject-tampered-response-snapshot",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 3,
+        "error_type": "Tuf.TufException",
+        "error": "snapshot sha256 hash mismatch: expected 7019e7b4ee6f49fac7bccce7aa5c3a9235d01be9480a5a08a52a437badcb8117, got a66e9715c48ec67b6364dea89e465eec66b05bbb39bb721ae628e0e77d94bdc5."
+      }
+    },
+    {
+      "name": "reject-tampered-response-targets",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 4,
+        "error_type": "Tuf.TufException",
+        "error": "targets sha256 hash mismatch: expected 7ff9f9409ab666babb3b84f5bf5903b861a4ede42d0b5852327da4a7b7346c70, got f8f5e4aeb80bd131d6755ec01aa4e5171f713286a7238de3127b9d11819a7983."
+      }
+    },
+    {
+      "name": "reject-tampered-response-catalog",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 5,
+        "error_type": "Tuf.TufException",
+        "error": "Target 'catalog.json' size 56 does not match expected 54."
+      }
+    },
+    {
+      "name": "timestamp-rollback-across-processes",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 2,
+        "error_type": "Tuf.TufException",
+        "error": "Timestamp rollback detected: v1 < v2."
+      }
+    },
+    {
+      "name": "reject-expired-signed-cache-timestamp",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 2,
+        "error_type": "Tuf.TufExpiredException",
+        "error": "TUF timestamp metadata expired at 2026-11-27T01:19:16.0000000+00:00."
+      }
+    },
+    {
+      "name": "reject-intermediate-root-missing",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 256,
+        "error_type": "Tuf.TufExpiredException",
+        "error": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+      }
+    },
+    {
+      "name": "reject-intermediate-root-bad-signature",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 256,
+        "error_type": "Tuf.TufException",
+        "error": "New root v257 not signed by threshold of keys from current root v256."
+      }
+    },
+    {
+      "name": "reject-intermediate-root-skip-version",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 256,
+        "error_type": "Tuf.TufException",
+        "error": "New root v257 not signed by threshold of keys from current root v256."
+      }
+    },
+    {
+      "name": "characterization-cache-root-is-trusted-without-bootstrap-replay",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 4,
+        "catalog": {
+          "revision": 1,
+          "unicode": "Rob\u00f4t \ud83e\udd16 <>&"
+        }
+      }
+    },
+    {
+      "name": "characterization-fresh-root-budget-can-still-return-catalog",
+      "expected_status": "ok",
+      "result": {
+        "status": "ok",
+        "requests": 6,
+        "catalog": {
+          "revision": 1
+        }
+      }
+    },
+    {
+      "name": "baronfel-normal",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 2049,
+        "error_type": "Serde.Json.JsonException",
+        "error": "Expected object start"
+      }
+    },
+    {
+      "name": "baronfel-expired-bootstrap",
+      "expected_status": "error",
+      "result": {
+        "status": "error",
+        "requests": 0,
+        "error_type": "System.Exception",
+        "error": "Root metadata is expired"
+      }
+    }
+  ],
+  "binaries": {
+    "sigstore": {
+      "bytes": 8784992,
+      "sha256": "b72cfabad44fd8c91768a6a7eaaaa6d58959cd1f7a0fc710b32c7516ce853d63",
+      "publish_files": [
+        {
+          "name": "Probe",
+          "bytes": 8784992
+        },
+        {
+          "name": "Probe.dbg",
+          "bytes": 17238784
+        }
+      ]
+    },
+    "baronfel": {
+      "bytes": 7458992,
+      "sha256": "aa4345251f9a4479729f84d5bd26a475ef0acce01ac4bfd21ead3abcb0f99018",
+      "publish_files": [
+        {
+          "name": "CanonicalJson.pdb",
+          "bytes": 23272
+        },
+        {
+          "name": "Probe",
+          "bytes": 7458992
+        },
+        {
+          "name": "Probe.dbg",
+          "bytes": 15667256
+        },
+        {
+          "name": "TUF.pdb",
+          "bytes": 83124
+        },
+        {
+          "name": "libsodium.so",
+          "bytes": 476568
+        }
+      ]
+    }
+  }
+}

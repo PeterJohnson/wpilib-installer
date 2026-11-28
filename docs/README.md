@@ -2,6 +2,7 @@
 
 ## Current implementation and operations
 
+- [C# Native AOT TUF investigation](csharp-tuf-evaluation.md): candidate libraries, measured interoperability and remaining adapter work.
 - [Architecture](architecture.md): selected Rust/private-Qt design, publication, trust, and offline media.
 - [Production readiness](production-readiness.md): established capabilities and unfinished release gates.
 - [Development and migration](../CONTRIBUTING.md): current layout, commands, and CI responsibilities.

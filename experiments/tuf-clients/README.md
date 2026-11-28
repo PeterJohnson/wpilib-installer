@@ -91,3 +91,5 @@ different probe builds, not a production-manager size/performance comparison.
 
 See the [evaluation and measured results](../../docs/history/manager-distribution-evaluation.md#native-library-interoperability-results)
 and [saved report](../../docs/evidence/native-tuf-2026-11-27.json).
+
+The later [C# Native AOT probes](dotnet/README.md) evaluate two .NET libraries separately; they do not replace these Go/Rust results or the installed client.

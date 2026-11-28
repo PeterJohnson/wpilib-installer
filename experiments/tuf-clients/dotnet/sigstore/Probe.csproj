@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+<PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><ImplicitUsings>enable</ImplicitUsings><Nullable>enable</Nullable><PublishAot>true</PublishAot><TrimmerSingleWarn>false</TrimmerSingleWarn><TreatWarningsAsErrors>true</TreatWarningsAsErrors><RestorePackagesWithLockFile>true</RestorePackagesWithLockFile><RuntimeFrameworkVersion>10.0.15</RuntimeFrameworkVersion></PropertyGroup>
+<ItemGroup><PackageReference Include="Tuf" Version="1.1.1"/><TrimmerRootAssembly Include="Tuf"/></ItemGroup>
+<ItemGroup><Compile Include="../Transport.cs" Link="Transport.cs"/></ItemGroup>
+</Project>

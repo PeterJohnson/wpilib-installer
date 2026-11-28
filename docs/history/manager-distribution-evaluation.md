@@ -1,5 +1,7 @@
 > Historical evaluation and evidence. Commands describe that earlier revision. Use the [current development guide](../../CONTRIBUTING.md) and [production-readiness plan](../production-readiness.md) for active work.
 
+A later [C# Native AOT TUF investigation](../csharp-tuf-evaluation.md) adds two .NET candidates and measured results. The original comparison below did not evaluate Avalonia with a private Qt engine; its Rust selection is not evidence against that option.
+
 # Single-application manager: requirements and design evaluation
 
 Date: November 27, 2026. Inspected prototype baseline: `037f1e7`.
