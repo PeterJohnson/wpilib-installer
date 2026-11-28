@@ -1,6 +1,6 @@
-"""Native GUI startup and Rust/private-Qt offline lifecycle acceptance.
+"""Native GUI startup and NativeAOT/private-Qt offline lifecycle acceptance.
 The Python driver is test tooling; every client operation launches the packaged
-application in a separate directory with no Python/Cargo/IFW on its PATH.
+application in a separate directory with no Python/.NET/IFW on its PATH.
 """
 import argparse
 from contextlib import nullcontext
@@ -56,7 +56,7 @@ def worker(a):
     if sys.platform == 'linux':
         env.pop('WAYLAND_DISPLAY', None)  # native X11/Xvfb acceptance surface
     env['PATH'] = str(work / 'no-external-runtimes')
-    env['QT_QPA_PLATFORM'] = 'offscreen'  # affects private Qt only; egui uses native windowing
+    env['QT_QPA_PLATFORM'] = 'offscreen'  # affects private Qt only; Avalonia uses native windowing
     checks = []
 
     def cli(name, command, *extra, ok=True):
@@ -171,13 +171,28 @@ def worker(a):
     bad.unlink()
     assert inventory(root) == before and (root / '.wpilib-manager.json').read_bytes() == saved_state
     cli('final-cached-verification', 'verify')
+    # All-package uninstall uses only installed records, not repository metadata.
+    sentinel = root / 'user-project.txt'
+    sentinel.write_text('User files survive package removal')
+    before = inventory(root)
+    cli('uninstall-confirmation-required', 'uninstall', ok=False)
+    assert inventory(root) == before
+    gui('uninstall-all-offline', 'uninstall', '--accept-licenses')
+    assert not inventory(root) and sentinel.read_text() == 'User files survive package removal'
+    for component in before:
+        for name in current[component]['owned_files']:
+            assert not (root / name).exists(), name
+    assert application.is_file() and cache.is_file()
+    cli('empty-uninstall-idempotent', 'uninstall', '--accept-licenses')
+    cli('reinstall-after-uninstall', 'install', '--package', primary, '--accept-licenses')
+    verify_installed(root, current[primary])
     result = {'schema': 1, 'target': sys.platform, 'isolation': a.isolation, 'payload_kind': 'upstream-releases' if real else 'prototype-fixtures',
               'application_sha256': digest(application), 'checks': checks, 'inventory': inventory(root),
               'original_application_deleted': not download.exists(), 'original_media_deleted': not any(media.iterdir()),
               'external_runtime_path': env['PATH']}
     a.report.parent.mkdir(parents=True, exist_ok=True)
     a.report.write_text(json.dumps(result, indent=2), encoding='utf-8')
-    print(f"Passed {len(checks)} native Rust manager checks ({a.isolation})", flush=True)
+    print(f"Passed {len(checks)} native manager checks ({a.isolation})", flush=True)
 
 
 def main():
@@ -207,8 +222,8 @@ def main():
         w = a.work.resolve()
         programs = [app_path(w / 'download'), app_path(w / 'installation'),
                     w / '.installation.qt-worker/engine.exe', w / 'installation/.wpilib-engine.exe']
-        context = windows_firewall(programs)
-        args += ['--isolation', 'program-firewall']
+        context = windows_firewall(programs, all_outbound=True)
+        args += ['--isolation', 'all-outbound-firewall']
     else:
         raise ValueError('Unsupported platform')
     with context:

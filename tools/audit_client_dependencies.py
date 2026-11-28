@@ -14,6 +14,8 @@ WINDOWS_SYSTEM = set(('kernel32 user32 gdi32 gdi32full shell32 advapi32 ole32 ol
     'cfgmgr32 powrprof psapi dnsapi msvcrt ucrtbase rpcrt4 ntasn1 ncrypt d3d11 d3d12 dxgi '
     'd3dcompiler_47 dxcore opengl32 glu32 wsock32 cabinet normaliz ntmarta imagehlp dbghelp '
     'dbgcore winhttp wininet urlmon wtsapi32 hid usp10 msimg32 dwrite d2d1 propsys avrt authz d3d9 mpr uiautomationcore').split())
+# FontSub is an inbox Windows GDI component used by Skia.
+WINDOWS_SYSTEM.add('fontsub')
 WINDOWS_SYSTEM = {n + '.dll' for n in WINDOWS_SYSTEM} | {'winspool.drv'}
 LINUX_BASE = {'libc.so.6', 'libm.so.6', 'libpthread.so.0', 'libdl.so.2', 'librt.so.1',
               'libutil.so.1', 'libresolv.so.2', 'ld-linux-x86-64.so.2', 'libgcc_s.so.1'}

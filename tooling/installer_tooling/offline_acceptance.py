@@ -181,12 +181,15 @@ def exercise(directory, source, engine, work, report_path, isolation):
 
 
 @contextmanager
-def windows_firewall(programs):
+def windows_firewall(programs, all_outbound=False):
     """Scope temporary rules to Python and the exact Qt executables, not the Actions agent."""
     group = "WPILib-offline-" + uuid.uuid4().hex
-    env = {**os.environ, "OFFLINE_PROGRAMS": json.dumps(list(map(str, programs))), "OFFLINE_RULE_GROUP": group}
+    env = {**os.environ, "OFFLINE_PROGRAMS": json.dumps(list(map(str, programs))), "OFFLINE_RULE_GROUP": group, "OFFLINE_ALL_OUTBOUND": "1" if all_outbound else "0"}
     add = """$ErrorActionPreference = 'Stop'
 if (Get-NetFirewallProfile | Where-Object { -not $_.Enabled }) { throw 'Windows Firewall must be enabled' }
+if ($env:OFFLINE_ALL_OUTBOUND -eq '1') {
+  New-NetFirewallRule -DisplayName ($env:OFFLINE_RULE_GROUP + '-all') -Group $env:OFFLINE_RULE_GROUP -Direction Outbound -Action Block -Profile Any | Out-Null
+}
 $i = 0
 foreach ($program in ($env:OFFLINE_PROGRAMS | ConvertFrom-Json)) {
   New-NetFirewallRule -DisplayName ($env:OFFLINE_RULE_GROUP + '-' + $i) -Group $env:OFFLINE_RULE_GROUP -Direction Outbound -Action Block -Profile Any -Program $program | Out-Null

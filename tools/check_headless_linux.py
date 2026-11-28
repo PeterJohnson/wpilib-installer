@@ -45,7 +45,7 @@ def check(a):
         root = case / 'installation'
         checks, loaded = [], set()
         base = ['docker', 'run', '--rm', '--network', 'none', '--read-only', '--cap-drop', 'ALL',
-                '--user', f'{uid}:{gid}', '--tmpfs', f'/tmp:exec,uid={uid},gid={gid},size=256m',
+                '--user', f'{uid}:{gid}', '--tmpfs', f'/tmp:exec,uid={uid},gid={gid},size=512m',
                 '-v', f'{case}:/work', '-v', f'{a.engine.resolve()}:/control/engine:ro',
                 '-e', 'HOME=/work/home', '-e', 'PATH=/no-external-runtimes']
         identity = json.loads(run('docker', 'image', 'inspect', image, capture_output=True).stdout)[0]
@@ -69,8 +69,8 @@ def check(a):
             for path in re.findall(r'calling init: (\S+)', result.stderr):
                 assert not Path(path).name.startswith(('libLLVM', 'libGL.', 'libGLX', 'libEGL', 'libgbm')), path
                 if Path(path).name not in LINUX_BASE:
-                    assert path.startswith('/tmp/wpilib-qt-runtime-') and '/lib/' in path, path
-                    private.append(path)
+                    assert ('/.installation.qt-worker/runtime/lib/' in path or path.startswith('/tmp/wpilib-csharp-app-')), path
+                    if '/.installation.qt-worker/runtime/lib/' in path: private.append(path)
                 loaded.add(Path(path).name)
             assert bool(private) == worker, (name, private)
             value = json.loads(result.stdout)
@@ -95,6 +95,9 @@ def check(a):
         assert secondary not in inventory(root)
         invoke('cached-reinstall', 'install', '--package', secondary, '--accept-licenses', worker=True)
         verify_installed(root, current[secondary])
+        invoke('uninstall-all', 'uninstall', '--accept-licenses', implicit=True, worker=True)
+        assert not inventory(root)
+        invoke('reinstall-after-uninstall', 'install', '--package', primary, '--accept-licenses', implicit=True, worker=True)
         invoke('final-cached-verify', 'verify', implicit=True)
         assert 'libxkbcommon-x11.so.0' in loaded, loaded
         assert not download.exists() and not list(usb.iterdir())

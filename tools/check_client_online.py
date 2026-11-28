@@ -254,6 +254,17 @@ def check(a):
         # Archived media remains independently usable and cannot reset online floors.
         cli('archival-verification-after-online', 'verify', '--bundle', baseline)
         cli('online-floor-after-archival-use', 'verify', '--cached')
+        before = inventory(root)
+        sentinel = root / 'user-project.txt'
+        sentinel.write_text('Preserved after uninstall')
+        gui('online-installation-uninstall-offline', 'uninstall', '--accept-licenses')
+        assert not inventory(root) and sentinel.read_text() == 'Preserved after uninstall'
+        for component in before:
+            package = current.get(component)
+            if package:
+                for name in package['owned_files']: assert not (root / name).exists(), name
+        cli('reinstall-online-cache-after-uninstall', 'install', '--cached', '--package', primary, '--accept-licenses')
+        verify_installed(root, current[primary])
     finally:
         if thread.is_alive():
             server.shutdown()
