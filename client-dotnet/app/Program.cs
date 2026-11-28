@@ -62,7 +62,7 @@ internal sealed class ManagerWindow : Window
     readonly TextBox logs = new() { IsReadOnly = true, AcceptsReturn = true, MinHeight = 120, TextWrapping = TextWrapping.Wrap };
     readonly StackPanel inputs = new() { Spacing = 12 };
     readonly HashSet<string> selected;
-    JsonObject? result; string? error; bool busy; bool rendered;
+    JsonObject? result; string? error; bool busy; bool rendered; bool nativeActivated;
     public ManagerWindow(Request request)
     {
         initial = request;
@@ -113,6 +113,7 @@ internal sealed class ManagerWindow : Window
         inputs.Children.Add(licenses);
         inputs.Children.Add(actions);
         Content = new ScrollViewer { Content = new StackPanel { Margin = new Thickness(28), Spacing = 16, Children = { new TextBlock { Text = "WPILib Manager", FontSize = 28, FontWeight = FontWeight.SemiBold }, new TextBlock { Text = "Package installation and maintenance", FontSize = 16 }, inputs, status, logs } } };
+        Activated += (_, _) => nativeActivated = true;
         Closing += (_, e) => { if (busy) e.Cancel = true; };
         Opened += (_, _) => DispatcherTimer.RunOnce(async () =>
         {
@@ -171,9 +172,9 @@ internal sealed class ManagerWindow : Window
     bool NativeWindowReady()
     {
         // Avalonia 12.1 Wayland deliberately exposes no raw IPlatformHandle.
-        // Its surface array remains empty until a native surface has been created.
+        // Activation is reported by its native compositor configure callback.
         var waylandSurface = PlatformImpl?.GetType().FullName == "Avalonia.Wayland.WindowImpl"
-            && PlatformImpl.Surfaces.Length > 0;
+            && nativeActivated;
         return rendered && IsVisible && (TryGetPlatformHandle() is not null || waylandSurface);
     }
     void Capture(string phase)
@@ -185,7 +186,7 @@ internal sealed class ManagerWindow : Window
         using var bitmap = new RenderTargetBitmap(size, new Vector(96, 96));
         bitmap.Render(this);
         bitmap.Save(png, PngBitmapEncoderOptions.Default);
-        var value = new JsonObject { ["native_window"] = NativeWindowReady(), ["backend"] = PlatformImpl?.GetType().FullName, ["surface_count"] = PlatformImpl?.Surfaces.Length ?? 0, ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
+        var value = new JsonObject { ["native_window"] = NativeWindowReady(), ["backend"] = PlatformImpl?.GetType().FullName, ["native_activation_observed"] = nativeActivated, ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
         Storage.Write(phase == "startup" ? Path.ChangeExtension(report, "startup.json") : report, Archive.Canonical(value));
     }
 }
