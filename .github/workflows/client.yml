@@ -80,6 +80,13 @@ jobs:
           prefix=()
           if [ "$RUNNER_OS" = Linux ]; then prefix=(xvfb-run -a); fi
           "${prefix[@]}" python -u tools/check_client_online.py --app "$app" --fixture build/online-fixture --work build/online-fixture/native --report build/online-fixture/report.json
+      - name: Native TUF and indefinite archival policy regression suite
+        shell: bash
+        run: |
+          app=build/online-fixture/download/wpilib-manager
+          if [ "$RUNNER_OS" = Windows ]; then app=build/online-fixture/download/WPILibManager.exe; fi
+          if [ "$RUNNER_OS" = macOS ]; then app='build/online-fixture/download/WPILib Manager.app/Contents/MacOS/wpilib-manager'; fi
+          python -u tools/check_client_trust.py --app "$app" --work build/online-fixture/trust --report build/online-fixture/trust-report.json
       - name: Headless Linux dependency and offline lifecycle checks
         if: runner.os == 'Linux'
         shell: bash
@@ -107,6 +114,8 @@ jobs:
           name: test-client-evidence-${{ matrix.os }}
           retention-days: 14
           path: |
+            build/online-fixture/trust-report.json
+            build/online-fixture/trust/invocations.json
             build/online-fixture/report.json
             build/online-fixture/offline-report.json
             build/online-fixture/offline/*.json
