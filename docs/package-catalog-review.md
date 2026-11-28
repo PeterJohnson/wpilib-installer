@@ -2,7 +2,9 @@
 
 **Status: proposed, awaiting review. No registry, package recipe, client, or publication configuration is changed by this draft.** This defines the intended catalog, not a claim that the payloads, compatibility ranges, or publisher integrations already exist. The [machine-readable companion](package-catalog-draft.json) is review data, deliberately not a deployable registry or publisher specification.
 
-The proposal has **29 component IDs across 9 publishers**, with 28 applicable to a single controller generation, and 9 profiles. The starting scope is the current WPILib distribution plus RobotPy: complete development environments, tools, documentation, and optional training-platform support. It does not enumerate every Maven artifact, wheel, shared library or VSIX as an installer component. Those belong in each recipe's locked dependency closure.
+The proposal has **28 component IDs across 9 publishers**, and 9 profiles. The starting scope is the current WPILib distribution plus RobotPy: complete development environments, tools, documentation, and optional training-platform support. It does not enumerate every Maven artifact, wheel, shared library or VSIX as an installer component. Those belong in each recipe's locked dependency closure.
+
+Controller scope is decided: **Systemcore only; roboRIO support is out of scope.** Optional Romi/XRP training support remains in the draft. Systemcore package availability, including RobotPy deployment assets, still requires release-specific validation.
 
 ## Decisions to review first
 
@@ -13,15 +15,15 @@ The proposal has **29 component IDs across 9 publishers**, with 28 applicable to
 | Tools | Seven individually selectable desktop applications, with private app runtime dependencies | Tools-only does not automatically install a JDK, SDK, editor or compiler. Verify actual upstream linkage before claiming that independence for every tool/version. |
 | Default language profiles | Selected language, editor support, all seven tools, user guide and that language's API docs | Familiar complete setup; advanced selection can omit tools/docs/editor. Review whether both dashboards should be defaults or one should be optional. |
 | RobotPy | Standalone Python, one host SDK/tool closure, and one controller deployment asset closure | Avoids exposing pip-level choices and duplicate ownership in a managed environment. Arbitrary project/vendor extras remain outside the baseline. |
-| Controller generations | Distinct roboRIO and Systemcore toolchain IDs; materialize one approved controller context per season/feed | Prevents silently reusing an incompatible compiler/sysroot. Supporting both within one installation would need an additional explicit design. |
+| Controller scope (decided) | Systemcore only, with one Systemcore cross-toolchain component | Compiler/sysroot, deployment runtimes and SDK artifacts must match the selected Systemcore release and ABI. |
 | Documentation | Four independent optional components | Can be read without installing SDKs; full offline platform bundles still contain them. |
 | Publishers | Producer-aligned feeds plus one distribution-maintenance feed for curated third-party runtimes/editor assets | Independent publication; more feeds increase renewal and compatibility-search work. Review the nine-feed topology before provisioning. |
 
-Review package boundaries, profile defaults, publisher ownership and controller/season policy before implementing the importers or producer actions. Concrete versions, sizes and artifact locks follow the approved boundaries; they are intentionally not guessed here.
+Review package boundaries, profile defaults, publisher ownership and season/ABI policy before implementing the importers or producer actions. Concrete versions, sizes and artifact locks follow the approved boundaries; they are intentionally not guessed here.
 
 ## Scope and evidence
 
-The inspected legacy source is [`WPILibInstaller-Avalonia` at `66733df`](https://github.com/PeterJohnson/WPILibInstaller-Avalonia/tree/66733df2c2953821a29b43ee8e5b90db4331ac16). Its `scripts/versions.gradle` and `gradleriobase/build.gradle` describe a 2027 alpha/Systemcore setup. It is a source inventory reference, **not the last released installer baseline**. The first import must choose and lock the actual release and audit differences. No 2026 roboRIO artifact is presumed compatible with 2027 Systemcore.
+The inspected legacy source is [`WPILibInstaller-Avalonia` at `66733df`](https://github.com/PeterJohnson/WPILibInstaller-Avalonia/tree/66733df2c2953821a29b43ee8e5b90db4331ac16). Its `scripts/versions.gradle` and `gradleriobase/build.gradle` describe a 2027 alpha/Systemcore setup. It is a source inventory reference, **not the last released installer baseline**. The first import must choose and lock the actual release and audit differences. Import only artifacts compatible with the selected Systemcore release. Exclude roboRIO-specific toolchains, libraries and deployment assets; obtain missing Systemcore inputs from locked Maven/upstream or producer outputs.
 
 Relevant source inventory includes [`scripts/maven.gradle`](https://github.com/PeterJohnson/WPILibInstaller-Avalonia/blob/66733df2c2953821a29b43ee8e5b90db4331ac16/scripts/maven.gradle), [`scripts/vscode.gradle`](https://github.com/PeterJohnson/WPILibInstaller-Avalonia/blob/66733df2c2953821a29b43ee8e5b90db4331ac16/scripts/vscode.gradle), `scripts/{jdk,toolchain,gradlew,tools,vars}.gradle`, `gradleriobase/build.gradle`, and the archive/tool/editor/shortcut services. This identifies the five native WPILib tools, two independent dashboards, build closure, editor extensions and setup operations; final release locks remain authoritative for exact contents.
 
@@ -31,7 +33,7 @@ RobotPy's [deployment implementation notes](https://robotpy.readthedocs.io/en/la
 
 ## Dependency notation and platform policy
 
-Every dependency in the tables is a **direct required component**, unless marked for a controller context. Profiles select root components and automatically include their transitive dependencies. A profile is not an installed package. Documentation and applications appearing together in a profile do not acquire hard dependencies on one another.
+Every dependency in the tables is a **direct required component** for the Systemcore catalog. Profiles select root components and automatically include their transitive dependencies. A profile is not an installed package. Documentation and applications appearing together in a profile do not acquire hard dependencies on one another.
 
 - `same-sdk-release` / `same-robotpy-release`: release-cohort equality or an explicitly approved compatibility relation, including partial upgrades against already-installed versions.
 - `tested-sdk-build-pair`: an approved SDK/GradleRIO combination, not arbitrary newer GradleRIO.
@@ -41,7 +43,7 @@ Every dependency in the tables is a **direct required component**, unless marked
 
 **These are intended constraints, not current wire syntax.** Today's client and publisher format express numeric minimum versions only. The production catalog cannot safely encode these requirements by pretending every newer dependency is compatible. Before deployment, review either explicit ranges/cohort support in the format and planner, or coarser packages that keep inseparable content together. Merely publishing all components in one repository snapshot does not make a partial installed upgrade atomic or ABI-safe.
 
-Intended host targets are Windows x64, Linux x64, macOS x64 and macOS ARM64. Every package needs a validated host/controller availability matrix before entering a real registry. Windows/Linux ARM are future targets, not implied by legacy download URLs. Platform-independent material can have identical payloads across host feeds. The default browser bundle contains the complete latest-compatible catalog for one host, season and controller context, not all hosts or old releases; install profiles select a subset from it.
+Intended host targets are Windows x64, Linux x64, macOS x64 and macOS ARM64. Every package needs a validated host/Systemcore availability matrix before entering a real registry. Windows/Linux ARM are future targets, not implied by legacy download URLs. Platform-independent material can have identical payloads across host feeds. The default browser bundle contains the complete latest-compatible catalog for one host, season and Systemcore release context, not all hosts or old releases; install profiles select a subset from it.
 
 Paths below are proposed ownership boundaries relative to the installation root, not a finalized seasonal layout. `maven/<...>/` denotes disjoint explicit coordinate/file sets, never ownership of the entire shared directory. Existing real dashboard IDs and `tools/elastic` / `tools/advantagescope` paths are retained. New layouts require compatibility adapters where existing tools expect legacy locations.
 
@@ -56,8 +58,7 @@ Paths below are proposed ownership boundaries relative to the installation root,
 | `org.wpilib.build`<br>GradleRIO build support | GradleRIO, plugin markers, build/deploy plugins and transitive Maven/POM closure; owns coordinates also used by SDK packages when shared.<br>**Paths:** `maven/<explicit build-support coordinates>/; build-support/` | `org.wpilib.gradle` (tested-compatible) | `gradlerio`<br>Legacy build closure or locked GradleRIO/Maven artifacts |
 | `org.wpilib.sdk.common`<br>Shared WPILib SDK data | Shared SDK Maven coordinates, native/JNI and simulation dependencies used by both languages, common vendor descriptors and season data; excludes build-owned coordinates and tool executables.<br>**Paths:** `maven/<explicit common coordinates>/; vendordeps/<core descriptors>/; sdk/common/` | `org.wpilib.build` (tested-sdk-build-pair) | `core`<br>Legacy Maven/resources or locked allwpilib/Maven closure |
 | `org.wpilib.java`<br>WPILib Java SDK | Java API artifacts, annotation processing, test dependencies, language-specific examples/template inputs and sources/Javadocs used by the IDE; full selected-host/controller closure, including controller JVM deployment assets if required by the selected release deployment model.<br>**Paths:** `maven/<explicit Java-only coordinates>/; sdk/java/` | `org.wpilib.sdk.common` (same-sdk-release) | `core`<br>Legacy payload or allwpilib/Maven Java outputs |
-| `org.wpilib.cpp`<br>WPILib C++ SDK | C++ headers/libraries, sources, native test dependencies, example/template inputs, host simulation and controller build variants.<br>**Paths:** `maven/<explicit C++-only coordinates>/; sdk/cpp/` | `org.wpilib.sdk.common` (same-sdk-release)<br>`org.wpilib.toolchain.roborio` (tested-controller-abi — roborio only)<br>`org.wpilib.toolchain.systemcore` (tested-controller-abi — systemcore only) | `core`<br>Legacy payload or allwpilib/Maven C++ outputs |
-| `org.wpilib.toolchain.roborio`<br>roboRIO cross toolchain | Host-executed compiler, linker, debugger and sysroot for the selected roboRIO release; not a desktop compiler.<br>**Paths:** `toolchains/roborio/ (legacy layout compatibility mapping required)` | None | `toolchains`<br>Pinned legacy toolchain or matching upstream release |
+| `org.wpilib.cpp`<br>WPILib C++ SDK | C++ headers/libraries, sources, native test dependencies, example/template inputs, host simulation and controller build variants.<br>**Paths:** `maven/<explicit C++-only coordinates>/; sdk/cpp/` | `org.wpilib.sdk.common` (same-sdk-release)<br>`org.wpilib.toolchain.systemcore` (tested-controller-abi) | `core`<br>Legacy payload or allwpilib/Maven C++ outputs |
 | `org.wpilib.toolchain.systemcore`<br>Systemcore cross toolchain | Host-executed compiler, linker, debugger and sysroot for the selected Systemcore release; not a desktop compiler.<br>**Paths:** `toolchains/systemcore/ (legacy layout compatibility mapping required)` | None | `toolchains`<br>Pinned legacy toolchain or matching opensdk release |
 
 ### Optional training support
@@ -95,7 +96,7 @@ Paths below are proposed ownership boundaries relative to the installation root,
 | --- | --- | --- | --- |
 | `org.robotpy.python`<br>Standalone Python | Supported relocatable CPython, standard library, packaging/bootstrap tools and required private native libraries. No system Python dependency.<br>**Paths:** `robotpy/python/ (ABI/version-specific backing)` | None | `robotpy`<br>Locked standalone Python distribution or RobotPy-provided runtime |
 | `org.robotpy.sdk`<br>RobotPy host SDK and tools | One coherent host wheel closure: WPILib bindings, commands, CLI/deployer, tests/pyfrc, simulation and required native dependencies; locked baseline wheelhouse and managed seed environment. No arbitrary project extras.<br>**Paths:** `robotpy/host-wheels/; robotpy/sdk/; generated project venvs excluded` | `org.robotpy.python` (python-abi) | `robotpy`<br>Pinned RobotPy host wheels or producer outputs |
-| `org.robotpy.deploy`<br>RobotPy controller deployment assets | Offline target Python/runtime archive and controller wheel closure, matched to the host SDK. Host deploy command lives in SDK; this component supplies robot-side assets.<br>**Paths:** `robotpy/target/<controller>/; pip_cache/pkg_cache compatibility mapping` | `org.robotpy.sdk` (same-robotpy-release) | `robotpy`<br>Pinned target runtime and wheels or RobotPy producer outputs |
+| `org.robotpy.deploy`<br>RobotPy controller deployment assets | Offline Systemcore Python/runtime archive and controller wheel closure, matched to the host SDK. Host deploy command lives in SDK; this component supplies robot-side assets.<br>**Paths:** `robotpy/target/systemcore/; pip_cache/pkg_cache compatibility mapping` | `org.robotpy.sdk` (same-robotpy-release) | `robotpy`<br>Pinned target runtime and wheels or RobotPy producer outputs |
 
 ### Documentation
 
@@ -112,17 +113,17 @@ These are proposed default selections, not hard coupling between tools and SDKs.
 
 | Profile | Explicit selection | Automatic requirements | Components after closure |
 | --- | --- | --- | ---: |
-| C++ development | C++ SDK, WPILib/C++ editor support, seven tools, guide and C++ API docs | Shared SDK, GradleRIO support, Gradle, JDK, matching controller toolchain, VS Code | 18 |
+| C++ development | C++ SDK, WPILib/C++ editor support, seven tools, guide and C++ API docs | Shared SDK, GradleRIO support, Gradle, JDK, Systemcore toolchain, VS Code | 18 |
 | Java development | Java SDK, WPILib/Java editor support, seven tools, guide and Java API docs | Shared SDK, GradleRIO support, Gradle, JDK, VS Code; no C++ cross toolchain | 17 |
 | Python development | RobotPy deployment assets, WPILib/Python editor support, seven tools, guide and Python API docs | RobotPy host SDK, standalone Python, VS Code; no Java/Gradle/C++ toolchain | 15 |
 | Tools only | Seven tools | Only private dependencies inside their payloads | 7 |
-| C++ SDK without editor | C++ SDK | Shared SDK, GradleRIO support, Gradle, JDK, controller toolchain | 6 |
+| C++ SDK without editor | C++ SDK | Shared SDK, GradleRIO support, Gradle, JDK, Systemcore toolchain | 6 |
 | Java SDK without editor | Java SDK | Shared SDK, GradleRIO support, Gradle, JDK | 5 |
 | Python SDK without editor | RobotPy deployment assets | RobotPy host SDK and Python | 3 |
 | Offline documentation | Guide and all three API references | None | 4 |
-| All supported components | Every component for this host/controller, including Romi/XRP | The matching controller toolchain | 28 |
+| All supported components | Every component for this host/Systemcore release, including Romi/XRP | The Systemcore toolchain | 28 |
 
-Counts are graph checks of this draft for each of the two proposed controller contexts, not counts of validated release artifacts. A real feed may expose only the context/subset validated for its release; omit profiles that cannot be fully satisfied. Profile combinations are unions, so Java+C++ share the JDK, build support and common SDK. Each language can be installed without the editor via the corresponding advanced profile. A project choosing a different JDK/Python installation is a future provider/override feature; the default package graph does not rely on system installations.
+Counts are graph checks of the Systemcore draft, not counts of validated release artifacts. A real feed may expose only the subset validated for its host and Systemcore release; omit profiles that cannot be fully satisfied. Profile combinations are unions, so Java+C++ share the JDK, build support and common SDK. Each language can be installed without the editor via the corresponding advanced profile. A project choosing a different JDK/Python installation is a future provider/override feature; the default package graph does not rely on system installations.
 
 The WPILib VS Code extension is selected for all language profiles for common tooling and future installer update discovery. Its Python integration and behavior when Java/C++ packages are absent need acceptance; if that cannot be supported, the Python profile must omit it or use a separate lightweight integration. Optional language actions should explain missing SDKs rather than silently downloading unselected packages.
 
@@ -135,7 +136,7 @@ flowchart TD
   Common --> Build[GradleRIO build support]
   Build --> Gradle[Gradle distribution]
   Gradle --> JDK[JDK]
-  Cpp --> Cross[Selected controller cross toolchain]
+  Cpp --> Cross[Systemcore cross toolchain]
   Romi[Romi support] --> Common
   XRP[XRP support] --> Common
   WPIVS[WPILib extension] --> Editor[VS Code]
@@ -207,4 +208,4 @@ Nine publishers are a proposal, not a free scalability assumption. Current selec
 | RobotPy optional utilities, vendor support and Romi/XRP Python extensions | Resolve the chosen RobotPy baseline's supported defaults first. Add separate aggregate optional packages only when there is a useful user-facing boundary and a complete tested wheel closure. |
 | Package sizes and exact versions | Produce from the locked release inventory. No estimates are asserted in this review draft. |
 
-The remaining review decisions are the actual import release/season, supported controller contexts, SDK/extension granularity, default tools/docs, RobotPy baseline extras and runtime choice, publisher topology, version/compatibility representation, and layout/ownership integration. Once approved, implement one shared recipe/import/producer path and its functional acceptance before expanding the rest, as described in the [catalog implementation plan](package-catalog.md).
+The remaining review decisions are the actual import release/season, Systemcore release/ABI compatibility, SDK/extension granularity, default tools/docs, RobotPy baseline extras and runtime choice, publisher topology, version/compatibility representation, and layout/ownership integration. Once approved, implement one shared recipe/import/producer path and its functional acceptance before expanding the rest, as described in the [catalog implementation plan](package-catalog.md).

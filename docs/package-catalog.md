@@ -4,6 +4,8 @@ Review the [full proposed component catalog, dependencies, and profiles](package
 
 Build the catalog in parallel with the eventual producer integrations. During development, create real packages from the last released legacy installer and/or its published Maven and upstream artifacts. Do not require every producer to change its CI, or rebuild every project from source, before testing the new installer. In parallel, develop the shared packaging scripts and GitHub Actions interfaces that the respective repositories will invoke after their normal release builds.
 
+Systemcore is the only robot-controller target for this catalog; roboRIO support is out of scope. Legacy releases are sources for compatible inputs, not a requirement to preserve every retired controller payload. Exclude roboRIO-specific toolchains, libraries and deployment runtimes, and obtain missing Systemcore artifacts from locked Maven/upstream or producer outputs. Optional Romi/XRP training packages remain separately selectable.
+
 This is the catalog implementation plan. The dashboard importers and reusable publisher workflow already exist; general legacy-installer/Maven importers and producer-facing packaging actions still need implementation. Current core SDK and RobotPy fixtures are not real catalog packages.
 
 ## One package definition, multiple input sources
@@ -32,7 +34,7 @@ Extract the released resource and artifact archives, without running the old ins
 
 Where the release does not contain a required artifact, or a direct artifact is a better input, use pinned Maven/upstream downloads. The lock must include Maven repository URL, group/artifact/version, classifier, extension, and digest/length for every resolved artifact, including required POMs and parent/BOM metadata. Resolve the dependency closure from the chosen release's GradleRIO/build metadata and validate it offline; copying only top-level JARs is insufficient. Freeze snapshot content if unavoidable rather than resolving mutable snapshots during repeat builds. Record the precise dependency-resolution inputs and tool versions.
 
-Download only the selected host platform's package set, plus platform-independent material and cross-compile target artifacts that those packages require. A Linux development installation can still need roboRIO-target libraries; filtering to the host classifier alone is incorrect. Use a verified download cache so repeat packaging can run without network access once inputs are present. Missing inputs must fail with their identities, not silently produce an incomplete package.
+Download only the selected host platform's package set, plus platform-independent material and cross-compile target artifacts that those packages require. A Linux development installation can still need Systemcore-target libraries; filtering to the host classifier alone is incorrect. Use a verified download cache so repeat packaging can run without network access once inputs are present. Missing inputs must fail with their identities, not silently produce an incomplete package.
 
 Do not blindly re-run the legacy installer's setup steps. Inventory them and assign each to a recipe transformation, an explicit reversible component operation, or future OS integration. Maven metadata generation, Gradle setup, VS Code settings/extensions, tool launchers, and shortcuts need this review. Generated metadata must have clear ownership, especially when multiple components share a Maven directory. User-edited configuration and project files are not disposable package payloads.
 
@@ -73,7 +75,7 @@ Equivalence means the same supported installed functionality and component contr
 
 For each recipe, add its import/build-output parity checks and native installation tests together. Test fresh installation, a real older-to-newer upgrade, removal and reinstallation from retained caches after deleting original media, and dependency-removal protection. Include an upgrade pair with removed/renamed files, or a separate targeted case if the real pair does not have them. Preserve package-owned/user-owned file boundaries.
 
-SDK acceptance must also compile representative Java and C++ projects with networking disabled and no pre-existing user Gradle/Maven caches, using the installed toolchain and package closure. RobotPy needs equivalent offline Python import/build or tooling checks against its bundled runtime and wheels. Installation hashes alone do not establish a usable development environment. Physical-device deployment and application-specific integration remain separately identified coverage.
+SDK acceptance must also compile representative Java and C++ projects with networking disabled and no pre-existing user Gradle/Maven caches, using the installed toolchain and package closure. RobotPy needs equivalent offline Python import/build or tooling checks against its bundled runtime and wheels, with deployment assets validated for the selected Systemcore OS/architecture and Python ABI. Installation hashes alone do not establish a usable development environment. Physical-device deployment and application-specific integration remain separately identified coverage.
 
 ## Implementation order
 

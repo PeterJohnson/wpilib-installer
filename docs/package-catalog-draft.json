@@ -15,16 +15,15 @@
     "macos-arm64"
   ],
   "controller_contexts": [
-    "roborio",
     "systemcore"
   ],
-  "availability_policy": "Intended targets, not a support claim. Materialize only a release-validated host/controller subset. Do not mix controller generations in one default bundle.",
+  "availability_policy": "Systemcore is the only supported robot-controller context; roboRIO is out of scope. Intended host targets are not a support claim: materialize only a release-validated host/Systemcore subset.",
   "constraint_policy": "Symbolic review requirements; current client supports only numeric minimum versions. Exact/range/cohort and provider requirements need design/implementation before deployment.",
   "publishers": {
     "distribution": "Installer distribution maintenance CI: JDK, Gradle, editor and curated language-extension releases; one writer composes its complete snapshot.",
     "gradlerio": "GradleRIO release CI owns build-support closure.",
     "core": "allwpilib release CI owns SDK, built-in training support, five native desktop tools and Java/C++ API documentation.",
-    "toolchains": "Toolchain release CI (e.g. opensdk for Systemcore); target/season feed chooses supported controller family.",
+    "toolchains": "Systemcore toolchain release CI (e.g. opensdk); season feed selects a tested Systemcore OS/architecture and SDK ABI combination.",
     "vscode-wpilib": "WPILib extension release CI.",
     "frc-docs": "WPILib documentation release/snapshot CI.",
     "robotpy": "RobotPy coordinated release assembly: standalone runtime, host closure, target closure and API documentation.",
@@ -43,7 +42,6 @@
       "development_source": "Legacy JDK payload or locked vendor archive",
       "version_policy": "JDK feature-line and tested consumer ranges",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -64,7 +62,6 @@
       "development_source": "Legacy Gradle ZIP or locked upstream distribution",
       "version_policy": "tested Gradle/JDK pair",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -85,7 +82,6 @@
       "development_source": "Legacy build closure or locked GradleRIO/Maven artifacts",
       "version_policy": "tested GradleRIO/Gradle/JDK/controller matrix",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -106,7 +102,6 @@
       "development_source": "Legacy Maven/resources or locked allwpilib/Maven closure",
       "version_policy": "SDK cohort; matched common/Java/C++ release",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -127,7 +122,6 @@
       "development_source": "Legacy payload or allwpilib/Maven Java outputs",
       "version_policy": "SDK cohort",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -145,36 +139,14 @@
           "constraint": "same-sdk-release"
         },
         {
-          "package": "org.wpilib.toolchain.roborio",
-          "constraint": "tested-controller-abi",
-          "when_controller": "roborio"
-        },
-        {
           "package": "org.wpilib.toolchain.systemcore",
-          "constraint": "tested-controller-abi",
-          "when_controller": "systemcore"
+          "constraint": "tested-controller-abi"
         }
       ],
       "development_source": "Legacy payload or allwpilib/Maven C++ outputs",
       "version_policy": "SDK cohort plus controller ABI",
       "controllers": [
-        "roborio",
         "systemcore"
-      ],
-      "availability": "proposed; native payload and offline functionality acceptance required"
-    },
-    {
-      "id": "org.wpilib.toolchain.roborio",
-      "name": "roboRIO cross toolchain",
-      "publisher": "toolchains",
-      "group": "Build and SDK",
-      "contents": "Host-executed compiler, linker, debugger and sysroot for the selected roboRIO release; not a desktop compiler.",
-      "owned_layout": "toolchains/roborio/ (legacy layout compatibility mapping required)",
-      "requires": [],
-      "development_source": "Pinned legacy toolchain or matching upstream release",
-      "version_policy": "controller ABI/toolchain family",
-      "controllers": [
-        "roborio"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
     },
@@ -209,7 +181,6 @@
       "development_source": "Legacy artifacts or matching allwpilib/Maven outputs",
       "version_policy": "SDK cohort; optional",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -230,7 +201,6 @@
       "development_source": "Legacy artifacts or matching allwpilib/Maven outputs",
       "version_policy": "SDK cohort; optional",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -246,7 +216,6 @@
       "development_source": "Legacy separate editor download or locked official portable archive",
       "version_policy": "editor engine version",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -267,7 +236,6 @@
       "development_source": "Pinned release VSIX or signed/tested producer output",
       "version_policy": "VS Code engine range plus tested SDK compatibility; not an SDK dependency",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -288,7 +256,6 @@
       "development_source": "Locked legacy VSIX or upstream VSIX closure",
       "version_policy": "VS Code engine/platform compatibility",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -313,7 +280,6 @@
       "development_source": "Locked legacy VSIX set or upstream closure",
       "version_policy": "editor/JDK/language-server compatibility",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -334,7 +300,6 @@
       "development_source": "Locked upstream VSIX closure; new recipe",
       "version_policy": "VS Code engine/platform compatibility; interpreter chosen by project",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -350,7 +315,6 @@
       "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
       "version_policy": "independently selectable; released in core publisher snapshot",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -366,7 +330,6 @@
       "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
       "version_policy": "independently selectable; released in core publisher snapshot",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -382,7 +345,6 @@
       "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
       "version_policy": "independently selectable; released in core publisher snapshot",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -398,7 +360,6 @@
       "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
       "version_policy": "independently selectable; released in core publisher snapshot",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -414,7 +375,6 @@
       "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
       "version_policy": "independently selectable; released in core publisher snapshot",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -430,7 +390,6 @@
       "development_source": "Existing pinned upstream adapter, then producer release output",
       "version_policy": "independent application version; existing real component ID",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -446,7 +405,6 @@
       "development_source": "Existing pinned upstream adapter, then producer release output",
       "version_policy": "independent application version; existing real component ID",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -462,7 +420,6 @@
       "development_source": "Locked standalone Python distribution or RobotPy-provided runtime",
       "version_policy": "Python ABI and supported runtime range",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -483,7 +440,6 @@
       "development_source": "Pinned RobotPy host wheels or producer outputs",
       "version_policy": "Python ABI plus matched RobotPy release closure",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -493,8 +449,8 @@
       "name": "RobotPy controller deployment assets",
       "publisher": "robotpy",
       "group": "RobotPy",
-      "contents": "Offline target Python/runtime archive and controller wheel closure, matched to the host SDK. Host deploy command lives in SDK; this component supplies robot-side assets.",
-      "owned_layout": "robotpy/target/<controller>/; pip_cache/pkg_cache compatibility mapping",
+      "contents": "Offline Systemcore Python/runtime archive and controller wheel closure, matched to the host SDK. Host deploy command lives in SDK; this component supplies robot-side assets.",
+      "owned_layout": "robotpy/target/systemcore/; pip_cache/pkg_cache compatibility mapping",
       "requires": [
         {
           "package": "org.robotpy.sdk",
@@ -504,7 +460,6 @@
       "development_source": "Pinned target runtime and wheels or RobotPy producer outputs",
       "version_policy": "RobotPy release plus target OS/architecture/Python ABI",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -520,7 +475,6 @@
       "development_source": "Pinned legacy docs archive or docs CI output",
       "version_policy": "documents a declared release; not a hard runtime dependency",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -536,7 +490,6 @@
       "development_source": "Legacy docs or allwpilib documentation ZIP",
       "version_policy": "documents a declared release; not a hard runtime dependency",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -552,7 +505,6 @@
       "development_source": "Legacy docs or allwpilib documentation ZIP",
       "version_policy": "documents a declared release; not a hard runtime dependency",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -568,7 +520,6 @@
       "development_source": "Pinned docs archive or RobotPy docs output",
       "version_policy": "documents a declared release; not a hard runtime dependency",
       "controllers": [
-        "roborio",
         "systemcore"
       ],
       "availability": "proposed; native payload and offline functionality acceptance required"
@@ -674,6 +625,7 @@
         "org.wpilib.sdk.common",
         "org.wpilib.java",
         "org.wpilib.cpp",
+        "org.wpilib.toolchain.systemcore",
         "org.wpilib.support.romi",
         "org.wpilib.support.xrp",
         "org.wpilib.vscode",
