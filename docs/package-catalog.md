@@ -1,5 +1,7 @@
 # Package catalog development and producer CI
 
+Review the [full proposed component catalog, dependencies, and profiles](package-catalog-review.md) before implementing this plan. Its [JSON companion](package-catalog-draft.json) is non-deployable review data; package boundaries and symbolic compatibility constraints are not yet approved.
+
 Build the catalog in parallel with the eventual producer integrations. During development, create real packages from the last released legacy installer and/or its published Maven and upstream artifacts. Do not require every producer to change its CI, or rebuild every project from source, before testing the new installer. In parallel, develop the shared packaging scripts and GitHub Actions interfaces that the respective repositories will invoke after their normal release builds.
 
 This is the catalog implementation plan. The dashboard importers and reusable publisher workflow already exist; general legacy-installer/Maven importers and producer-facing packaging actions still need implementation. Current core SDK and RobotPy fixtures are not real catalog packages.

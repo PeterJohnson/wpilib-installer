@@ -36,7 +36,7 @@ All unchecked gates below remain required before calling an installer production
 
 ## Next implementation sequence
 
-1. Build real core packages from a pinned last legacy release and/or Maven artifacts while developing equivalent producer CI recipes/actions in parallel; add RobotPy from its own runtime/wheel sources. Settle installation/layout contracts and validate offline development functionality as described in the [catalog plan](package-catalog.md).
+1. Review and approve the [full catalog draft](package-catalog-review.md), including dependency/version semantics, publisher ownership and profile defaults, before implementing its real packages. Build real core packages from a pinned last legacy release and/or Maven artifacts while developing equivalent producer CI recipes/actions in parallel; add RobotPy from its own runtime/wheel sources. Settle installation/layout contracts and validate offline development functionality as described in the [catalog plan](package-catalog.md).
 2. Harden lifecycle recovery and complete normal-user GUI flows and VS Code integration.
 3. Provision deployment trust/endpoints and implement signed client release/self-update delivery.
 4. Complete the expanded clean-machine/hardware matrix and release approval process.

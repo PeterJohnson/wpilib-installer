@@ -6,6 +6,7 @@
 - [Production readiness](production-readiness.md): established capabilities and unfinished release gates.
 - [Development and migration](../CONTRIBUTING.md): current layout, commands, and CI responsibilities.
 - [Runtime distribution](self-contained-runtime.md): dependency isolation, supported baselines, measured sizes, and acceptance limits.
+- [Package catalog review draft](package-catalog-review.md): proposed components, dependency graph, profiles, ownership and open decisions.
 - [Package catalog development](package-catalog.md): legacy/Maven imports and shared producer CI recipes/actions.
 - [Real package recipes](../packaging/README.md): pinned Elastic and AdvantageScope upgrades.
 - [Deployment](../deployment/): signing, TUF, Artifactory/R2, registries, and offline publication.

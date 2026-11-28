@@ -1,0 +1,701 @@
+{
+  "kind": "package-catalog-review",
+  "schema": 1,
+  "status": "draft-not-approved-not-deployable",
+  "date": "2026-11-27",
+  "legacy_reference": {
+    "repository": "PeterJohnson/WPILibInstaller-Avalonia",
+    "commit": "66733df2c2953821a29b43ee8e5b90db4331ac16",
+    "note": "2027 development source, not the locked last legacy release"
+  },
+  "host_targets": [
+    "windows-x64",
+    "linux-x64",
+    "macos-x64",
+    "macos-arm64"
+  ],
+  "controller_contexts": [
+    "roborio",
+    "systemcore"
+  ],
+  "availability_policy": "Intended targets, not a support claim. Materialize only a release-validated host/controller subset. Do not mix controller generations in one default bundle.",
+  "constraint_policy": "Symbolic review requirements; current client supports only numeric minimum versions. Exact/range/cohort and provider requirements need design/implementation before deployment.",
+  "publishers": {
+    "distribution": "Installer distribution maintenance CI: JDK, Gradle, editor and curated language-extension releases; one writer composes its complete snapshot.",
+    "gradlerio": "GradleRIO release CI owns build-support closure.",
+    "core": "allwpilib release CI owns SDK, built-in training support, five native desktop tools and Java/C++ API documentation.",
+    "toolchains": "Toolchain release CI (e.g. opensdk for Systemcore); target/season feed chooses supported controller family.",
+    "vscode-wpilib": "WPILib extension release CI.",
+    "frc-docs": "WPILib documentation release/snapshot CI.",
+    "robotpy": "RobotPy coordinated release assembly: standalone runtime, host closure, target closure and API documentation.",
+    "elastic": "Elastic release CI, independent repository.",
+    "advantagescope": "AdvantageScope release CI, independent repository."
+  },
+  "packages": [
+    {
+      "id": "org.wpilib.jdk",
+      "name": "Java JDK",
+      "publisher": "distribution",
+      "group": "Build and SDK",
+      "contents": "Full pinned JDK, including compiler and runtime; used by Java and Gradle-based C++ builds.",
+      "owned_layout": "jdk/ (versioned physical backing recommended)",
+      "requires": [],
+      "development_source": "Legacy JDK payload or locked vendor archive",
+      "version_policy": "JDK feature-line and tested consumer ranges",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.gradle",
+      "name": "Gradle distribution",
+      "publisher": "distribution",
+      "group": "Build and SDK",
+      "contents": "Pinned Gradle distribution plus wrapper bootstrap archive/cache seed; not project build outputs or user caches.",
+      "owned_layout": "gradle/distributions/; managed wrapper seed",
+      "requires": [
+        {
+          "package": "org.wpilib.jdk",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Legacy Gradle ZIP or locked upstream distribution",
+      "version_policy": "tested Gradle/JDK pair",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.build",
+      "name": "GradleRIO build support",
+      "publisher": "gradlerio",
+      "group": "Build and SDK",
+      "contents": "GradleRIO, plugin markers, build/deploy plugins and transitive Maven/POM closure; owns coordinates also used by SDK packages when shared.",
+      "owned_layout": "maven/<explicit build-support coordinates>/; build-support/",
+      "requires": [
+        {
+          "package": "org.wpilib.gradle",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Legacy build closure or locked GradleRIO/Maven artifacts",
+      "version_policy": "tested GradleRIO/Gradle/JDK/controller matrix",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.sdk.common",
+      "name": "Shared WPILib SDK data",
+      "publisher": "core",
+      "group": "Build and SDK",
+      "contents": "Shared SDK Maven coordinates, native/JNI and simulation dependencies used by both languages, common vendor descriptors and season data; excludes build-owned coordinates and tool executables.",
+      "owned_layout": "maven/<explicit common coordinates>/; vendordeps/<core descriptors>/; sdk/common/",
+      "requires": [
+        {
+          "package": "org.wpilib.build",
+          "constraint": "tested-sdk-build-pair"
+        }
+      ],
+      "development_source": "Legacy Maven/resources or locked allwpilib/Maven closure",
+      "version_policy": "SDK cohort; matched common/Java/C++ release",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.java",
+      "name": "WPILib Java SDK",
+      "publisher": "core",
+      "group": "Build and SDK",
+      "contents": "Java API artifacts, annotation processing, test dependencies, language-specific examples/template inputs and sources/Javadocs used by the IDE; full selected-host/controller closure. Include controller JVM deployment assets if required by the selected release deployment model.",
+      "owned_layout": "maven/<explicit Java-only coordinates>/; sdk/java/",
+      "requires": [
+        {
+          "package": "org.wpilib.sdk.common",
+          "constraint": "same-sdk-release"
+        }
+      ],
+      "development_source": "Legacy payload or allwpilib/Maven Java outputs",
+      "version_policy": "SDK cohort",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.cpp",
+      "name": "WPILib C++ SDK",
+      "publisher": "core",
+      "group": "Build and SDK",
+      "contents": "C++ headers/libraries, sources, native test dependencies, example/template inputs, host simulation and controller build variants.",
+      "owned_layout": "maven/<explicit C++-only coordinates>/; sdk/cpp/",
+      "requires": [
+        {
+          "package": "org.wpilib.sdk.common",
+          "constraint": "same-sdk-release"
+        },
+        {
+          "package": "org.wpilib.toolchain.roborio",
+          "constraint": "tested-controller-abi",
+          "when_controller": "roborio"
+        },
+        {
+          "package": "org.wpilib.toolchain.systemcore",
+          "constraint": "tested-controller-abi",
+          "when_controller": "systemcore"
+        }
+      ],
+      "development_source": "Legacy payload or allwpilib/Maven C++ outputs",
+      "version_policy": "SDK cohort plus controller ABI",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.toolchain.roborio",
+      "name": "roboRIO cross toolchain",
+      "publisher": "toolchains",
+      "group": "Build and SDK",
+      "contents": "Host-executed compiler, linker, debugger and sysroot for the selected roboRIO release; not a desktop compiler.",
+      "owned_layout": "toolchains/roborio/ (legacy layout compatibility mapping required)",
+      "requires": [],
+      "development_source": "Pinned legacy toolchain or matching upstream release",
+      "version_policy": "controller ABI/toolchain family",
+      "controllers": [
+        "roborio"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.toolchain.systemcore",
+      "name": "Systemcore cross toolchain",
+      "publisher": "toolchains",
+      "group": "Build and SDK",
+      "contents": "Host-executed compiler, linker, debugger and sysroot for the selected Systemcore release; not a desktop compiler.",
+      "owned_layout": "toolchains/systemcore/ (legacy layout compatibility mapping required)",
+      "requires": [],
+      "development_source": "Pinned legacy toolchain or matching opensdk release",
+      "version_policy": "controller ABI/toolchain family",
+      "controllers": [
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.support.romi",
+      "name": "Romi support",
+      "publisher": "core",
+      "group": "Optional training support",
+      "contents": "Bundled Romi Java/C++ artifacts and vendor descriptor, with required host simulation pieces. Data for either selected language, not another full SDK.",
+      "owned_layout": "maven/<Romi coordinates>/; vendordeps/Romi*",
+      "requires": [
+        {
+          "package": "org.wpilib.sdk.common",
+          "constraint": "same-sdk-release"
+        }
+      ],
+      "development_source": "Legacy artifacts or matching allwpilib/Maven outputs",
+      "version_policy": "SDK cohort; optional",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.support.xrp",
+      "name": "XRP support",
+      "publisher": "core",
+      "group": "Optional training support",
+      "contents": "Bundled XRP Java/C++ artifacts and vendor descriptor, with required simulation client. Python bindings are a separate RobotPy closure decision.",
+      "owned_layout": "maven/<XRP coordinates>/; vendordeps/XRP*",
+      "requires": [
+        {
+          "package": "org.wpilib.sdk.common",
+          "constraint": "same-sdk-release"
+        }
+      ],
+      "development_source": "Legacy artifacts or matching allwpilib/Maven outputs",
+      "version_policy": "SDK cohort; optional",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.vscode",
+      "name": "Managed VS Code",
+      "publisher": "distribution",
+      "group": "Editor",
+      "contents": "Dedicated portable editor and bundled editor runtime; no dependency on Java/C++/Python SDKs.",
+      "owned_layout": "vscode/; dedicated writable editor user-data location excluded from payload ownership",
+      "requires": [],
+      "development_source": "Legacy separate editor download or locked official portable archive",
+      "version_policy": "editor engine version",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.vscode.wpilib",
+      "name": "WPILib VS Code extension",
+      "publisher": "vscode-wpilib",
+      "group": "Editor",
+      "contents": "WPILib VSIX and its embedded templates/examples/resources; future update discovery and language-aware integration.",
+      "owned_layout": "extensions/wpilibsuite.vscode-wpilib/; vsCodeExtensions/<WPILib VSIX>",
+      "requires": [
+        {
+          "package": "org.wpilib.vscode",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Pinned release VSIX or signed/tested producer output",
+      "version_policy": "VS Code engine range plus tested SDK compatibility; not an SDK dependency",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.vscode.cpp",
+      "name": "C++ editor support",
+      "publisher": "distribution",
+      "group": "Editor",
+      "contents": "Pinned C/C++ extension and its offline language/debugger dependencies.",
+      "owned_layout": "extensions/<C++ extension IDs>/; vsCodeExtensions/<C++ VSIXs>",
+      "requires": [
+        {
+          "package": "org.wpilib.vscode",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Locked legacy VSIX or upstream VSIX closure",
+      "version_policy": "VS Code engine/platform compatibility",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.vscode.java",
+      "name": "Java editor support",
+      "publisher": "distribution",
+      "group": "Editor",
+      "contents": "Pinned Java language, debugger and dependency-view extensions with complete offline dependencies.",
+      "owned_layout": "extensions/<Java extension IDs>/; vsCodeExtensions/<Java VSIXs>",
+      "requires": [
+        {
+          "package": "org.wpilib.vscode",
+          "constraint": "tested-compatible"
+        },
+        {
+          "package": "org.wpilib.jdk",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Locked legacy VSIX set or upstream closure",
+      "version_policy": "editor/JDK/language-server compatibility",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.vscode.python",
+      "name": "Python editor support",
+      "publisher": "distribution",
+      "group": "Editor",
+      "contents": "Pinned Python editing/debugging extension closure. Exact extension set and offline language-server redistribution need review.",
+      "owned_layout": "extensions/<Python extension IDs>/; vsCodeExtensions/<Python VSIXs>",
+      "requires": [
+        {
+          "package": "org.wpilib.vscode",
+          "constraint": "tested-compatible"
+        }
+      ],
+      "development_source": "Locked upstream VSIX closure; new recipe",
+      "version_policy": "VS Code engine/platform compatibility; interpreter chosen by project",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.glass",
+      "name": "Glass",
+      "publisher": "core",
+      "group": "Desktop tools",
+      "contents": "Glass executable and private native/runtime resources; Windows app-local runtime libraries where required. No Gradle or SDK needed to launch.",
+      "owned_layout": "tools/glass/; per-tool launch descriptor",
+      "requires": [],
+      "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
+      "version_policy": "independently selectable; released in core publisher snapshot",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.outlineviewer",
+      "name": "OutlineViewer",
+      "publisher": "core",
+      "group": "Desktop tools",
+      "contents": "OutlineViewer executable and private native/runtime resources; Windows app-local runtime libraries where required. No Gradle or SDK needed to launch.",
+      "owned_layout": "tools/outlineviewer/; per-tool launch descriptor",
+      "requires": [],
+      "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
+      "version_policy": "independently selectable; released in core publisher snapshot",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.sysid",
+      "name": "SysId",
+      "publisher": "core",
+      "group": "Desktop tools",
+      "contents": "SysId executable and private native/runtime resources; Windows app-local runtime libraries where required. No Gradle or SDK needed to launch.",
+      "owned_layout": "tools/sysid/; per-tool launch descriptor",
+      "requires": [],
+      "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
+      "version_policy": "independently selectable; released in core publisher snapshot",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.datalogtool",
+      "name": "Data Log Tool",
+      "publisher": "core",
+      "group": "Desktop tools",
+      "contents": "Data Log Tool executable and private native/runtime resources; Windows app-local runtime libraries where required. No Gradle or SDK needed to launch.",
+      "owned_layout": "tools/datalogtool/; per-tool launch descriptor",
+      "requires": [],
+      "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
+      "version_policy": "independently selectable; released in core publisher snapshot",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.wpical",
+      "name": "WPIcal",
+      "publisher": "core",
+      "group": "Desktop tools",
+      "contents": "WPIcal executable and private native/runtime resources; Windows app-local runtime libraries where required. No Gradle or SDK needed to launch.",
+      "owned_layout": "tools/wpical/; per-tool launch descriptor",
+      "requires": [],
+      "development_source": "Legacy tools/artifacts or matching allwpilib/Maven native release",
+      "version_policy": "independently selectable; released in core publisher snapshot",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.elastic",
+      "name": "Elastic",
+      "publisher": "elastic",
+      "group": "Desktop tools",
+      "contents": "Complete official WPILib application distribution and its bundled runtime, resources and licenses.",
+      "owned_layout": "tools/elastic/; licenses/elastic/",
+      "requires": [],
+      "development_source": "Existing pinned upstream adapter, then producer release output",
+      "version_policy": "independent application version; existing real component ID",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.advantagescope",
+      "name": "AdvantageScope",
+      "publisher": "advantagescope",
+      "group": "Desktop tools",
+      "contents": "Complete official WPILib application distribution and its bundled runtime, resources and licenses.",
+      "owned_layout": "tools/advantagescope/; licenses/advantagescope/",
+      "requires": [],
+      "development_source": "Existing pinned upstream adapter, then producer release output",
+      "version_policy": "independent application version; existing real component ID",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.robotpy.python",
+      "name": "Standalone Python",
+      "publisher": "robotpy",
+      "group": "RobotPy",
+      "contents": "Supported relocatable CPython, standard library, packaging/bootstrap tools and required private native libraries. No system Python dependency.",
+      "owned_layout": "robotpy/python/ (ABI/version-specific backing)",
+      "requires": [],
+      "development_source": "Locked standalone Python distribution or RobotPy-provided runtime",
+      "version_policy": "Python ABI and supported runtime range",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.robotpy.sdk",
+      "name": "RobotPy host SDK and tools",
+      "publisher": "robotpy",
+      "group": "RobotPy",
+      "contents": "One coherent host wheel closure: WPILib bindings, commands, CLI/deployer, tests/pyfrc, simulation and required native dependencies; locked baseline wheelhouse and managed seed environment. No arbitrary project extras.",
+      "owned_layout": "robotpy/host-wheels/; robotpy/sdk/; generated project venvs excluded",
+      "requires": [
+        {
+          "package": "org.robotpy.python",
+          "constraint": "python-abi"
+        }
+      ],
+      "development_source": "Pinned RobotPy host wheels or producer outputs",
+      "version_policy": "Python ABI plus matched RobotPy release closure",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.robotpy.deploy",
+      "name": "RobotPy controller deployment assets",
+      "publisher": "robotpy",
+      "group": "RobotPy",
+      "contents": "Offline target Python/runtime archive and controller wheel closure, matched to the host SDK. Host deploy command lives in SDK; this component supplies robot-side assets.",
+      "owned_layout": "robotpy/target/<controller>/; pip_cache/pkg_cache compatibility mapping",
+      "requires": [
+        {
+          "package": "org.robotpy.sdk",
+          "constraint": "same-robotpy-release"
+        }
+      ],
+      "development_source": "Pinned target runtime and wheels or RobotPy producer outputs",
+      "version_policy": "RobotPy release plus target OS/architecture/Python ABI",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.docs.guide",
+      "name": "WPILib user guide",
+      "publisher": "frc-docs",
+      "group": "Documentation",
+      "contents": "Offline WPILib documentation site, images and local search assets; no SDK dependency.",
+      "owned_layout": "documentation/guide/",
+      "requires": [],
+      "development_source": "Pinned legacy docs archive or docs CI output",
+      "version_policy": "documents a declared release; not a hard runtime dependency",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.docs.java",
+      "name": "Java API reference",
+      "publisher": "core",
+      "group": "Documentation",
+      "contents": "Offline rendered Java API reference; source/Javadoc artifacts needed for IDE navigation remain with the SDK.",
+      "owned_layout": "documentation/java/",
+      "requires": [],
+      "development_source": "Legacy docs or allwpilib documentation ZIP",
+      "version_policy": "documents a declared release; not a hard runtime dependency",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.docs.cpp",
+      "name": "C++ API reference",
+      "publisher": "core",
+      "group": "Documentation",
+      "contents": "Offline rendered C++ API reference; source headers remain with the SDK.",
+      "owned_layout": "documentation/cpp/",
+      "requires": [],
+      "development_source": "Legacy docs or allwpilib documentation ZIP",
+      "version_policy": "documents a declared release; not a hard runtime dependency",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    },
+    {
+      "id": "org.wpilib.docs.python",
+      "name": "Python API reference",
+      "publisher": "robotpy",
+      "group": "Documentation",
+      "contents": "Offline RobotPy API reference; no Python runtime needed to read it.",
+      "owned_layout": "documentation/python/",
+      "requires": [],
+      "development_source": "Pinned docs archive or RobotPy docs output",
+      "version_policy": "documents a declared release; not a hard runtime dependency",
+      "controllers": [
+        "roborio",
+        "systemcore"
+      ],
+      "availability": "proposed; native payload and offline functionality acceptance required"
+    }
+  ],
+  "profiles": {
+    "cpp": {
+      "name": "C++ development",
+      "roots": [
+        "org.wpilib.cpp",
+        "org.wpilib.vscode.wpilib",
+        "org.wpilib.vscode.cpp",
+        "org.wpilib.docs.guide",
+        "org.wpilib.docs.cpp",
+        "org.wpilib.glass",
+        "org.wpilib.outlineviewer",
+        "org.wpilib.sysid",
+        "org.wpilib.datalogtool",
+        "org.wpilib.wpical",
+        "org.wpilib.elastic",
+        "org.wpilib.advantagescope"
+      ]
+    },
+    "java": {
+      "name": "Java development",
+      "roots": [
+        "org.wpilib.java",
+        "org.wpilib.vscode.wpilib",
+        "org.wpilib.vscode.java",
+        "org.wpilib.docs.guide",
+        "org.wpilib.docs.java",
+        "org.wpilib.glass",
+        "org.wpilib.outlineviewer",
+        "org.wpilib.sysid",
+        "org.wpilib.datalogtool",
+        "org.wpilib.wpical",
+        "org.wpilib.elastic",
+        "org.wpilib.advantagescope"
+      ]
+    },
+    "python": {
+      "name": "Python development",
+      "roots": [
+        "org.robotpy.deploy",
+        "org.wpilib.vscode.wpilib",
+        "org.wpilib.vscode.python",
+        "org.wpilib.docs.guide",
+        "org.wpilib.docs.python",
+        "org.wpilib.glass",
+        "org.wpilib.outlineviewer",
+        "org.wpilib.sysid",
+        "org.wpilib.datalogtool",
+        "org.wpilib.wpical",
+        "org.wpilib.elastic",
+        "org.wpilib.advantagescope"
+      ]
+    },
+    "tools": {
+      "name": "Tools only",
+      "roots": [
+        "org.wpilib.glass",
+        "org.wpilib.outlineviewer",
+        "org.wpilib.sysid",
+        "org.wpilib.datalogtool",
+        "org.wpilib.wpical",
+        "org.wpilib.elastic",
+        "org.wpilib.advantagescope"
+      ]
+    },
+    "cpp-cli": {
+      "name": "C++ SDK without editor",
+      "roots": [
+        "org.wpilib.cpp"
+      ]
+    },
+    "java-cli": {
+      "name": "Java SDK without editor",
+      "roots": [
+        "org.wpilib.java"
+      ]
+    },
+    "python-cli": {
+      "name": "Python SDK without editor",
+      "roots": [
+        "org.robotpy.deploy"
+      ]
+    },
+    "documentation": {
+      "name": "Offline documentation only",
+      "roots": [
+        "org.wpilib.docs.guide",
+        "org.wpilib.docs.java",
+        "org.wpilib.docs.cpp",
+        "org.wpilib.docs.python"
+      ]
+    },
+    "full": {
+      "name": "All supported components (advanced)",
+      "roots": [
+        "org.wpilib.jdk",
+        "org.wpilib.gradle",
+        "org.wpilib.build",
+        "org.wpilib.sdk.common",
+        "org.wpilib.java",
+        "org.wpilib.cpp",
+        "org.wpilib.support.romi",
+        "org.wpilib.support.xrp",
+        "org.wpilib.vscode",
+        "org.wpilib.vscode.wpilib",
+        "org.wpilib.vscode.cpp",
+        "org.wpilib.vscode.java",
+        "org.wpilib.vscode.python",
+        "org.wpilib.glass",
+        "org.wpilib.outlineviewer",
+        "org.wpilib.sysid",
+        "org.wpilib.datalogtool",
+        "org.wpilib.wpical",
+        "org.wpilib.elastic",
+        "org.wpilib.advantagescope",
+        "org.robotpy.python",
+        "org.robotpy.sdk",
+        "org.robotpy.deploy",
+        "org.wpilib.docs.guide",
+        "org.wpilib.docs.java",
+        "org.wpilib.docs.cpp",
+        "org.wpilib.docs.python"
+      ]
+    }
+  }
+}
