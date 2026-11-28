@@ -35,18 +35,22 @@ The selected `client.yml` gate builds NativeAOT with warnings-as-errors on all f
 
 Linux also retains networkless headless Ubuntu/Debian checks and clean Ubuntu Desktop Wayland/X11 checks. Windows offline acceptance temporarily blocks all outbound traffic on the disposable runner, including the randomly extracted native child, then removes the rule in `finally`. macOS uses sandbox-exec network denial; Linux uses a network namespace.
 
+## Rust retirement validation
+
+After retiring the Rust implementation at `e21bd36`, the [client gate](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46112987005), [publisher tooling](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46112987056), [real dashboard releases](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46112987007), and [real-package clean Desktop gate](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46112987101) all passed. The [retirement evidence](evidence/rust-retirement-2026-11-28.json) records exact builds and reports. All four native targets retain 22 offline, 37 online and 39 trust checks; the Linux headless and both clean Desktop matrices remain covered. The macOS app plist moved unchanged into `client-dotnet/`. Removing Rust/compiler packages from the private Qt runtime image preserves the hashes of all 47 non-license runtime files, including 40 libraries. The shared native trust fixtures remain in use by the C# client; historical Rust evidence and source history are retained.
+
 ## Measured distribution sizes
 
-The `a22563d` fixture builds include the NativeAOT launcher, GUI/CLI, private Qt worker and runtime libraries, and public trust bootstrap. Package payloads are separate downloads or offline bundles.
+The `e21bd36` fixture builds after Rust retirement include the NativeAOT launcher, GUI/CLI, private Qt worker and runtime libraries, and public trust bootstrap. Package payloads are separate downloads or offline bundles.
 
 | Target | Executable | Browser ZIP |
 | --- | ---: | ---: |
 | Windows x64 | 36.4 MiB | 35.2 MiB |
 | macOS Intel | 53.4 MiB | 52.0 MiB |
 | macOS Apple Silicon | 53.1 MiB | 51.7 MiB |
-| Linux x64 | 48.5 MiB | 47.0 MiB |
+| Linux x64 | 48.3 MiB | 46.8 MiB |
 
-The macOS executable measurement is the binary inside the `.app`; the ZIP includes the app wrapper. Exact bytes and SHA-256 values are in the evidence report. Builds are unsigned/unnotarized and are not claimed to be bit-for-bit reproducible. Linux uses desktop graphics drivers and keeps Qt dependencies private; no Mesa/LLVM renderer or external .NET runtime is required.
+The macOS executable measurement is the binary inside the `.app`; the ZIP includes the app wrapper. Exact bytes and SHA-256 values are in the [Rust retirement report](evidence/rust-retirement-2026-11-28.json). Builds are unsigned/unnotarized and are not claimed to be bit-for-bit reproducible. Linux uses desktop graphics drivers and keeps Qt dependencies private; no Mesa/LLVM renderer or external .NET runtime is required.
 
 ## Remaining production work
 

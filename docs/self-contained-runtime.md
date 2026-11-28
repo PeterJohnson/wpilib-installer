@@ -13,7 +13,7 @@ Distribution remains **one executable on Windows/Linux and one `.app` on macOS**
 
 ## C#/Avalonia runtime boundary
 
-The selected implementation is now `client-dotnet/`; [the lifecycle report](avalonia-client.md) records current evidence and sizes: Windows 36.4 MiB, Intel Mac 53.4 MiB, Apple Silicon 53.1 MiB and Linux 48.5 MiB for the executable with embedded assets. The old Rust measurements below are historical, not C# validation.
+The selected implementation is now `client-dotnet/`; [the lifecycle report](avalonia-client.md) records current evidence and sizes: Windows 36.4 MiB, Intel Mac 53.4 MiB, Apple Silicon 53.1 MiB and Linux 48.3 MiB for the executable with embedded assets. The old Rust measurements below are historical, not C# validation.
 
 `tools/build_client.py` compiles both NativeAOT executables on Ubuntu 22.04 in Docker, using SDK 10.0.404 and runtime 10.0.15. Windows/macOS publish natively. Python, .NET SDK, Docker and IFW are build/test tools only. The public launcher contains a compressed native GUI/CLI application plus Skia/HarfBuzz/Avalonia platform libraries, the bootstrap and Qt assets. It extracts into a fresh private directory rather than trusting a writable executable cache. No FUSE is needed.
 

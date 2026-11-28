@@ -8,5 +8,3 @@ build/
 *.pem
 *.swp
 *.swo
-
-**/target/
