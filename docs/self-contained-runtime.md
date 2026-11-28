@@ -13,7 +13,7 @@ Distribution remains **one executable on Windows/Linux and one `.app` on macOS**
 
 ## C#/Avalonia runtime boundary
 
-The selected implementation is now `client-dotnet/`; [the lifecycle report](avalonia-client.md) records current evidence and sizes: Windows 36.4 MiB, Intel Mac 53.4 MiB, Apple Silicon 53.1 MiB and Linux 48.3 MiB for the executable with embedded assets. The old Rust measurements below are historical, not C# validation.
+The application lives in `client/`; see the [client guide](client.md) for operations and acceptance workflows. Builds emit `assets/sizes.json` with executable/download sizes and hashes.
 
 `tools/build_client.py` compiles both NativeAOT executables on Ubuntu 22.04 in Docker, using SDK 10.0.404 and runtime 10.0.15. Windows/macOS publish natively. Python, .NET SDK, Docker and IFW are build/test tools only. The public launcher contains a compressed native GUI/CLI application plus Skia/HarfBuzz/Avalonia platform libraries, the bootstrap and Qt assets. It extracts into a fresh private directory rather than trusting a writable executable cache. No FUSE is needed.
 
@@ -33,35 +33,4 @@ The Desktop suite is also independently dispatchable through `.github/workflows/
 
 Each desktop exercises native Wayland and X11 through the stock XWayland server: rendered startup, offline installation and upgrade, installed-manager startup, discovery and cached remove/reinstall after deleting original downloads/media. Payload bytes, modes and inventory are checked. Per-process loader traces require graphics and other GUI libraries to come from OS paths, allow only named NativeAOT/Skia/HarfBuzz/OpenSSL libraries and the three X11 keyboard helpers from the private application directory, and require Qt libraries to come from the private worker directory. Reports preserve ISO/application hashes, guest OS/package inventory, timings, screenshots and library origins. Virtual graphics exercise the OS rendering stack; physical Intel/AMD/NVIDIA hardware remains separate coverage.
 
-Windows/macOS hosted runners contain development tools; PATH isolation and import audits do not replace pristine desktop VM acceptance. macOS 13, download quarantine, Windows signing/SmartScreen, macOS notarization, accessibility and launcher integration remain release acceptance work. The previous all-bundled-renderer experiment and its measurements are historical evidence below, not the current Linux distribution contract.
-
-## Recorded validation: host graphics transition
-
-The [complete six-job CI run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46073080624) passed at `3789371`. [Saved evidence](evidence/host-graphics-2026-11-27.json) records the exact application and ISO hashes, native dependency audits, headless image digests, Desktop boot provenance, package inventories and screenshot hashes, and per-process loaded libraries.
-
-All four native targets passed 35 authenticated online/cache/offline-to-online acceptance checks and 11 Rust unit tests each. Four minimal Linux containers passed nine headless checks each. Fresh Ubuntu 24.04.4 and 26.04.1 Desktop installations each passed 18 checks across native Wayland and X11 through XWayland, with no network interface and no added guest packages. That is **212 acceptance checks and 44 unit checks**. These use signed fixture packages; earlier real Elastic/AdvantageScope tests are documented separately in the Rust prototype document.
-
-The Desktop runs verified that the GUI loads the OS graphics stack, the missing X11 keyboard bridge on Ubuntu 26.04 uses only the three allowlisted compatibility libraries, and Qt operations load their non-base dependencies from the worker's separate private directory. Both backends completed startup, offline installation and upgrade, and maintenance after deleting the original application and bundle media. Screenshots were also visually inspected.
-
-| Linux distribution | Previous bundled renderer | Host graphics | Reduction |
-| --- | ---: | ---: | ---: |
-| Standalone executable | 109,758,032 bytes (104.7 MiB) | **48,228,424 bytes (46.0 MiB)** | **56.1%** |
-| Browser ZIP | 96,580,592 bytes (92.1 MiB) | **36,090,298 bytes (34.4 MiB)** | **62.6%** |
-
-The tested executable SHA-256 is `7f5602a43f984dc2c5edea6932a4435f470de27f1936ee7cff9533f15c9f5ce0`; the downloaded ZIP contained that exact binary. The private worker runtime now contains 40 libraries, compresses to 6,928,127 bytes (6.6 MiB), and expands to 16,904,719 bytes (16.1 MiB, excluding its small generated manifest). The X11 fallback reuses three of those embedded files in a separate directory. The distribution remains a single executable without FUSE or AppImage mounting. Physical-GPU and international-input acceptance remain outside this VM/fixture coverage.
-
-## Historical validation: bundled-renderer build
-
-The [four-target run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46060475266) passed Linux and both Mac jobs at `12ca529`. Windows compiled successfully but the new audit initially omitted the OS-supplied [`combase.dll`](https://learn.microsoft.com/en-us/windows/win32/api/roapi/nf-roapi-roregisteractivationfactories); `22d8fca` corrected that allowlist and added a platform selector for targeted CI retries. The [Windows rerun](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46061793559) passed. The fix does not change any shipped runtime code. [Saved evidence](evidence/self-contained-2026-11-27.json) records the exact runs, hashes, import audits, Linux image digests and check names.
-
-Each native target passed 35 authenticated registry/cache/offline-to-online lifecycle checks and 11 unit tests. Linux additionally passed 10 checks in each of four unmodified OS images: **180 acceptance checks and 44 unit checks total**. The Linux images ran both X11 and Wayland, with first startup tests completing in 0.82–0.91 seconds including extraction, rendered screenshots and process exit on CI. Local repeats also passed all 40 clean-environment checks. These are fixture tests; the earlier real Elastic/AdvantageScope results are recorded separately in the Rust prototype document.
-
-The tested Linux executable is **109,758,032 bytes (104.7 MiB)**; its browser ZIP is 96,580,592 bytes (92.1 MiB). The embedded runtime adds 80 shared libraries plus the software rendering driver and data, expanding to approximately 200 MiB. The downloaded application hash matched the tested binary and its ZIP retained executable permissions. This size/extraction cost buys independence from separately installed desktop libraries and FUSE. Windows/macOS retain their OS-native graphics libraries and do not carry this Linux runtime.
-
-## Real dashboard Desktop acceptance
-
-The [real-package run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46079025954) passed before the production-layout migration at `c5f2d2f`. Fresh Ubuntu 24.04.4 and 26.04.1 Desktop installations each passed 22 checks across Wayland and X11: Elastic 2026.1.1 → 2026.1.2 and AdvantageScope 26.0.1 → 26.0.2, followed by removal and reinstallation of each dashboard using only retained verified caches. Original installer/bundle copies were deleted, including shared VM inputs. Every installed payload hash, executable bit and link was checked against the signed inventory (183 Elastic entries and 137 AdvantageScope entries per release). These release pairs contain no obsolete path names; removal checks still verify that each component's owned files disappear.
-
-[Saved evidence](evidence/real-desktop-2026-11-27.json) binds all 44 checks to the executable, bundles, pinned upstream assets and Desktop ISOs. No guest packages or network interface were added. This validates the installer and real installed payloads; it does not launch the dashboard applications or validate their runtime/GPU/robot-connectivity behavior.
-
-The [post-restructure real-package run](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46082377041) repeated all 44 checks successfully at `e40b48f`, using the current `client/` and `tooling/installer_tooling/` layout. Its [saved evidence](evidence/real-desktop-production-layout-2026-11-27.json) records the newly built application and bundle hashes. The [client/tooling matrix](evidence/production-layout-2026-11-27.json) also passed on the reorganized source, including the 36 headless checks and 36 clean Desktop fixture checks. The size table above remains a measurement of the earlier host-graphics transition build, not a new measurement of this revision.
+Windows/macOS hosted runners contain development tools; PATH isolation and import audits do not replace pristine desktop VM acceptance. macOS 13, download quarantine, Windows signing/SmartScreen, macOS notarization, accessibility and launcher integration remain release acceptance work.

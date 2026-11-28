@@ -1,6 +1,6 @@
 # Installer architecture
 
-The implementation decision is **NativeAOT C#/Avalonia GUI/CLI plus a private Qt Installer Framework engine**, with Python tooling for package publication and offline assembly. This supersedes the implementation-candidate discussion in the [original proposal](history/installer-architecture.md). The client is under development; passing the current acceptance suite does not complete the [production release gates](production-readiness.md).
+The implementation decision is **NativeAOT C#/Avalonia GUI/CLI plus a private Qt Installer Framework engine**, with Python tooling for package publication and offline assembly. The client is under development; passing the current acceptance suite does not complete the [production release gates](production-readiness.md).
 
 ## Client and installation boundary
 
@@ -10,7 +10,7 @@ The C# core authenticates registry and publisher metadata, checks compatibility,
 
 The public NativeAOT launcher extracts a private native application and Avalonia libraries for each invocation. Both GUI and CLI use the same application; neither launches Python or requires a .NET installation. The installed copy is the public launcher with all embedded assets, not the temporary private executable.
 
-Linux uses host graphics, the Ubuntu 22.04 ABI baseline, and private client OpenSSL libraries. A narrowly scoped matched X11 keyboard fallback is available when the desktop lacks that bridge. Qt library/font paths are set only on its child process; the GUI does not inherit Qt's general library directory. Native Wayland is explicitly enabled; Avalonia currently describes that backend as experimental. See the [runtime contract](self-contained-runtime.md) and [C# port](avalonia-client.md). Windows and macOS retain private native libraries and Qt assets.
+Linux uses host graphics, the Ubuntu 22.04 ABI baseline, and private client OpenSSL libraries. A narrowly scoped matched X11 keyboard fallback is available when the desktop lacks that bridge. Qt library/font paths are set only on its child process; the GUI does not inherit Qt's general library directory. Native Wayland is explicitly enabled; Avalonia currently describes that backend as experimental. See the [runtime contract](self-contained-runtime.md) and [client guide](client.md). Windows and macOS retain private native libraries and Qt assets.
 
 Package removal checks retained dependency/ownership records. `uninstall` removes all installed packages using local Qt operation records without repository access; user files, the manager and caches remain available for reinstall. Complete removal of the maintenance application/caches is a separate future operation.
 
@@ -44,15 +44,15 @@ Offline publication validates the exact candidate and upgrade baseline on native
 
 ## Repository responsibilities
 
-- `client-dotnet/`: installed application, TUF verification, caches, planning, UI/CLI, and worker execution.
+- `client/`: installed application, TUF verification, caches, planning, UI/CLI, and worker execution.
 - `tooling/installer_tooling/`: publisher/authority operations, assembly, recipes, and native publication gates.
 - `installer_tooling.qt_engine`: build the private worker and inspect Qt inventory.
-- `installer_tooling.reference_client`: retained Python comparison adapter for tests and publication gates; not shipped to end users.
+- `installer_tooling.reference_client`: Python acceptance adapter for tests and publication gates; not shipped to end users.
 - `tools/` and `.github/workflows/`: repeatable builds and acceptance entry points, including fresh Desktop VMs and headless containers.
 - `packaging/` and `deployment/`: reviewed upstream inputs and deployment contracts.
 
-Package IDs, wire schemas, `.wpilib-manager.json`, cache locations, and Qt inventory are compatibility contracts. The repository restructure does not alter them. Development command/package names have changed; see the [migration instructions](../CONTRIBUTING.md#migration-from-the-prototype-layout).
+Package IDs, wire schemas, `.wpilib-manager.json`, cache locations, and Qt inventory are compatibility contracts. See the [development guide](../CONTRIBUTING.md) for build and test commands.
 
 ## Remaining production decisions
 
-Installation layout/migration, interruption recovery, user/elevation policy, complete profile UX, manager self-update, signed delivery, VS Code discovery/launch integration, real SDK/RobotPy packaging, and the wider clean-machine/hardware matrix remain explicit work. The [readiness plan](production-readiness.md) is the current checklist; [historical evaluations](history/) explain the alternatives and earlier feasibility gates.
+Installation layout/migration, interruption recovery, user/elevation policy, complete profile UX, manager self-update, signed delivery, VS Code discovery/launch integration, real SDK/RobotPy packaging, and the wider clean-machine/hardware matrix remain explicit work. The [readiness plan](production-readiness.md) is the current checklist.

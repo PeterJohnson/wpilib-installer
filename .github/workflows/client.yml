@@ -9,7 +9,7 @@ on:
         options: [all, ubuntu-24.04, windows-2022, macos-15-intel, macos-15]
   push:
     paths:
-      - 'client-dotnet/**'
+      - 'client/**'
       - 'tooling/**'
       - 'pyproject.toml'
       - '.github/scripts/**'
@@ -19,7 +19,7 @@ on:
       - '.github/workflows/desktop-acceptance.yml'
   pull_request:
     paths:
-      - 'client-dotnet/**'
+      - 'client/**'
       - 'tooling/**'
       - 'pyproject.toml'
       - '.github/scripts/**'

@@ -1,1 +1,1 @@
-"""WPILib publishing and acceptance tooling. The installed client lives in client-dotnet/."""
+"""WPILib publishing and acceptance tooling. The installed client lives in client/."""

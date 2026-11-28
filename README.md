@@ -4,20 +4,19 @@ The active implementation is a **single NativeAOT C#/Avalonia application with a
 
 **This is the production implementation under development, not a production-ready distribution.** The architecture has been selected and its main paths have been exercised. SDK packaging, deployment, signing, recovery, platform integration, and release acceptance still have work to do. See the [production-readiness plan](docs/production-readiness.md).
 
-End users do not install Python, Qt, .NET, or FUSE. Linux uses host graphics and keeps the Qt worker's dependencies private. NativeAOT, Avalonia native libraries and the private worker are bundled; no .NET runtime is installed. See the [runtime policy and acceptance evidence](docs/self-contained-runtime.md).
+End users do not install Python, Qt, .NET, or FUSE. Linux uses host graphics and keeps the Qt worker's dependencies private. NativeAOT, Avalonia native libraries and the private worker are bundled; no .NET runtime is installed. See the [runtime policy and acceptance scope](docs/self-contained-runtime.md).
 
 ## Repository layout
 
 | Directory | Responsibility |
 | --- | --- |
-| `client-dotnet/` | Installed C#/Avalonia application: GUI, CLI, TUF verification, caches, package planning, and private Qt worker orchestration. |
+| `client/` | Installed C#/Avalonia application: GUI, CLI, TUF verification, caches, package planning, and private Qt worker orchestration. |
 | `tooling/installer_tooling/` | Python publishing, registry renewal, offline assembly, package recipes, and publication acceptance tooling. Never shipped as the installed manager. |
 | `tools/` | Build, bootstrap, fixture preparation, and acceptance entry points. |
 | `packaging/` | Pinned real upstream release recipes and upgrade pairs. Core SDK and RobotPy recipes remain to be implemented. |
 | `deployment/` | Signing roles, registry configuration, Artifactory staging/promotion, R2/S3, and offline download hosting. |
 | `tests/` | Publishing/tooling regression tests. Native client acceptance lives under `tools/`. |
-| `docs/` | Current architecture, runtime contract, release-readiness plan, and recorded evidence. Earlier evaluations live in `docs/history/`. |
-| `experiments/` | Retained library-comparison probes; not an alternative shipping client. |
+| `docs/` | Current architecture, client/runtime contracts, package catalog and release-readiness plan. |
 
 ## Develop and build
 
@@ -39,9 +38,9 @@ Real Elastic and AdvantageScope packaging uses [reviewed, hash-pinned releases](
 
 ## Publishing and trust
 
-Use the `wpilib-installer-tools` development CLI or `python -m installer_tooling`; the installed application's CLI is `wpilib-manager`. The Python reference client remains only for publication gates and regression comparisons.
+Use the `wpilib-installer-tools` development CLI or `python -m installer_tooling`; the installed application's CLI is `wpilib-manager`. The Python acceptance client supports publication gates and regression tests.
 
-- [C#/Avalonia lifecycle port and acceptance](docs/avalonia-client.md)
+- [Client operations and acceptance](docs/client.md)
 - [Architecture and repository contracts](docs/architecture.md)
 - [TUF repositories, signing, renewal, and archival trust](deployment/tuf.md)
 - [Publisher CI and signing secrets](deployment/ci-signing.md)

@@ -8,7 +8,7 @@ from installer_tooling.registry_updates import publish_registry
 from installer_tooling.repository import publish
 from installer_tooling.tuf_repository import demo_trust
 from prepare_client_fixture import prepare
-from check_native_tuf import generate
+from client_trust_checks import generate
 
 
 def online(work, ifw, real=False, port=18765, roots=1030):

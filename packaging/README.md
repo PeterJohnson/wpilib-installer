@@ -106,8 +106,7 @@ artifacts for 14 days. The large application payloads, test private keys, and
 throwaway installation trees are not uploaded. The tooling regression
 matrix still runs separately.
 
-[Recorded four-platform CI results](../docs/history/prototype-status.md#real-dashboard-validation)
-include the pinned real upgrade pairs and verified payload entry counts.
+The native acceptance reports are uploaded as workflow artifacts. They identify the tested application, bundle, upstream versions and installed files.
 
 This validates real installation and maintenance payloads. GUI startup, renderer
 behavior, robot connectivity, first-run asset downloads, shortcuts, OS integration,
@@ -116,4 +115,4 @@ separate acceptance work. It is not a claim that all application features functi
 offline. Production bundle publication continues to require its exact candidate
 checks and configured storage/signing workflows.
 
-The [clean Desktop real-package workflow](../.github/workflows/desktop-real.yml) also exercises the NativeAOT C#/Avalonia manager with both pinned upgrades on freshly installed Ubuntu 24.04 and 26.04. It removes the original installer and all bundle copies before cached removal/reinstallation of each dashboard, under both Wayland and X11. See [the recorded C# lifecycle evidence](../docs/evidence/avalonia-client-2026-11-28.json). Dashboard application startup remains outside this installer gate.
+The [clean Desktop real-package workflow](../.github/workflows/desktop-real.yml) also exercises the NativeAOT C#/Avalonia manager with both pinned upgrades on freshly installed Ubuntu 24.04 and 26.04. It removes the original installer and all bundle copies before cached removal/reinstallation of each dashboard, under both Wayland and X11. See [the client acceptance guide](../docs/client.md). Dashboard application startup remains outside this installer gate.
