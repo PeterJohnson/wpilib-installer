@@ -54,6 +54,9 @@ report={'rid':rid,'dotnet_sdk':subprocess.check_output(['dotnet','--version'],te
 # Record all private Windows imports too; hosted SDK installs must not hide a VC runtime requirement.
 if os.name=='nt':
  from audit_client_dependencies import pe_imports,WINDOWS_SYSTEM
+ # FontSub.dll is Windows GDI (XP+), used by Skia; not a VC redistributable.
+ # https://learn.microsoft.com/en-us/windows/win32/api/fontsub/nf-fontsub-createfontpackage
+ WINDOWS_SYSTEM=WINDOWS_SYSTEM | {'fontsub.dll'}
  files=[exe,*[f for f in (work/'private').iterdir() if f.suffix.lower() in ('.exe','.dll')]]
  private={f.name.lower() for f in files}
  imports={f.name:pe_imports(f) for f in files}
