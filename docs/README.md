@@ -18,6 +18,7 @@
 
 Machine-readable reports in [evidence/](evidence/) bind test results to exact commits, executable/bundle/ISO hashes, and workflow runs. They are historical records and are not rewritten when source paths move.
 
+- [C#/Avalonia lifecycle, trust, real packages and runtime acceptance](evidence/avalonia-client-2026-11-28.json)
 - [Native TUF comparison](evidence/native-tuf-2026-11-27.json)
 - [Single-application acceptance](evidence/rust-application-2026-11-27.json)
 - [Online/cache acceptance](evidence/rust-online-2026-11-27.json)

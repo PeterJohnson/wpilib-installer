@@ -13,7 +13,7 @@ The selected implementation is the NativeAOT C#/Avalonia client in `client-dotne
 
 ## C#/Avalonia migration
 
-The [C# lifecycle report](avalonia-client.md) tracks the port and its native acceptance evidence. The older Rust results below remain historical evidence and do not establish C# acceptance. Complete manager/cache removal, production license presentation and interruption recovery remain open.
+The [C# lifecycle report](avalonia-client.md) and [bound evidence](evidence/avalonia-client-2026-11-28.json) record passing native offline, online and uninstall suites on all four targets, real Elastic/AdvantageScope lifecycles, 44 headless Linux checks, and fresh Ubuntu Desktop 24.04.4/26.04.1 Wayland/X11 acceptance. The older Rust results below remain historical evidence and do not establish C# acceptance. Complete manager/cache removal, production license presentation and interruption recovery remain open.
 
 ## Historical Rust validation of the production-development layout
 
