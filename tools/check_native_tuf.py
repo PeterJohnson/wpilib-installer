@@ -73,7 +73,7 @@ class Evaluation:
             result = json.loads(p.stdout)
         except Exception as exc:
             raise AssertionError(f'Probe protocol failure: {p.returncode}, {p.stdout[-500:]}, {p.stderr[-500:]}') from exc
-        assert p.returncode in (0, 1), (p.returncode, result)
+        assert p.returncode in (0, 1), (p.returncode, result, p.stderr[-4000:])
         assert (p.returncode == 0) == (result['status'] == 'ok'), result
         self.invocations.append({'mode': mode, 'limit': limit, 'budget': budget, **result})
         return result

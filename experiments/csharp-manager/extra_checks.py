@@ -18,6 +18,11 @@ def run(e,keys):
    result=e.reject(r,o,s,budget=2);assert 'root-update-pending' in result['error'];assert not (s/'responses/metadata/timestamp.json').exists()
   assert e.ok(r,o,s,budget=2)['root_version']==5
  e.case('fresh-root-budget-never-accepts-catalog-early',fresh_budget)
+ def repeat_pending():
+  for i in range(12):
+   result=e.reject(e.long/'root.json',e.long/'origin/tuf',e.work/'repeat-pending'/str(i),budget=1)
+   assert 'root-update-pending' in result['error'],result
+ e.case('pending-response-exit-protocol-repeated-12-processes',repeat_pending)
  def replacement():
   d,r,o,s=e.fixture('replacement');e.ok(r,o,s)
   foreign=e.work/'foreign';generate(foreign,1)

@@ -23,4 +23,21 @@ try
     var stderr = child.StandardError.BaseStream.CopyToAsync(Console.OpenStandardError());
     await child.WaitForExitAsync(); await Task.WhenAll(stdout, stderr); return child.ExitCode;
 }
-finally { Directory.Delete(root, true); }
+finally
+{
+    if (!OperatingSystem.IsWindows()) Directory.Delete(root, true);
+    else
+    {
+        // Windows may signal process exit before image mappings/AV handles release.
+        // Cleanup must not replace an already-completed CLI result with fail-fast.
+        for (var attempt = 0; attempt < 8; attempt++)
+        {
+            try { Directory.Delete(root, true); break; }
+            catch (Exception e) when (e is IOException or UnauthorizedAccessException)
+            {
+                if (attempt == 7) Console.Error.WriteLine($"Temporary application cleanup deferred: {e.Message}");
+                else await Task.Delay(100 * (attempt + 1));
+            }
+        }
+    }
+}
