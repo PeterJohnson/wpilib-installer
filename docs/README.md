@@ -2,6 +2,7 @@
 
 ## Current implementation and operations
 
+- [C# manager experiment](csharp-manager-experiment.md): policy adapters, native AOT application checks, and distribution size comparison.
 - [C# Native AOT TUF investigation](csharp-tuf-evaluation.md): candidate libraries, measured interoperability and remaining adapter work.
 - [Architecture](architecture.md): selected Rust/private-Qt design, publication, trust, and offline media.
 - [Production readiness](production-readiness.md): established capabilities and unfinished release gates.

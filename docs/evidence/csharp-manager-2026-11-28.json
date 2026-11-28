@@ -1,0 +1,1912 @@
+{
+  "schema": 1,
+  "date": "2026-11-28T02:23:04.920396+00:00",
+  "libraries": {
+    "Tuf": "1.1.1",
+    "Avalonia": "12.1.1",
+    "BouncyCastle.Cryptography": "2.7.0",
+    "SkiaSharp": "3.119.4",
+    "HarfBuzzSharp": "8.3.1.3",
+    "target_framework": "net10.0",
+    "runtime_ilcompiler": "10.0.15",
+    "actual_sdk": "11.0.100"
+  },
+  "scope": "Focused C# trust-policy and single-application distribution experiment, not a port of installation/maintenance/resolution or a security audit. Windows/Linux public single executable, macOS .app. Native AOT policy tests, GUI startup and private Qt --version run through the public launcher. Unsigned development distributions; symbols and package bundles excluded.",
+  "baseline": {
+    "commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+    "run": 46082370013
+  },
+  "targets": {
+    "win-x64": {
+      "job": {
+        "run": 46097305756,
+        "id": 140831519317,
+        "name": "native (windows-2022)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run python -m pip install -e .",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run sudo apt-get update",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6
+          },
+          {
+            "name": "Run brew install sevenzip",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run python tools/bootstrap_ifw.py",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/csharp-fixture",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Build native GUI/CLI and private Qt distribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Native trust-policy suite through the single public executable",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "AOT GUI startup and isolated private Qt worker",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Record native dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 32
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 33
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "id": 15244086828,
+          "name": "csharp-application-windows-2022",
+          "digest": "sha256:750368a40f605727e393eb4c0c8cc080e72cf415fc198307ef7cfb0f77b90d5c",
+          "run": 46097305756,
+          "commit": "8d171ace9b34e196cb5d3c1d0d6339fd81da96f1"
+        },
+        {
+          "id": 15243977052,
+          "name": "csharp-evidence-windows-2022",
+          "digest": "sha256:489a78dfaf5d08d92a94960a6c90d632d4bdd983f386620568794ba113472944",
+          "run": 46097305756,
+          "commit": "8d171ace9b34e196cb5d3c1d0d6339fd81da96f1"
+        }
+      ],
+      "sizes": {
+        "rid": "win-x64",
+        "dotnet_sdk": "11.0.100",
+        "host": "Windows-2022Server-10.0.20348-SP0",
+        "scope": "Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.",
+        "csharp": {
+          "executable_bytes": 37538304,
+          "download_zip_bytes": 36269187,
+          "executable_sha256": "e5980bbca5fe4e3f179bb5e1692da249d89c0ae3255bc70ca0b1c44ea425243c",
+          "private_files": [
+            {
+              "name": "av_libglesv2.dll",
+              "bytes": 5394096,
+              "sha256": "53191a77fe783cd757ca7767077c2a64a662e7043777a5b4ab74980d4a0b73e3"
+            },
+            {
+              "name": "libHarfBuzzSharp.dll",
+              "bytes": 1816088,
+              "sha256": "145ade963eba427027d5e1381db5d51a0ef9e98e9fef9efbfa6074ca20da246f"
+            },
+            {
+              "name": "libSkiaSharp.dll",
+              "bytes": 11628896,
+              "sha256": "7dec3ba900ab353491e6446f0083739924c6f8dd668832e2f09d38ebffdbbe1c"
+            },
+            {
+              "name": "manager-experiment.exe",
+              "bytes": 41859072,
+              "sha256": "a052662d482211b1e66d27d34e07d0acd7a7d0dae164ee094125ed674cfc6b7f"
+            }
+          ],
+          "payload_zip_bytes": 35300398
+        },
+        "rust": {
+          "executable_bytes": 42761216,
+          "download_zip_bytes": 28435091,
+          "executable_sha256": "a5eda56608b27c86bd29816486f3194e995413441bb000d83520224542213ec0",
+          "baseline_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+          "baseline_run": 46082370013
+        },
+        "assets": {
+          "engine.zip": 18610623
+        }
+      },
+      "policy": {
+        "binary_bytes": 37538304,
+        "binary_sha256": "e5980bbca5fe4e3f179bb5e1692da249d89c0ae3255bc70ca0b1c44ea425243c",
+        "checks": [
+          {
+            "detail": null,
+            "name": "python-publisher-update-and-rollback",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "verified-cache-with-origin-removed",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-targets-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authentic-expired-cache-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "independent-publisher-root-substitution",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "expected_limitation": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+            },
+            "name": "default-limit-cannot-cross-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "expired-bootstrap-and-1030-root-history",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "final_root": 1030,
+              "last_downloaded_roots": 5,
+              "pending_invocations": 4
+            },
+            "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-root-reverified-on-resume",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-old-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-new-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-missing",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-skipped",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-expired-final",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "native": "online TUF/cache and independent archival authorization",
+              "offline_revision": 1,
+              "online_revision": 2,
+              "python_oracle": "archival authorization at year 2100; old offline pin retained"
+            },
+            "name": "archival-key-rotation-old-bundle-and-online-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-signer-cannot-authorize-online-catalog",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "archival_key_rotated": true,
+              "current_root": 1030,
+              "old_online_authorization_expired": true,
+              "old_root_expired": true
+            },
+            "name": "old-offline-authorization-then-online-through-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-none",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-unicode",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-bundle-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-wrong-pin",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-binding",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-policy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-publisher-identity",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "efca8ad33bed89de6b9f957370154c15dc50ae72945d296190b172408b74cedf",
+              "repository_id": "demo-windows-x64-registry"
+            },
+            "name": "existing-repository-registry",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "a8867e143046b1b118ddfcaa765c9cc2149830f6ef92af2516be0d623372fd58",
+              "repository_id": "demo-windows-x64-advantagescope"
+            },
+            "name": "existing-repository-advantagescope",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "773a65edb4b562a97f999d0a898e6e74c9a8ce9bed21c30a9410aeea28ec1f69",
+              "repository_id": "demo-windows-x64-core"
+            },
+            "name": "existing-repository-core",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "c1cca036ebab4aa5b42e1862e7f45e7be49d518f651f5c1e8ec0bdb56c9c2af3",
+              "repository_id": "demo-windows-x64-elastic"
+            },
+            "name": "existing-repository-elastic",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "a1259f6af793687f97ceb320d5e0f88c6daf90e0d42c3a0586258193af87814f",
+              "repository_id": "demo-windows-x64-robotpy"
+            },
+            "name": "existing-repository-robotpy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "fresh-root-budget-never-accepts-catalog-early",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "pending-response-exit-protocol-repeated-12-processes",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "library-cache-root-substitution-cannot-replace-bootstrap",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "missing-cache-root-below-checkpoint-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cache-write-failure-is-fatal",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "http-refresh-no-redirect-no-error-fallback-bounded-length-explicit-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authenticated-registry-dynamic-publishers-archival-key-rotation-revision-rollback-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-python-unicode-scalar-order-and-uint64",
+            "status": "passed"
+          }
+        ],
+        "host": "Windows-2022Server-10.0.20348-SP0",
+        "library": "Tuf 1.1.1",
+        "schema": 1,
+        "scope": "Native AOT manager policy adapter; same Python-generated fixtures/assertions as Go/Rust, with separate archival authority; no complete installer migration",
+        "status": "passed"
+      },
+      "gui": {
+        "status": "ok",
+        "visible": true,
+        "width": 720,
+        "height": 420
+      },
+      "native_imports": {
+        "imports": {
+          "WPILibManager-CSharp.exe": [
+            "advapi32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-locale-l1-1-0.dll",
+            "api-ms-win-crt-math-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "bcrypt.dll",
+            "kernel32.dll",
+            "ole32.dll"
+          ],
+          "av_libglesv2.dll": [
+            "api-ms-win-core-synch-l1-2-0.dll",
+            "dxgi.dll",
+            "kernel32.dll",
+            "user32.dll"
+          ],
+          "libHarfBuzzSharp.dll": [
+            "kernel32.dll"
+          ],
+          "libSkiaSharp.dll": [
+            "d3d12.dll",
+            "d3dcompiler_47.dll",
+            "fontsub.dll",
+            "kernel32.dll",
+            "ole32.dll",
+            "user32.dll"
+          ],
+          "manager-experiment.exe": [
+            "advapi32.dll",
+            "api-ms-win-crt-convert-l1-1-0.dll",
+            "api-ms-win-crt-heap-l1-1-0.dll",
+            "api-ms-win-crt-locale-l1-1-0.dll",
+            "api-ms-win-crt-math-l1-1-0.dll",
+            "api-ms-win-crt-runtime-l1-1-0.dll",
+            "api-ms-win-crt-stdio-l1-1-0.dll",
+            "api-ms-win-crt-string-l1-1-0.dll",
+            "bcrypt.dll",
+            "crypt32.dll",
+            "iphlpapi.dll",
+            "kernel32.dll",
+            "ncrypt.dll",
+            "ole32.dll",
+            "oleaut32.dll",
+            "ws2_32.dll"
+          ]
+        },
+        "unresolved": {
+          "WPILibManager-CSharp.exe": [],
+          "av_libglesv2.dll": [],
+          "libHarfBuzzSharp.dll": [],
+          "libSkiaSharp.dll": [],
+          "manager-experiment.exe": []
+        }
+      }
+    },
+    "osx-x64": {
+      "job": {
+        "run": 46096536506,
+        "id": 140829049767,
+        "name": "native (macos-15-intel)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run python -m pip install -e .",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run sudo apt-get update",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6
+          },
+          {
+            "name": "Run brew install sevenzip",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run python tools/bootstrap_ifw.py",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/csharp-fixture",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Build native GUI/CLI and private Qt distribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Native trust-policy suite through the single public executable",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "AOT GUI startup and isolated private Qt worker",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Record native dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 32
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 33
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "id": 15243931627,
+          "name": "csharp-evidence-macos-15-intel",
+          "digest": "sha256:69460dc6c949337a0d8789105c17c23525fdab35945c91a8b56096d0d1d38f04",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        },
+        {
+          "id": 15243667721,
+          "name": "csharp-application-macos-15-intel",
+          "digest": "sha256:23b954a14446d3f69aa9f1d7f3b330ee5a798f64f5dd7451088cec52d7d6be31",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        }
+      ],
+      "sizes": {
+        "rid": "osx-x64",
+        "dotnet_sdk": "10.0.404",
+        "host": "macOS-15.7.9-x86_64-i386-64bit",
+        "scope": "Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.",
+        "csharp": {
+          "executable_bytes": 55332936,
+          "download_zip_bytes": 53829626,
+          "executable_sha256": "537a3cf2391675e71741d137a64a33a8756c7e4818b4df42a643e3144abe44db",
+          "private_files": [
+            {
+              "name": "libAvaloniaNative.dylib",
+              "bytes": 1548640,
+              "sha256": "63cb5e2f3e375cc766dc70d01aacc69abe4892af2cd24d79680a28d237568581"
+            },
+            {
+              "name": "libHarfBuzzSharp.dylib",
+              "bytes": 2922800,
+              "sha256": "b2d7d39a46954b3d7310540bdf393f398ac4194ee029b995deeb1db0c161c43d"
+            },
+            {
+              "name": "libSkiaSharp.dylib",
+              "bytes": 15201456,
+              "sha256": "e09f07ae1df62ded475351f56d8dc8366cd679043f28b65d9dee597a5fd0da6c"
+            },
+            {
+              "name": "manager-experiment",
+              "bytes": 55865688,
+              "sha256": "f7e07a579409e325d228428ac5403bae3b041a5e1f285e3cb353fb09477203c8"
+            }
+          ],
+          "payload_zip_bytes": 52507267
+        },
+        "rust": {
+          "executable_bytes": 51941616,
+          "download_zip_bytes": 42260813,
+          "executable_sha256": "df103d65b97b89fae8034f652838952a02459ef955be973f7e61f59602d5600b",
+          "baseline_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+          "baseline_run": 46082370013
+        },
+        "assets": {
+          "engine.zip": 34832466
+        }
+      },
+      "policy": {
+        "binary_bytes": 55332936,
+        "binary_sha256": "537a3cf2391675e71741d137a64a33a8756c7e4818b4df42a643e3144abe44db",
+        "checks": [
+          {
+            "detail": null,
+            "name": "python-publisher-update-and-rollback",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "verified-cache-with-origin-removed",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-targets-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authentic-expired-cache-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "independent-publisher-root-substitution",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "expected_limitation": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+            },
+            "name": "default-limit-cannot-cross-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "expired-bootstrap-and-1030-root-history",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "final_root": 1030,
+              "last_downloaded_roots": 5,
+              "pending_invocations": 4
+            },
+            "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-root-reverified-on-resume",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-old-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-new-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-missing",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-skipped",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-expired-final",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "native": "online TUF/cache and independent archival authorization",
+              "offline_revision": 1,
+              "online_revision": 2,
+              "python_oracle": "archival authorization at year 2100; old offline pin retained"
+            },
+            "name": "archival-key-rotation-old-bundle-and-online-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-signer-cannot-authorize-online-catalog",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "archival_key_rotated": true,
+              "current_root": 1030,
+              "old_online_authorization_expired": true,
+              "old_root_expired": true
+            },
+            "name": "old-offline-authorization-then-online-through-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-none",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-unicode",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-bundle-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-wrong-pin",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-binding",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-policy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-publisher-identity",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "2bccb7f6c34fdcd56bf079413bdc7b075b2bc1527d7fc566678c807f86b04024",
+              "repository_id": "demo-macos-x64-registry"
+            },
+            "name": "existing-repository-registry",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "c7d89f4cfa06db8f8a71af2076f478ea178d01d5b0efcd4310077fe3e0e4cd15",
+              "repository_id": "demo-macos-x64-advantagescope"
+            },
+            "name": "existing-repository-advantagescope",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "136dbf83b8af0eaddc2759c04af3adcb411bdb24ee5f7f89687c8d8ab9c80269",
+              "repository_id": "demo-macos-x64-core"
+            },
+            "name": "existing-repository-core",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "d495c0eedf8484595d4ddef443b0a5df3150e9d2db43cd677403b079822a334d",
+              "repository_id": "demo-macos-x64-elastic"
+            },
+            "name": "existing-repository-elastic",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "212135fb5b6e300a8bf7e543eb322c828e2fb6f5f0d5f6d909712567bd48f945",
+              "repository_id": "demo-macos-x64-robotpy"
+            },
+            "name": "existing-repository-robotpy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "fresh-root-budget-never-accepts-catalog-early",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "library-cache-root-substitution-cannot-replace-bootstrap",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "missing-cache-root-below-checkpoint-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cache-write-failure-is-fatal",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "http-refresh-no-redirect-no-error-fallback-bounded-length-explicit-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authenticated-registry-dynamic-publishers-archival-key-rotation-revision-rollback-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-python-unicode-scalar-order-and-uint64",
+            "status": "passed"
+          }
+        ],
+        "host": "macOS-15.7.9-x86_64-i386-64bit",
+        "library": "Tuf 1.1.1",
+        "schema": 1,
+        "scope": "Native AOT manager policy adapter; same Python-generated fixtures/assertions as Go/Rust, with separate archival authority; no complete installer migration",
+        "status": "passed"
+      },
+      "gui": {
+        "status": "ok",
+        "visible": true,
+        "width": 720,
+        "height": 420
+      },
+      "native_dependencies": "/Users/runner/work/wpilib-installer/wpilib-installer/build/csharp/download/WPILib CSharp Experiment.app/Contents/MacOS/WPILibManager-CSharp:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 1.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/libicucore.A.dylib (compatibility version 1.0.0, current version 76.1.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/CryptoKit.framework/Versions/A/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/Network.framework/Versions/A/Network (compatibility version 1.0.0, current version 4277.121.5)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 61439.120.27)\n\t/System/Library/Frameworks/GSS.framework/Versions/A/GSS (compatibility version 1.0.0, current version 1.0.0)\nbuild/csharp/private/manager-experiment:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 1.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/libicucore.A.dylib (compatibility version 1.0.0, current version 76.1.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/CryptoKit.framework/Versions/A/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/Network.framework/Versions/A/Network (compatibility version 1.0.0, current version 4277.121.5)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 61439.120.27)\n\t/System/Library/Frameworks/GSS.framework/Versions/A/GSS (compatibility version 1.0.0, current version 1.0.0)\nbuild/csharp/private/libAvaloniaNative.dylib:\n\t/usr/local/lib/libAvalonia.Native.OSX.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers (compatibility version 1.0.0, current version 709.0.0, weak)\n\t/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore (compatibility version 1.2.0, current version 1193.18.35)\n\t/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon (compatibility version 2.0.0, current version 170.0.0)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2685.10.108)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 370.63.1)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1957.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 4040.1.255)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2000.63.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices (compatibility version 1.0.0, current version 66.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 4040.1.255)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 706.46.5)\nbuild/csharp/private/libHarfBuzzSharp.dylib:\n\t@rpath/libHarfBuzzSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1700.255.5)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)\nbuild/csharp/private/libSkiaSharp.dylib:\n\t@rpath/libSkiaSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa (compatibility version 1.0.0, current version 24.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3208.0.0)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1889.2.7)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 367.6.0)\n\t/System/Library/Frameworks/MetalKit.framework/Versions/A/MetalKit (compatibility version 1.0.0, current version 168.6.0)\n\t/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText (compatibility version 1.0.0, current version 844.2.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.105.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3208.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n"
+    },
+    "osx-arm64": {
+      "job": {
+        "run": 46096536506,
+        "id": 140829049687,
+        "name": "native (macos-15)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run python -m pip install -e .",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run sudo apt-get update",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 6
+          },
+          {
+            "name": "Run brew install sevenzip",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 7
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run python tools/bootstrap_ifw.py",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/csharp-fixture",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Build native GUI/CLI and private Qt distribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Native trust-policy suite through the single public executable",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "AOT GUI startup and isolated private Qt worker",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Record native dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 32
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 33
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "id": 15243771200,
+          "name": "csharp-application-macos-15",
+          "digest": "sha256:2634ffa20faf83cbd52ed85d64a29377239cf432bbfb82b0004fd82f9259d941",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        },
+        {
+          "id": 15243731481,
+          "name": "csharp-evidence-macos-15",
+          "digest": "sha256:9b4874558611dd7e54c49386392968f036d34d7330abe09b7ceff488f1856ab2",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        }
+      ],
+      "sizes": {
+        "rid": "osx-arm64",
+        "dotnet_sdk": "11.0.100",
+        "host": "macOS-15.8.2-arm64-arm-64bit",
+        "scope": "Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.",
+        "csharp": {
+          "executable_bytes": 55075320,
+          "download_zip_bytes": 53565517,
+          "executable_sha256": "6caba696f03673ac638d6ca6227f0a1f4706e57568f72f175426544c0bc024e8",
+          "private_files": [
+            {
+              "name": "libAvaloniaNative.dylib",
+              "bytes": 1548640,
+              "sha256": "63cb5e2f3e375cc766dc70d01aacc69abe4892af2cd24d79680a28d237568581"
+            },
+            {
+              "name": "libHarfBuzzSharp.dylib",
+              "bytes": 2922800,
+              "sha256": "b2d7d39a46954b3d7310540bdf393f398ac4194ee029b995deeb1db0c161c43d"
+            },
+            {
+              "name": "libSkiaSharp.dylib",
+              "bytes": 15201456,
+              "sha256": "e09f07ae1df62ded475351f56d8dc8366cd679043f28b65d9dee597a5fd0da6c"
+            },
+            {
+              "name": "manager-experiment",
+              "bytes": 55303952,
+              "sha256": "40447ead7b7202ae115957a88935cdf4a1641d5ef499ef28ec1473b94e59ace4"
+            }
+          ],
+          "payload_zip_bytes": 51964607
+        },
+        "rust": {
+          "executable_bytes": 50307232,
+          "download_zip_bytes": 41998952,
+          "executable_sha256": "a0bcddb7763e0c54d46da32ddf77a2fb21433db6da3ecf4b6b72558e1b4af343",
+          "baseline_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+          "baseline_run": 46082370013
+        },
+        "assets": {
+          "engine.zip": 34832475
+        }
+      },
+      "policy": {
+        "binary_bytes": 55075320,
+        "binary_sha256": "6caba696f03673ac638d6ca6227f0a1f4706e57568f72f175426544c0bc024e8",
+        "checks": [
+          {
+            "detail": null,
+            "name": "python-publisher-update-and-rollback",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "verified-cache-with-origin-removed",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-targets-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authentic-expired-cache-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "independent-publisher-root-substitution",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "expected_limitation": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+            },
+            "name": "default-limit-cannot-cross-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "expired-bootstrap-and-1030-root-history",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "final_root": 1030,
+              "last_downloaded_roots": 5,
+              "pending_invocations": 4
+            },
+            "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-root-reverified-on-resume",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-old-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-new-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-missing",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-skipped",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-expired-final",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "native": "online TUF/cache and independent archival authorization",
+              "offline_revision": 1,
+              "online_revision": 2,
+              "python_oracle": "archival authorization at year 2100; old offline pin retained"
+            },
+            "name": "archival-key-rotation-old-bundle-and-online-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-signer-cannot-authorize-online-catalog",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "archival_key_rotated": true,
+              "current_root": 1030,
+              "old_online_authorization_expired": true,
+              "old_root_expired": true
+            },
+            "name": "old-offline-authorization-then-online-through-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-none",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-unicode",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-bundle-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-wrong-pin",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-binding",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-policy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-publisher-identity",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "3f38e2f1650226fe6f3f47311b35e800811cbd7b3c42023ad847d468ed837bc8",
+              "repository_id": "demo-macos-arm64-registry"
+            },
+            "name": "existing-repository-registry",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "50ec3017271975fc45c2ba219757ae0f0cb06b1bdbc5ac06d75666ea1b3db4fa",
+              "repository_id": "demo-macos-arm64-advantagescope"
+            },
+            "name": "existing-repository-advantagescope",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "813ecb0ce7d14583780c3d9d70a18cd7794953320da88d92d0f8a15dfb2dcf78",
+              "repository_id": "demo-macos-arm64-core"
+            },
+            "name": "existing-repository-core",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "cb0b22ef3de4c04841aa51fe7864b94a038e1c883126df0e3b412af1ca3fda86",
+              "repository_id": "demo-macos-arm64-elastic"
+            },
+            "name": "existing-repository-elastic",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "92bc6c4671b91515a658af03dfcfc2336d5797b67f2bb23aa6b79d95db022d67",
+              "repository_id": "demo-macos-arm64-robotpy"
+            },
+            "name": "existing-repository-robotpy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "fresh-root-budget-never-accepts-catalog-early",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "library-cache-root-substitution-cannot-replace-bootstrap",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "missing-cache-root-below-checkpoint-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cache-write-failure-is-fatal",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "http-refresh-no-redirect-no-error-fallback-bounded-length-explicit-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authenticated-registry-dynamic-publishers-archival-key-rotation-revision-rollback-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-python-unicode-scalar-order-and-uint64",
+            "status": "passed"
+          }
+        ],
+        "host": "macOS-15.8.2-arm64-arm-64bit",
+        "library": "Tuf 1.1.1",
+        "schema": 1,
+        "scope": "Native AOT manager policy adapter; same Python-generated fixtures/assertions as Go/Rust, with separate archival authority; no complete installer migration",
+        "status": "passed"
+      },
+      "gui": {
+        "status": "ok",
+        "visible": true,
+        "width": 720,
+        "height": 420
+      },
+      "native_dependencies": "/Users/runner/work/wpilib-installer/wpilib-installer/build/csharp/download/WPILib CSharp Experiment.app/Contents/MacOS/WPILibManager-CSharp:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 1.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/libicucore.A.dylib (compatibility version 1.0.0, current version 76.1.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/CryptoKit.framework/Versions/A/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/Network.framework/Versions/A/Network (compatibility version 1.0.0, current version 4277.121.5)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 61439.120.27)\n\t/System/Library/Frameworks/GSS.framework/Versions/A/GSS (compatibility version 1.0.0, current version 1.0.0)\nbuild/csharp/private/manager-experiment:\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 1.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 120.100.0)\n\t/usr/lib/libicucore.A.dylib (compatibility version 1.0.0, current version 76.1.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/CryptoKit.framework/Versions/A/CryptoKit (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3502.1.255)\n\t/System/Library/Frameworks/Network.framework/Versions/A/Network (compatibility version 1.0.0, current version 4277.121.5)\n\t/System/Library/Frameworks/Security.framework/Versions/A/Security (compatibility version 1.0.0, current version 61439.120.27)\n\t/System/Library/Frameworks/GSS.framework/Versions/A/GSS (compatibility version 1.0.0, current version 1.0.0)\nbuild/csharp/private/libAvaloniaNative.dylib (architecture x86_64):\n\t/usr/local/lib/libAvalonia.Native.OSX.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers (compatibility version 1.0.0, current version 709.0.0, weak)\n\t/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore (compatibility version 1.2.0, current version 1193.18.35)\n\t/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon (compatibility version 2.0.0, current version 170.0.0)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2685.10.108)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 370.63.1)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1957.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 4040.1.255)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2000.63.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices (compatibility version 1.0.0, current version 66.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 4040.1.255)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 706.46.5)\nbuild/csharp/private/libAvaloniaNative.dylib (architecture arm64):\n\t/usr/local/lib/libAvalonia.Native.OSX.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/UniformTypeIdentifiers.framework/Versions/A/UniformTypeIdentifiers (compatibility version 1.0.0, current version 709.0.0, weak)\n\t/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore (compatibility version 1.2.0, current version 1193.18.35)\n\t/System/Library/Frameworks/IOSurface.framework/Versions/A/IOSurface (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/OpenGL.framework/Versions/A/OpenGL (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon (compatibility version 2.0.0, current version 170.0.0)\n\t/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit (compatibility version 45.0.0, current version 2685.10.108)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 370.63.1)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1957.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 4040.1.255)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2000.63.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices (compatibility version 1.0.0, current version 66.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 4040.1.255)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo (compatibility version 1.2.0, current version 706.46.5)\nbuild/csharp/private/libHarfBuzzSharp.dylib (architecture x86_64):\n\t@rpath/libHarfBuzzSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1700.255.5)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)\nbuild/csharp/private/libHarfBuzzSharp.dylib (architecture arm64):\n\t@rpath/libHarfBuzzSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1700.255.5)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1345.120.2)\nbuild/csharp/private/libSkiaSharp.dylib (architecture x86_64):\n\t@rpath/libSkiaSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa (compatibility version 1.0.0, current version 24.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3208.0.0)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1889.2.7)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 367.6.0)\n\t/System/Library/Frameworks/MetalKit.framework/Versions/A/MetalKit (compatibility version 1.0.0, current version 168.6.0)\n\t/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText (compatibility version 1.0.0, current version 844.2.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.105.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3208.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\nbuild/csharp/private/libSkiaSharp.dylib (architecture arm64):\n\t@rpath/libSkiaSharp.dylib (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices (compatibility version 1.0.0, current version 1226.0.0)\n\t/System/Library/Frameworks/Cocoa.framework/Versions/A/Cocoa (compatibility version 1.0.0, current version 24.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 3208.0.0)\n\t/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics (compatibility version 64.0.0, current version 1889.2.7)\n\t/System/Library/Frameworks/Metal.framework/Versions/A/Metal (compatibility version 1.0.0, current version 367.6.0)\n\t/System/Library/Frameworks/MetalKit.framework/Versions/A/MetalKit (compatibility version 1.0.0, current version 168.6.0)\n\t/System/Library/Frameworks/CoreText.framework/Versions/A/CoreText (compatibility version 1.0.0, current version 844.2.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 1800.105.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1351.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation (compatibility version 300.0.0, current version 3208.0.0)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n"
+    },
+    "linux-x64": {
+      "job": {
+        "run": 46096536506,
+        "id": 140829049812,
+        "name": "native (ubuntu-22.04)",
+        "status": "completed",
+        "conclusion": "success",
+        "steps": [
+          {
+            "name": "Set up job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 1
+          },
+          {
+            "name": "Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 2
+          },
+          {
+            "name": "Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 3
+          },
+          {
+            "name": "Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 4
+          },
+          {
+            "name": "Run python -m pip install -e .",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 5
+          },
+          {
+            "name": "Run sudo apt-get update",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 6
+          },
+          {
+            "name": "Run brew install sevenzip",
+            "status": "completed",
+            "conclusion": "skipped",
+            "number": 7
+          },
+          {
+            "name": "Run actions/download-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 8
+          },
+          {
+            "name": "Run python tools/bootstrap_ifw.py",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 9
+          },
+          {
+            "name": "Run python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/csharp-fixture",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 10
+          },
+          {
+            "name": "Build native GUI/CLI and private Qt distribution",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 11
+          },
+          {
+            "name": "Native trust-policy suite through the single public executable",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 12
+          },
+          {
+            "name": "AOT GUI startup and isolated private Qt worker",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 13
+          },
+          {
+            "name": "Record native dependencies",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 14
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 15
+          },
+          {
+            "name": "Run actions/upload-artifact@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 16
+          },
+          {
+            "name": "Post Run actions/setup-dotnet@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 30
+          },
+          {
+            "name": "Post Run actions/setup-python@v5",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 31
+          },
+          {
+            "name": "Post Run actions/checkout@v4",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 32
+          },
+          {
+            "name": "Complete job",
+            "status": "completed",
+            "conclusion": "success",
+            "number": 33
+          }
+        ]
+      },
+      "artifacts": [
+        {
+          "id": 15243178542,
+          "name": "csharp-application-ubuntu-22.04",
+          "digest": "sha256:b57ae7831bab18672bfaf0a1ac245f2ab8c9ce6dd73fa2465acf0656f9a40e4a",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        },
+        {
+          "id": 15242669159,
+          "name": "csharp-evidence-ubuntu-22.04",
+          "digest": "sha256:fd678101374a2d66814d9eb51c795eb00dfb64c0e9c0651a376bde1f75f1b6af",
+          "run": 46096536506,
+          "commit": "43988d7ebe112a4d2331f74b4eb51a9843511ea3"
+        }
+      ],
+      "sizes": {
+        "rid": "linux-x64",
+        "dotnet_sdk": "11.0.100",
+        "host": "Linux-6.8.0-1073-azure-x86_64-with-glibc2.35",
+        "scope": "Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.",
+        "csharp": {
+          "executable_bytes": 47086424,
+          "download_zip_bytes": 45537466,
+          "executable_sha256": "b1e698ef4b30edfac8ad3668884d03b6c39bdea428413b776db6ecdcbcd35b8f",
+          "private_files": [
+            {
+              "name": "libHarfBuzzSharp.so",
+              "bytes": 2808040,
+              "sha256": "1d5c3afef13545bf34bf8f068b14e25ee619c3b6dee235c44e260fe61cb24018"
+            },
+            {
+              "name": "libSkiaSharp.so",
+              "bytes": 11170296,
+              "sha256": "66c856eaf1a47a00b23204c30c6ee407987bf5086ecc0a1a6b4fd67526b0cd02"
+            },
+            {
+              "name": "manager-experiment",
+              "bytes": 53038376,
+              "sha256": "386616ea10d2be9acc2858ec35c0bd1f38d67aa7d2c1214fe1488b236f04a95b"
+            }
+          ],
+          "payload_zip_bytes": 44240095
+        },
+        "rust": {
+          "executable_bytes": 48228424,
+          "download_zip_bytes": 36090795,
+          "executable_sha256": "35044a2a67a6e2ad11f925f344c2f6436a667fd14c34119af8bc57fb09543984",
+          "baseline_commit": "e40b48f7f369dceb6e46add87102590ca1f3eeb5",
+          "baseline_run": 46082370013
+        },
+        "assets": {
+          "engine.zip": 21031660,
+          "runtime.zip": 6928127
+        }
+      },
+      "policy": {
+        "binary_bytes": 47086424,
+        "binary_sha256": "b1e698ef4b30edfac8ad3668884d03b6c39bdea428413b776db6ecdcbcd35b8f",
+        "checks": [
+          {
+            "detail": null,
+            "name": "python-publisher-update-and-rollback",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "verified-cache-with-origin-removed",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-targets-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authentic-expired-cache-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "independent-publisher-root-substitution",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-timestamp-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-snapshot-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "origin-catalog-tampering",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "expected_limitation": "TUF root metadata expired at 2020-01-01T00:00:00.0000000+00:00."
+            },
+            "name": "default-limit-cannot-cross-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "expired-bootstrap-and-1030-root-history",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "final_root": 1030,
+              "last_downloaded_roots": 5,
+              "pending_invocations": 4
+            },
+            "name": "bounded-catch-up-resumes-without-catalog-at-boundary",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cached-root-reverified-on-resume",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-old-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "rotation-requires-new-threshold",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-missing",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-skipped",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "root-history-expired-final",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "native": "online TUF/cache and independent archival authorization",
+              "offline_revision": 1,
+              "online_revision": 2,
+              "python_oracle": "archival authorization at year 2100; old offline pin retained"
+            },
+            "name": "archival-key-rotation-old-bundle-and-online-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-signer-cannot-authorize-online-catalog",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "archival_key_rotated": true,
+              "current_root": 1030,
+              "old_online_authorization_expired": true,
+              "old_root_expired": true
+            },
+            "name": "old-offline-authorization-then-online-through-1030-roots",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-none",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-unicode",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-bundle-signature",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-wrong-pin",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-registry-binding",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-policy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "native-archival-publisher-identity",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "27ea7ebb985a3ee94f7a08499d08d181f6d067de5b1a717ef8f7eb8306afd99d",
+              "repository_id": "demo-linux-x64-registry"
+            },
+            "name": "existing-repository-registry",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "16c4993051e01c890485a800a6a59c0d1770533752b61049a80e7df8748ef394",
+              "repository_id": "demo-linux-x64-advantagescope"
+            },
+            "name": "existing-repository-advantagescope",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "10cb55f4f35c0bb9c131ab2e61885272881e43e6130949f54b34a96ce6636b17",
+              "repository_id": "demo-linux-x64-core"
+            },
+            "name": "existing-repository-core",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "4a38e8d218ee55e85e24b2c843e68b1232a3783d4cb1b1227b4c0ce766b8f0a7",
+              "repository_id": "demo-linux-x64-elastic"
+            },
+            "name": "existing-repository-elastic",
+            "status": "passed"
+          },
+          {
+            "detail": {
+              "catalog_sha256": "655f7032dbf1ee1b923ab0175ca339ec5823c6d4690dc3a2652fa780163d3937",
+              "repository_id": "demo-linux-x64-robotpy"
+            },
+            "name": "existing-repository-robotpy",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "fresh-root-budget-never-accepts-catalog-early",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "library-cache-root-substitution-cannot-replace-bootstrap",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "missing-cache-root-below-checkpoint-rejected",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "cache-write-failure-is-fatal",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "http-refresh-no-redirect-no-error-fallback-bounded-length-explicit-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "authenticated-registry-dynamic-publishers-archival-key-rotation-revision-rollback-cache",
+            "status": "passed"
+          },
+          {
+            "detail": null,
+            "name": "archival-python-unicode-scalar-order-and-uint64",
+            "status": "passed"
+          }
+        ],
+        "host": "Linux-6.8.0-1073-azure-x86_64-with-glibc2.35",
+        "library": "Tuf 1.1.1",
+        "schema": 1,
+        "scope": "Native AOT manager policy adapter; same Python-generated fixtures/assertions as Go/Rust, with separate archival authority; no complete installer migration",
+        "status": "passed"
+      },
+      "gui": {
+        "status": "ok",
+        "visible": true,
+        "width": 720,
+        "height": 420
+      },
+      "native_dependencies": "\tlinux-vdso.so.1 (0x00007ffe127c3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007fda5f9a5000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007fda5c800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007fda5fa9a000)\n\tlinux-vdso.so.1 (0x00007ffc3a9b3000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f11f1c91000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f11ede00000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f11f1d86000)\n\tlinux-vdso.so.1 (0x00007ffdc37f5000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f1981fb9000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f1981ed2000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f1981800000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f1981fcc000)\n\tlinux-vdso.so.1 (0x00007ffd2a9cb000)\n\tlibpthread.so.0 => /lib/x86_64-linux-gnu/libpthread.so.0 (0x00007f478ee51000)\n\tlibfontconfig.so.1 => /lib/x86_64-linux-gnu/libfontconfig.so.1 (0x00007f478ee07000)\n\tlibdl.so.2 => /lib/x86_64-linux-gnu/libdl.so.2 (0x00007f478ee02000)\n\tlibm.so.6 => /lib/x86_64-linux-gnu/libm.so.6 (0x00007f478ed1b000)\n\tlibc.so.6 => /lib/x86_64-linux-gnu/libc.so.6 (0x00007f478e000000)\n\t/lib64/ld-linux-x86-64.so.2 (0x00007f478ee64000)\n\tlibfreetype.so.6 => /lib/x86_64-linux-gnu/libfreetype.so.6 (0x00007f478e338000)\n\tlibexpat.so.1 => /lib/x86_64-linux-gnu/libexpat.so.1 (0x00007f478ece7000)\n\tlibuuid.so.1 => /lib/x86_64-linux-gnu/libuuid.so.1 (0x00007f478ecde000)\n\tlibpng16.so.16 => /lib/x86_64-linux-gnu/libpng16.so.16 (0x00007f478e2fd000)\n\tlibz.so.1 => /lib/x86_64-linux-gnu/libz.so.1 (0x00007f478ecc2000)\n\tlibbrotlidec.so.1 => /lib/x86_64-linux-gnu/libbrotlidec.so.1 (0x00007f478e2ef000)\n\tlibbrotlicommon.so.1 => /lib/x86_64-linux-gnu/libbrotlicommon.so.1 (0x00007f478e2cc000)\n"
+    }
+  },
+  "superseded_runs": [
+    {
+      "id": 46096099077,
+      "reason": "Windows child stdout not forwarded; Linux runtime notices initially included the larger hosted-runner package set. Superseded run cancelled after required replacements were dispatched."
+    },
+    {
+      "id": 46096756756,
+      "reason": "Windows 42/43 checks passed; one process emitted the correct pending JSON then exited 0xc0000409. Old harness did not retain stderr for abnormal exit. Temporary-image cleanup was suspected, not conclusively proven; bounded Windows cleanup and stderr diagnostics were added, followed by successful suite and 12-process pending repeatability check."
+    }
+  ],
+  "status": "passed",
+  "policy_checks": 173
+}
