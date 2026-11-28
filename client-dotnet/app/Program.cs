@@ -169,14 +169,18 @@ internal sealed class ManagerWindow : Window
         catch (Exception e) { error = e.Message; status.Text = "Unable to complete: " + error; }
         finally { busy = false; inputs.IsEnabled = true; }
     }
-    bool NativeWindowReady()
+    int WaylandSurfaceCount()
     {
-        // Avalonia 12.1 Wayland deliberately exposes no raw IPlatformHandle.
-        // Activation is reported by its native compositor configure callback.
-        var waylandSurface = PlatformImpl?.GetType().FullName == "Avalonia.Wayland.WindowImpl"
-            && nativeActivated;
-        return rendered && IsVisible && (TryGetPlatformHandle() is not null || waylandSurface);
+        if (PlatformImpl?.GetType().FullName != "Avalonia.Wayland.WindowImpl") return 0;
+        // The pinned framework exposes this interface getter at runtime, but its
+        // reference assembly hides the unstable API. Exact-type reflection keeps
+        // the getter statically discoverable to NativeAOT; this is test evidence only.
+        var property = typeof(Avalonia.Platform.ITopLevelImpl).GetProperty("Surfaces",
+            BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+        return property?.GetValue(PlatformImpl) is Array surfaces ? surfaces.Length : 0;
     }
+    bool NativeWindowReady() => rendered && IsVisible &&
+        (TryGetPlatformHandle() is not null || WaylandSurfaceCount() > 0);
     void Capture(string phase)
     {
         var report = Path.GetFullPath(initial.UiReport!);
@@ -186,7 +190,7 @@ internal sealed class ManagerWindow : Window
         using var bitmap = new RenderTargetBitmap(size, new Vector(96, 96));
         bitmap.Render(this);
         bitmap.Save(png, PngBitmapEncoderOptions.Default);
-        var value = new JsonObject { ["native_window"] = NativeWindowReady(), ["backend"] = PlatformImpl?.GetType().FullName, ["native_activation_observed"] = nativeActivated, ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
+        var value = new JsonObject { ["native_window"] = NativeWindowReady(), ["backend"] = PlatformImpl?.GetType().FullName, ["native_activation_observed"] = nativeActivated, ["wayland_surface_count"] = WaylandSurfaceCount(), ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
         Storage.Write(phase == "startup" ? Path.ChangeExtension(report, "startup.json") : report, Archive.Canonical(value));
     }
 }
