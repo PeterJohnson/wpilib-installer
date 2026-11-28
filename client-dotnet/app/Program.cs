@@ -119,6 +119,8 @@ internal sealed class ManagerWindow : Window
             rendered = true;
             if (initial.UiReport is null)
                 return;
+            while (!NativeWindowReady() && clock.ElapsedMilliseconds < 10000)
+                await Task.Delay(25);
             Capture("startup");
             if (initial.UiCommand is not null)
                 await Launch(initial.UiCommand);
@@ -166,6 +168,14 @@ internal sealed class ManagerWindow : Window
         catch (Exception e) { error = e.Message; status.Text = "Unable to complete: " + error; }
         finally { busy = false; inputs.IsEnabled = true; }
     }
+    bool NativeWindowReady()
+    {
+        // Avalonia 12.1 Wayland deliberately exposes no raw IPlatformHandle.
+        // Its surface array remains empty until a native surface has been created.
+        var waylandSurface = PlatformImpl?.GetType().FullName == "Avalonia.Wayland.WindowImpl"
+            && PlatformImpl.Surfaces.Length > 0;
+        return rendered && IsVisible && (TryGetPlatformHandle() is not null || waylandSurface);
+    }
     void Capture(string phase)
     {
         var report = Path.GetFullPath(initial.UiReport!);
@@ -175,7 +185,7 @@ internal sealed class ManagerWindow : Window
         using var bitmap = new RenderTargetBitmap(size, new Vector(96, 96));
         bitmap.Render(this);
         bitmap.Save(png, PngBitmapEncoderOptions.Default);
-        var value = new JsonObject { ["native_window"] = rendered && IsVisible && TryGetPlatformHandle() is not null, ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
+        var value = new JsonObject { ["native_window"] = NativeWindowReady(), ["backend"] = PlatformImpl?.GetType().FullName, ["surface_count"] = PlatformImpl?.Surfaces.Length ?? 0, ["phase"] = phase, ["elapsed_ms"] = clock.ElapsedMilliseconds, ["size"] = new JsonArray(size.Width, size.Height), ["screenshot"] = png, ["result"] = result?.DeepClone(), ["error"] = error };
         Storage.Write(phase == "startup" ? Path.ChangeExtension(report, "startup.json") : report, Archive.Canonical(value));
     }
 }
