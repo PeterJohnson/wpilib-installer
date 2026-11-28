@@ -182,7 +182,11 @@ def exercise(directory, source, engine, work, report_path, isolation):
 
 @contextmanager
 def windows_firewall(programs, all_outbound=False):
-    """Scope temporary rules to Python and the exact Qt executables, not the Actions agent."""
+    """Block test executables, or all outbound traffic for a self-extracting client.
+
+    The broader mode is only for disposable native test runners. Restore DNS
+    after removing its rules so failed background lookups do not poison uploads.
+    """
     group = "WPILib-offline-" + uuid.uuid4().hex
     env = {**os.environ, "OFFLINE_PROGRAMS": json.dumps(list(map(str, programs))), "OFFLINE_RULE_GROUP": group, "OFFLINE_ALL_OUTBOUND": "1" if all_outbound else "0"}
     add = """$ErrorActionPreference = 'Stop'
@@ -202,6 +206,8 @@ foreach ($program in ($env:OFFLINE_PROGRAMS | ConvertFrom-Json)) {
         yield
     finally:
         subprocess.run(["pwsh", "-NoProfile", "-Command", remove], env=env, check=True)
+        if all_outbound:
+            subprocess.run(["pwsh", "-NoProfile", "-Command", "Clear-DnsClientCache -ErrorAction Stop"], check=True)
 
 
 def check_candidate(directory, source_path, ifw, work, report_path):

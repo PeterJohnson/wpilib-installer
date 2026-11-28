@@ -1,5 +1,7 @@
 # C# Native AOT options for TUF
 
+The follow-up selected C#/Avalonia with a private Qt engine; see [the active client port and acceptance](avalonia-client.md). This document preserves the preceding library evaluation.
+
 Follow-up: the [focused manager experiment](csharp-manager-experiment.md) implements the policy adapters and records native application/size acceptance separately from this original library investigation.
 
 Investigation: 2026-11-28 UTC (November 27 local). **A credible pure-C# option exists: NuGet `Tuf` 1.1.1 from `mitchdenny/sigstore-dotnet`.** It merits a full manager-policy adapter experiment before deciding whether Avalonia requires a Rust verification core. This finding does not switch the selected client or claim production readiness.

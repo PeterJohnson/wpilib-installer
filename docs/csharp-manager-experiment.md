@@ -1,6 +1,6 @@
 # Focused C# manager and Native AOT experiment
 
-This follow-up evaluates **Avalonia + C# Native AOT + Tuf 1.1.1 + private Qt**. It does not replace the selected Rust client. The source is under [`experiments/csharp-manager`](../experiments/csharp-manager/README.md); the experiment uses the existing publisher and trust formats without changing production repositories or publication workflows.
+This follow-up evaluates **Avalonia + C# Native AOT + Tuf 1.1.1 + private Qt**. This is historical experiment evidence. C#/Avalonia has since been selected and the installation/maintenance port is tracked in [the active client report](avalonia-client.md). The source is under [`experiments/csharp-manager`](../experiments/csharp-manager/README.md); the experiment uses the existing publisher and trust formats without changing production repositories or publication workflows.
 
 ## Implemented policy adapters
 
