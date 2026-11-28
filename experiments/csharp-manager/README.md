@@ -8,7 +8,7 @@ The GUI demonstrates catalog refresh; it does **not** implement the Rust install
 
 ## Reproduce
 
-Use a .NET SDK capable of targeting .NET 10, the platform's Native AOT toolchain (Clang/Xcode/MSVC), and `pip install -e .`. Linux distributions must be built on Ubuntu 22.04, matching the Rust ABI baseline. Runtime/ILCompiler is pinned to 10.0.15. The measured hosted builds selected preinstalled SDK 11.0.100; installing SDK 10 with setup-dotnet alone does not constrain SDK selection. Record the actual SDK and resolved package versions with the evidence. No signing keys are embedded; fixture keys are generated only under ignored build directories.
+Use a .NET SDK capable of targeting .NET 10, the platform's Native AOT toolchain (Clang/Xcode/MSVC), and `pip install -e .`. Linux distributions must be built on Ubuntu 22.04, matching the Rust ABI baseline. Runtime/ILCompiler is pinned to 10.0.15. The measured hosted builds selected SDK 11.0.100 on Windows/Linux/macOS ARM64 and 10.0.404 on macOS Intel; installing SDK 10 with setup-dotnet alone does not constrain SDK selection. Record the actual SDK and resolved package versions with the evidence. No signing keys are embedded; fixture keys are generated only under ignored build directories.
 
 ```sh
 python tools/bootstrap_ifw.py

@@ -8,8 +8,7 @@
     "SkiaSharp": "3.119.4",
     "HarfBuzzSharp": "8.3.1.3",
     "target_framework": "net10.0",
-    "runtime_ilcompiler": "10.0.15",
-    "actual_sdk": "11.0.100"
+    "runtime_ilcompiler": "10.0.15"
   },
   "scope": "Focused C# trust-policy and single-application distribution experiment, not a port of installation/maintenance/resolution or a security audit. Windows/Linux public single executable, macOS .app. Native AOT policy tests, GUI startup and private Qt --version run through the public launcher. Unsigned development distributions; symbols and package bundles excluded.",
   "baseline": {
@@ -1908,5 +1907,11 @@
     }
   ],
   "status": "passed",
-  "policy_checks": 173
+  "policy_checks": 173,
+  "sdk_by_target": {
+    "win-x64": "11.0.100",
+    "osx-x64": "10.0.404",
+    "osx-arm64": "11.0.100",
+    "linux-x64": "11.0.100"
+  }
 }
