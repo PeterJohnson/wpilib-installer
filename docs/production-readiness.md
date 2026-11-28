@@ -1,17 +1,21 @@
 # Production-readiness plan
 
-The selected implementation is the Rust client in `client/` with a private Qt installation engine. Python is publishing/build/acceptance tooling. This repository has moved beyond choosing an implementation, but **there is no production release readiness claim**. Test artifacts embed disposable public trust and must not be distributed as the production installer.
+The selected implementation is the NativeAOT C#/Avalonia client in `client-dotnet/` with a private Qt installation engine. Python is publishing/build/acceptance tooling. This repository has moved beyond choosing an implementation, but **there is no production release readiness claim**. Test artifacts embed disposable public trust and must not be distributed as the production installer.
 
 ## Established capabilities
 
 - One GUI/CLI application, with retained private worker and verified caches for maintenance after original downloads are removed.
 - Fresh online/offline installation, package-level updates, dynamic authenticated publisher registries, and independent publisher repositories.
-- Rust TUF verification with authenticated cache fallback, rollback checks, and root catch-up beyond 1,024 rotations. Offline archival authority is independent and permits matching bundles indefinitely.
+- Native TUF verification with authenticated cache fallback, rollback checks, and root catch-up beyond 1,024 rotations. Offline archival authority is independent and permits matching bundles indefinitely.
 - Latest-compatible per-platform offline bundles and browser pages, with last-success preservation on assembly/publication failure.
 - R2/S3 conditional publication and Artifactory staging/promotion with serialized publisher index updates.
 - Cross-platform native fixture and real dashboard installation checks; clean Ubuntu Desktop graphics/worker isolation and headless Linux acceptance. The [runtime policy](self-contained-runtime.md) and [evidence index](README.md) distinguish exact coverage and limitations.
 
-## Validation of the production-development layout
+## C#/Avalonia migration
+
+The [C# lifecycle report](avalonia-client.md) tracks the port and its native acceptance evidence. The older Rust results below remain historical evidence and do not establish C# acceptance. Complete manager/cache removal, production license presentation and interruption recovery remain open.
+
+## Historical Rust validation of the production-development layout
 
 The real dashboard Desktop gate passed before the restructure ([run 46079025954](https://github.com/PeterJohnson/wpilib-installer/actions/runs/46079025954)). The reorganized source at `e40b48f` then passed all three dispatched workflows:
 

@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-Python 3.11+ is for build, publishing, and test tooling. Rust 1.100.0 is the pinned client toolchain. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
+Python 3.11+ is for build, publishing, and test tooling. .NET SDK 10.0.404 is pinned in `client-dotnet/global.json`; NativeAOT targets .NET 10.0.15 and Avalonia 12.1.1. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
 
-On Ubuntu build hosts, `.github/scripts/install-linux-dependencies.sh` installs Qt tool dependencies and the extractor. Linux client compilation runs in Docker on an Ubuntu 22.04 baseline and includes its Rust toolchain. Native GUI tests additionally need a display or Xvfb. Clean Desktop acceptance uses host-only QEMU/KVM and xorriso; no packages are installed in the Desktop guest. These are development requirements, not end-user prerequisites.
+On Ubuntu build hosts, `.github/scripts/install-linux-dependencies.sh` installs Qt tool dependencies and the extractor. Linux client compilation runs in Docker on an Ubuntu 22.04 baseline and includes its .NET SDK and native compiler. Native GUI tests additionally need a display or Xvfb. Clean Desktop acceptance uses host-only QEMU/KVM and xorriso; no packages are installed in the Desktop guest. These are development requirements, not end-user prerequisites.
 
-Windows native builds require MSVC build tools and NASM. macOS builds use Xcode command-line tools and `sevenzip`; deployment target remains macOS 13, with macOS 15 CI on Intel and ARM. Linux/Windows ARM client releases are not enabled.
+Windows native builds require MSVC build tools and the pinned .NET SDK. macOS builds use the pinned .NET SDK, Xcode command-line tools and `sevenzip`; deployment target remains macOS 13, with macOS 15 CI on Intel and ARM. Linux/Windows ARM client releases are not enabled.
 
 ```sh
 python3 -m venv .venv
@@ -22,10 +22,9 @@ On Windows use `python` and activate `.venv\Scripts\Activate.ps1`. Never commit 
 ```sh
 python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/client-fixture
 python tools/build_client.py --source build/client-fixture/demo/registry-source.json --ifw .tools/ifw --assets build/client/assets --output build/client/download
-cargo fmt --manifest-path client/Cargo.toml --check
 ```
 
-The Linux builder runs release-mode unit tests inside the baseline container. On Windows/macOS, set `WPILIB_ASSET_DIR` to the absolute `build/client/assets` path before `cargo test --locked --release --manifest-path client/Cargo.toml`; set `MACOSX_DEPLOYMENT_TARGET=13.0` on macOS.
+The selected client lives in `client-dotnet/`. `tools/build_client.py` publishes both the private native application and the public native launcher, then embeds the application, libraries, public bootstrap and Qt assets into that launcher. On Linux both publishes run in Ubuntu 22.04 Docker; on Windows/macOS they run on the native host. Build warnings are errors, including NativeAOT/trimming diagnostics. `client/` and `tools/build_rust_client.py` preserve the Rust reference for comparisons.
 
 The executable is `build/client/download/wpilib-manager` on Linux, `WPILibManager.exe` on Windows, or `WPILib Manager.app/Contents/MacOS/wpilib-manager` on macOS. Build output includes a ZIP preserving Unix modes and a dependency audit. The bootstrap supplied to the build fixes public trust, target, season, and channel. Fixture bootstraps authorize disposable test repositories only.
 
@@ -54,7 +53,7 @@ PowerShell uses `$env:IFW_PATH='.tools/ifw'`. Tests requiring Qt skip when IFW i
 
 | Workflow | Role |
 | --- | --- |
-| `client.yml` | Four native client builds, authenticated update/cache checks, minimal Linux headless checks, and dependent clean Desktop fixture checks. |
+| `client.yml` | Four NativeAOT client builds, offline lifecycle/uninstall and authenticated update/cache checks, minimal Linux headless checks, and dependent clean Desktop fixture checks. |
 | `tooling.yml` | Four-platform publishing/tooling regressions and native offline publication gates. Emits evidence, not an end-user Qt-only installer. |
 | `desktop-real.yml` | Pinned real dashboard bundles plus fresh Ubuntu 24.04/26.04 Desktop offline installation, upgrades, and cache maintenance. |
 | `desktop-acceptance.yml` | Reusable/manual Desktop VM harness; can retest an existing `ubuntu-desktop-test-input` artifact. |

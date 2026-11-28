@@ -38,8 +38,8 @@ public static class TrustHistory
     public static JsonObject Root(JsonNode pin,string roots,int end)
     {
         var root=pin.DeepClone().AsObject();Verify(root,root,"root");var initial=root["signed"]!["version"]!.GetValue<int>();
-        Archive.Require(end>=initial && (long)end-initial<=1000000,"Invalid root checkpoint range");
-        for(int v=initial+1;v<=end;v++)
+        Archive.Require(end>=initial,"Invalid root checkpoint range");
+        for(long v=(long)initial+1;v<=end;v++)
         {
             var next=Storage.Object(Path.Combine(roots,v+".root.json"));
             Archive.Require(next["signed"]!["version"]!.GetValue<int>()==v,"Root history version mismatch");

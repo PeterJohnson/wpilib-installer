@@ -46,13 +46,14 @@ def build(source, ifw, output, assets):
             if f.is_file():z.write(f,f.relative_to(assets))
     work=assets.parent / 'aot';work.mkdir(parents=True,exist_ok=True)
     if sys.platform=='linux':
+        (work / 'runtime-dir').mkdir(mode=0o700,exist_ok=True)
         # Runtime notices/dependencies come from the same minimal image as the Qt worker.
         runtime='wpilib-installer-linux-runtime:22.04-rust-1.100.0'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/linux-runtime.Dockerfile'),'-t',runtime,str(REPO)],check=True)
         subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work:ro','-v',f'{assets}:/assets',runtime,'python3','tools/package_linux_runtime.py','--engine','/assets/engine','--output','/assets/runtime.zip'],check=True)
         image='wpilib-installer-dotnet:22.04-10.0.404'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/dotnet-client.Dockerfile'),'-t',image,str(REPO)],check=True)
-        subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work','-v',f'{assets}:/assets','-v',f'{work}:/aot', '-v','/etc/passwd:/etc/passwd:ro','-v','/etc/group:/etc/group:ro','-e','DOTNET_CLI_HOME=/aot/home','-e','NUGET_PACKAGES=/aot/nuget',image,'python3','-c','import sys; sys.path.insert(0,"tools"); from build_client import publish; from pathlib import Path; publish(Path("/assets"),Path("/aot"))'],check=True)
+        subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work','-v',f'{assets}:/assets','-v',f'{work}:/aot', '-v','/etc/passwd:/etc/passwd:ro','-v','/etc/group:/etc/group:ro','-e','DOTNET_CLI_HOME=/aot/home','-e','NUGET_PACKAGES=/aot/nuget','-e','XDG_RUNTIME_DIR=/aot/runtime-dir',image,'python3','-c','import sys; sys.path.insert(0,"tools"); from build_client import publish; from pathlib import Path; publish(Path("/assets"),Path("/aot"))'],check=True)
     else: publish(assets,work)
     if sys.platform=='darwin':
         app=output / 'WPILib Manager.app';exe=app / 'Contents/MacOS/wpilib-manager';exe.parent.mkdir(parents=True,exist_ok=True)

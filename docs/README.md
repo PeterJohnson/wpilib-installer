@@ -27,3 +27,5 @@ Machine-readable reports in [evidence/](evidence/) bind test results to exact co
 - [Host graphics and clean Desktop fixtures](evidence/host-graphics-2026-11-27.json)
 
 The [original proposal](history/installer-architecture.md), [implementation comparison](history/manager-distribution-evaluation.md), [prototype status](history/prototype-status.md), [Rust prototype notes](history/rust-manager-prototype.md), and [Python prototype guide](history/python-prototype-guide.md) are preserved under `history/`. Their commands describe earlier revisions; use the current development guide for new work.
+
+- [C#/Avalonia lifecycle port](avalonia-client.md): active client implementation and native acceptance.
