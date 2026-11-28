@@ -36,6 +36,19 @@ xvfb-run -a python tools/check_client_offline.py --app build/client/download/wpi
 
 For authenticated online tests, prepare with `tools/prepare_client_online.py`, build against its `online-source.json`, and invoke `tools/check_client_online.py`. That fixture deliberately uses a loopback HTTP exception and an expired/rotated root history; never use its bootstrap for deployment.
 
+## C# formatting
+
+Use the pinned [CSharpier](https://csharpier.com/docs/Installation) local tool for C# and project-file formatting:
+
+```sh
+cd client
+dotnet tool restore
+dotnet csharpier format .
+dotnet csharpier check .
+```
+
+The formatter uses four spaces and a 100-column wrapping target. Keep braces around conditional and loop bodies; `.editorconfig` also enables the corresponding IDE diagnostic. Comments should explain trust boundaries, ordering constraints and platform behavior rather than repeat the statements. The client workflow checks formatting before native builds.
+
 ## Publishing and tooling tests
 
 ```sh

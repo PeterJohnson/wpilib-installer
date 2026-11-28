@@ -2,3 +2,4 @@ bin/
 obj/
 publish/
 .local/
+.cache/
