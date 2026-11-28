@@ -1,10 +1,10 @@
-"""Manager-specific gaps identified by the initial C# library investigation."""
+"""Client policy acceptance: registry discovery, cache failures and archival encoding."""
 import copy,functools,json,shutil,subprocess,threading
 from http.server import SimpleHTTPRequestHandler,ThreadingHTTPServer
 from pathlib import Path
 from installer_tooling.common import atomic_json,canonical,keygen,sign
 from installer_tooling.tuf_repository import DirectoryStore,ROLES,create_root,publish_catalog
-from tools.check_native_tuf import generate
+from tools.client_trust_checks import generate
 from tests.test_archival import IndefiniteArchivalTests
 
 def run(e,keys):
@@ -96,8 +96,7 @@ def run(e,keys):
  e.case('archival-python-unicode-scalar-order-and-uint64',canonical_order)
 
 def existing(e):
- # Same comparison as Evaluation.existing_cases, using OS-aware file-URI decoding
- # for Windows drive letters (Path('/D:/...') is not the original Windows path).
+ # Decode file URIs with OS-aware handling for Windows drive letters.
  if not e.existing:return
  from urllib.parse import urlparse
  from urllib.request import url2pathname

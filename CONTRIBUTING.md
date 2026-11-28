@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-Python 3.11+ is for build, publishing, and test tooling. .NET SDK 10.0.404 is pinned in `client-dotnet/global.json`; NativeAOT targets .NET 10.0.15 and Avalonia 12.1.1. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
+Python 3.11+ is for build, publishing, and test tooling. .NET SDK 10.0.404 is pinned in `client/global.json`; NativeAOT targets .NET 10.0.15 and Avalonia 12.1.1. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
 
 On Ubuntu build hosts, `.github/scripts/install-linux-dependencies.sh` installs Qt tool dependencies and the extractor. Linux client compilation runs in Docker on an Ubuntu 22.04 baseline and includes its .NET SDK and native compiler. Native GUI tests additionally need a display or Xvfb. Clean Desktop acceptance uses host-only QEMU/KVM and xorriso; no packages are installed in the Desktop guest. These are development requirements, not end-user prerequisites.
 
@@ -24,7 +24,7 @@ python tools/prepare_client_fixture.py --ifw .tools/ifw --work build/client-fixt
 python tools/build_client.py --source build/client-fixture/demo/registry-source.json --ifw .tools/ifw --assets build/client/assets --output build/client/download
 ```
 
-The selected client lives in `client-dotnet/`. `tools/build_client.py` publishes both the private native application and the public native launcher, then embeds the application, libraries, public bootstrap and Qt assets into that launcher. On Linux both publishes run in Ubuntu 22.04 Docker; on Windows/macOS they run on the native host. Build warnings are errors, including NativeAOT/trimming diagnostics. The former Rust client and builders were retired after native C# acceptance; their source remains in Git history.
+The selected client lives in `client/`. `tools/build_client.py` publishes both the private native application and the public native launcher, then embeds the application, libraries, public bootstrap and Qt assets into that launcher. On Linux both publishes run in Ubuntu 22.04 Docker; on Windows/macOS they run on the native host. Build warnings are errors, including NativeAOT/trimming diagnostics.
 
 The executable is `build/client/download/wpilib-manager` on Linux, `WPILibManager.exe` on Windows, or `WPILib Manager.app/Contents/MacOS/wpilib-manager` on macOS. Build output includes a ZIP preserving Unix modes and a dependency audit. The bootstrap supplied to the build fixes public trust, target, season, and channel. Fixture bootstraps authorize disposable test repositories only.
 
@@ -47,7 +47,7 @@ wpilib-installer-tools --help
 
 PowerShell uses `$env:IFW_PATH='.tools/ifw'`. Tests requiring Qt skip when IFW is absent; a passing run with skips is not native acceptance. Publication CI installs the tooling as a wheel before testing, so package resources and the renamed namespace are exercised.
 
-`installer_tooling.qt_engine` builds the private worker and reads Qt inventory. `installer_tooling.reference_client` is the Python comparison adapter used by publication gates and regression tests. It is not the installed client. The on-disk installation/cache schemas, package IDs, repository formats, and archival policies are shared contracts; reorganizing code is not permission to change them.
+`installer_tooling.qt_engine` builds the private worker and reads Qt inventory. `installer_tooling.reference_client` is the Python acceptance adapter used by publication gates and regression tests. It is not the installed client. The on-disk installation/cache schemas, package IDs, repository formats, and archival policies are shared contracts; reorganizing code is not permission to change them.
 
 ## CI ownership
 
@@ -69,17 +69,8 @@ gh workflow run desktop-real.yml
 gh workflow run desktop-acceptance.yml -f application_run=RUN_ID -f release=all -f require_real=true
 ```
 
-Changes to workflow names require updating any externally configured branch-protection checks. CI names alone do not configure branch protection or authorize a release. Follow every dispatched required run to completion and save evidence for release acceptance.
+Changes to workflow names require updating any externally configured branch-protection checks. CI names alone do not configure branch protection or authorize a release. Follow every dispatched required run to completion. CI uploads reports, hashes and logs as build artifacts for release acceptance.
 
-## Migration from the prototype layout
+## Installation compatibility
 
-The installed application is now `client-dotnet/`; the former `manager/` and `client/` Rust trees have been retired. The Python package is under `tooling/installer_tooling/`. Build/test scripts use `client` or their platform responsibility instead of `rust-manager` names. Historical comparisons and prototype commands remain under `docs/history/`.
-
-For an existing development virtualenv, uninstall `wpilib-installer-prototype` before reinstalling this project's tooling. This removes its old Python `wpilib-manager` entry point, which would otherwise conflict with the native application's name:
-
-```sh
-python -m pip uninstall wpilib-installer-prototype
-python -m pip install -e '.[ci]'
-```
-
-The new Python entry point is `wpilib-installer-tools`. Existing native installations and bundles do not need conversion: `.wpilib-manager.json`, verified cache locations, Qt inventory, and trust formats are unchanged. Fresh development installs default to `~/wpilib-packages`; the installed manager still discovers its existing root, and `--root` selects an older installation explicitly. No existing installation is moved automatically. Final season-based paths and OS integration remain release work.
+Package IDs, `.wpilib-manager.json`, verified cache locations, Qt inventory and trust formats are compatibility contracts. Changing source layout does not change them. Development installs default to `~/wpilib-packages`; the installed manager discovers its existing root, and `--root` selects an installation explicitly. No existing installation is moved automatically. Final season-based paths and OS integration remain release work.

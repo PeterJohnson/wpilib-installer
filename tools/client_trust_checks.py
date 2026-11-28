@@ -1,27 +1,20 @@
-"""Cross-language evaluation against the existing Python publisher and archival policy.
+"""Shared signed fixtures and native client trust/archival acceptance checks.
 
-Probe transports use local repository bytes: no live production publication or network.
-Native clients perform TUF and schema-3 indefinite archival authorization checks.
-The Python archival implementation is the oracle. Full bundle payload validation,
-legacy archival schemas and the production manager are outside this probe.
+The Python publisher and archival implementation supply independent test oracles.
+These helpers drive the installed client; they are not alternative client programs.
 """
-import argparse
 import copy
 from datetime import datetime, timedelta, timezone
 import hashlib
 import json
-import os
 from pathlib import Path
-import platform
 import shutil
 import subprocess
-import sys
-from urllib.parse import urlparse, unquote
 from unittest.mock import patch
 
-from installer_tooling.common import atomic_json, canonical, digest, keygen, sign
+from installer_tooling.common import atomic_json, canonical, keygen, sign
 from installer_tooling.tuf_repository import (DirectoryStore, ROLES, create_root,
-    encoded, fetch_catalog, publish_catalog, signer)
+    encoded, publish_catalog, signer)
 from tuf.api.metadata import Metadata
 
 
@@ -360,46 +353,3 @@ class Evaluation:
                     assert not state.exists(),'archive touched online cache'
                 finally:f.doCleanups()
             self.case('native-archival-'+mutation,test)
-
-    def existing_cases(self):
-        if not self.existing:return
-        from installer_tooling.registry_updates import resolve
-        source=json.loads(self.existing.read_text())
-        view=resolve(source,self.work/'python-existing-cache')
-        trusts={'registry':source['tuf'],**{name:repo['tuf'] for name,repo in view.registry['repositories'].items()}}
-        for name,trust in trusts.items():
-            def test(name=name,trust=trust):
-                parsed=urlparse(trust['url']);assert parsed.scheme=='file','optional comparison expects a local repository copy'
-                origin=Path(unquote(parsed.path));root=self.work/(name+'-root.json');atomic_json(root,trust['root'])
-                native=self.ok(root,origin,self.work/(name+'-state'))['catalog']
-                reference=fetch_catalog(trust,self.work/'python-existing-cache')[0]
-                assert native==reference
-                return {'catalog_sha256':hashlib.sha256(canonical(native)).hexdigest(),'repository_id':trust['repository_id']}
-            self.case('existing-repository-'+name,test)
-
-
-def main():
-    p=argparse.ArgumentParser(description=__doc__)
-    p.add_argument('--go',type=Path,required=True)
-    p.add_argument('--work',type=Path,required=True);p.add_argument('--report',type=Path,required=True)
-    p.add_argument('--registry-source',type=Path)
-    args=p.parse_args();work=args.work.resolve()
-    if work.exists():raise ValueError('Use a new evaluation workspace')
-    work.mkdir(parents=True)
-    normal=work/'normal';_,_,normal_keys=generate(normal,1)
-    long=work/'long';_,_,long_keys=generate(long,1030)
-    report={'schema':1,'host':platform.platform(),'libraries':{'go-tuf':'2.5.0'},
-            'scope':'native TUF/local transports, explicit response-cache adapters, native schema-3 indefinite archival authorization against Python oracle; no full bundle loader or HTTP/GUI validation',
-            'clients':{}}
-    for name,binary in (('go-tuf',args.go),):
-        e=Evaluation(name,binary,work/name,normal,long,args.registry_source)
-        e.work.mkdir()
-        e.normal_cases(normal_keys);e.long_cases(long_keys);e.archival_cases(long_keys);e.native_archival_cases();e.existing_cases()
-        report['clients'][name]={'binary_sha256':digest(binary),'binary_bytes':binary.stat().st_size,'checks':e.results}
-        atomic_json(work/(name+'-invocations.json'),e.invocations)
-    report['status']='passed' if all(c['status']=='passed' for client in report['clients'].values() for c in client['checks']) else 'failed'
-    atomic_json(args.report,report)
-    print(json.dumps({'status':report['status'],'report':str(args.report)},indent=2))
-    return 0 if report['status']=='passed' else 1
-
-if __name__=='__main__':sys.exit(main())

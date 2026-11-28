@@ -16,7 +16,7 @@ def publish(assets, work):
     rid = 'win-x64' if os.name == 'nt' else ('osx-arm64' if platform.machine() == 'arm64' else 'osx-x64') if sys.platform == 'darwin' else 'linux-x64'
     env = {**os.environ, 'MACOSX_DEPLOYMENT_TARGET':'13.0', 'DOTNET_CLI_TELEMETRY_OPTOUT':'1', 'AVALONIA_TELEMETRY_OPTOUT':'1'}
     def project(name, output, prop):
-        subprocess.run(['dotnet', 'publish', str(REPO / 'client-dotnet' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop], cwd=REPO / 'client-dotnet', env=env, check=True)
+        subprocess.run(['dotnet', 'publish', str(REPO / 'client' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop], cwd=REPO / 'client', env=env, check=True)
     project('app/App.csproj', work / 'private', f'-p:ManagerAssets={assets}')
     if sys.platform == 'linux':
         for name in ('libssl.so.3','libcrypto.so.3'):
@@ -57,7 +57,7 @@ def build(source, ifw, output, assets):
     else: publish(assets,work)
     if sys.platform=='darwin':
         app=output / 'WPILib Manager.app';exe=app / 'Contents/MacOS/wpilib-manager';exe.parent.mkdir(parents=True,exist_ok=True)
-        shutil.copy2(REPO / 'client-dotnet/Info.plist',app / 'Contents/Info.plist')
+        shutil.copy2(REPO / 'client/Info.plist',app / 'Contents/Info.plist')
     else:
         exe=output / ('WPILibManager.exe' if os.name=='nt' else 'wpilib-manager');exe.parent.mkdir(parents=True,exist_ok=True)
     shutil.copy2(work / 'launcher' / ('WPILibManager.exe' if os.name=='nt' else 'WPILibManager'),exe)
