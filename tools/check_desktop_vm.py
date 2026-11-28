@@ -149,7 +149,7 @@ touch /mnt/wpilib-test/installed
     assert not a.require_real or report['real_packages'],report
     assert report['application_sha256']==evidence['application_sha256']
     assert f'VERSION_ID="{series}"' in report['os_release'],report['os_release']
-    assert len(report['checks'])==(22 if report['real_packages'] else 18) and all(c['passed'] for c in report['checks']),report
+    assert len(report['checks'])==(26 if report['real_packages'] else 22) and all(c['passed'] for c in report['checks']),report
     evidence['result']='passed';evidence['guest']=report
     (work/'report.json').write_text(json.dumps(evidence,indent=2)+'\n')
     print(f'PASS Ubuntu Desktop {a.release}: {len(report["checks"])} checks',flush=True)

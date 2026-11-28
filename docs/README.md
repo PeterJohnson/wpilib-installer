@@ -2,9 +2,10 @@
 
 ## Current implementation and operations
 
+- [C#/Avalonia lifecycle port](avalonia-client.md): active client implementation and native acceptance.
 - [C# manager experiment](csharp-manager-experiment.md): policy adapters, native AOT application checks, and distribution size comparison.
 - [C# Native AOT TUF investigation](csharp-tuf-evaluation.md): candidate libraries, measured interoperability and remaining adapter work.
-- [Architecture](architecture.md): selected Rust/private-Qt design, publication, trust, and offline media.
+- [Architecture](architecture.md): selected C#/Avalonia/private-Qt design, publication, trust, and offline media.
 - [Production readiness](production-readiness.md): established capabilities and unfinished release gates.
 - [Development and migration](../CONTRIBUTING.md): current layout, commands, and CI responsibilities.
 - [Runtime distribution](self-contained-runtime.md): dependency isolation, supported baselines, measured sizes, and acceptance limits.
@@ -27,5 +28,3 @@ Machine-readable reports in [evidence/](evidence/) bind test results to exact co
 - [Host graphics and clean Desktop fixtures](evidence/host-graphics-2026-11-27.json)
 
 The [original proposal](history/installer-architecture.md), [implementation comparison](history/manager-distribution-evaluation.md), [prototype status](history/prototype-status.md), [Rust prototype notes](history/rust-manager-prototype.md), and [Python prototype guide](history/python-prototype-guide.md) are preserved under `history/`. Their commands describe earlier revisions; use the current development guide for new work.
-
-- [C#/Avalonia lifecycle port](avalonia-client.md): active client implementation and native acceptance.
