@@ -72,8 +72,8 @@ def audit(path, worker=False, runtime=None):
         commands = subprocess.check_output(['otool','-l',str(path)],text=True)
         versions = re.findall(r'\bminos (\d+\.\d+(?:\.\d+)?)',commands)
         versions += re.findall(r'cmd LC_VERSION_MIN_MACOSX\s+cmdsize \d+\s+version (\S+)',commands)
-        if not versions or any(tuple(map(int,v.split('.'))) > (13,0,0) for v in versions):
-            raise ValueError(f'Binary exceeds the macOS 13 deployment baseline: {versions}')
+        if not versions or any(tuple(map(int,v.split('.'))) > (14,0,0) for v in versions):
+            raise ValueError(f'Binary exceeds the macOS 14 deployment baseline: {versions}')
         return {'kind':'Mach-O','imports':imports,'minimum_os':versions,'policy':'macOS inbox frameworks/libraries only'}
     dynamic = subprocess.check_output(['readelf','-d',str(path)],text=True)
     imports = re.findall(r'\(NEEDED\).*\[(.+?)\]',dynamic)

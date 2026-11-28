@@ -14,9 +14,12 @@ def zip_tree(source, destination):
 
 def publish(assets, work):
     rid = 'win-x64' if os.name == 'nt' else ('osx-arm64' if platform.machine() == 'arm64' else 'osx-x64') if sys.platform == 'darwin' else 'linux-x64'
-    env = {**os.environ, 'MACOSX_DEPLOYMENT_TARGET':'13.0', 'DOTNET_CLI_TELEMETRY_OPTOUT':'1', 'AVALONIA_TELEMETRY_OPTOUT':'1'}
+    env = {**os.environ, 'MACOSX_DEPLOYMENT_TARGET':'14.0', 'DOTNET_CLI_TELEMETRY_OPTOUT':'1', 'AVALONIA_TELEMETRY_OPTOUT':'1'}
     def project(name, output, prop):
-        subprocess.run(['dotnet', 'publish', str(REPO / 'client' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop], cwd=REPO / 'client', env=env, check=True)
+        args = ['dotnet', 'publish', str(REPO / 'client' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop]
+        if sys.platform == 'darwin':
+            args.append('-p:AppleMinOSVersion=14.0')
+        subprocess.run(args, cwd=REPO / 'client', env=env, check=True)
     project('app/App.csproj', work / 'private', f'-p:ManagerAssets={assets}')
     if sys.platform == 'linux':
         for name in ('libssl.so.3','libcrypto.so.3'):
@@ -51,7 +54,7 @@ def build(source, ifw, output, assets):
         runtime='wpilib-installer-linux-runtime:22.04'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/linux-runtime.Dockerfile'),'-t',runtime,str(REPO)],check=True)
         subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work:ro','-v',f'{assets}:/assets',runtime,'python3','tools/package_linux_runtime.py','--engine','/assets/engine','--output','/assets/runtime.zip'],check=True)
-        image='wpilib-installer-dotnet:22.04-10.0.404'
+        image='wpilib-installer-dotnet:22.04-11.0.100'
         subprocess.run(['docker','build','-f',str(REPO / '.github/containers/dotnet-client.Dockerfile'),'-t',image,str(REPO)],check=True)
         subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}', '-v',f'{REPO}:/work','-v',f'{assets}:/assets','-v',f'{work}:/aot', '-v','/etc/passwd:/etc/passwd:ro','-v','/etc/group:/etc/group:ro','-e','DOTNET_CLI_HOME=/aot/home','-e','NUGET_PACKAGES=/aot/nuget','-e','XDG_RUNTIME_DIR=/aot/runtime-dir',image,'python3','-c','import sys; sys.path.insert(0,"tools"); from build_client import publish; from pathlib import Path; publish(Path("/assets"),Path("/aot"))'],check=True)
     else: publish(assets,work)

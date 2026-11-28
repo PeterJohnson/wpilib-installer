@@ -2,11 +2,11 @@
 
 ## Prerequisites
 
-Python 3.11+ is for build, publishing, and test tooling. .NET SDK 10.0.404 is pinned in `client/global.json`; NativeAOT targets .NET 10.0.15 and Avalonia 12.1.1. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
+Python 3.11+ is for build, publishing, and test tooling. .NET SDK 11.0.100 is pinned in `client/global.json`; NativeAOT targets .NET 11.0.0 and Avalonia 12.1.1. Qt Installer Framework 4.11.0 is pinned in `tools/ifw-lock.json`; the bootstrap verifies its archive hash. Download extraction requires `7z` or `7zz`.
 
 On Ubuntu build hosts, `.github/scripts/install-linux-dependencies.sh` installs Qt tool dependencies and the extractor. Linux client compilation runs in Docker on an Ubuntu 22.04 baseline and includes its .NET SDK and native compiler. Native GUI tests additionally need a display or Xvfb. Clean Desktop acceptance uses host-only QEMU/KVM and xorriso; no packages are installed in the Desktop guest. These are development requirements, not end-user prerequisites.
 
-Windows native builds require MSVC build tools and the pinned .NET SDK. macOS builds use the pinned .NET SDK, Xcode command-line tools and `sevenzip`; deployment target remains macOS 13, with macOS 15 CI on Intel and ARM. Linux/Windows ARM client releases are not enabled.
+Windows native builds require MSVC build tools and the pinned .NET SDK. macOS builds use the pinned .NET SDK, Xcode command-line tools and `sevenzip`; deployment target is macOS 14, with macOS 15 CI on Intel and ARM. Linux/Windows ARM client releases are not enabled.
 
 ```sh
 python3 -m venv .venv
