@@ -58,6 +58,8 @@ The S3/R2 origin must support atomic `If-None-Match: *` creation and `If-Match: 
 
 ## Publisher release integration
 
+The [catalog development plan](../docs/package-catalog.md) adds shared packaging recipes with two sources: pinned legacy/Maven release artifacts for development and local producer build outputs for eventual CI integration. Both emit the input contract below. The reusable publication workflow exists today; general SDK importers and producer-facing packaging actions remain implementation work.
+
 The producer's build job must finish platform signing/notarization and tests before it hands off the payloads. The input directory has this shape:
 
 ```text
@@ -82,7 +84,7 @@ Create a tar file with clean relative entries (no leading `./`) and upload that 
     if-no-files-found: error
 ```
 
-Tar preserves executable modes that Actions artifacts otherwise discard. Extraction rejects traversal, links, devices, and duplicate entries. The prototype still rejects symlinks in payloads; real macOS app packaging needs the dedicated preservation recipe described in the proposal. [Artifact permission behavior](https://github.com/actions/upload-artifact#permission-loss).
+Tar preserves executable modes that Actions artifacts otherwise discard. Extraction preserves contained relative symlinks and rejects traversal, escaping/dangling/cyclic links, hardlinks, devices, duplicate entries, and writes below symlinks. macOS signature attributes need the dedicated preservation recipe documented in [real package recipes](../packaging/README.md); generic tar handoff alone does not establish signature preservation. [Artifact permission behavior](https://github.com/actions/upload-artifact#permission-loss).
 
 Add a dependent job to that producer's trusted release workflow. Replace `OWNER/INSTALLER_REPO` and `FULL_40_CHARACTER_COMMIT_SHA` with the published tooling repository and the same reviewed commit in both locations:
 

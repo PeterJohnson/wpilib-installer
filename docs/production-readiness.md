@@ -25,7 +25,7 @@ The [layout report](evidence/production-layout-2026-11-27.json) and [real-packag
 
 All unchecked gates below remain required before calling an installer production-ready. A successful fixture build is necessary evidence, not release approval.
 
-- [ ] **Package catalog:** package real WPILib C++/Java toolchains, libraries, VS Code integration, and tools; implement RobotPy's standalone Python and wheel/runtime closure. Define supported versions, dependencies, owned paths, licenses, and compatibility across releases. Current RobotPy/SDK fixtures are markers only.
+- [ ] **Package catalog:** package real WPILib C++/Java toolchains, libraries, VS Code integration, and tools; implement RobotPy's standalone Python and wheel/runtime closure. Define supported versions, dependencies, owned paths, licenses, and compatibility across releases. Develop pinned legacy-release/Maven importers alongside producer-output adapters and packaging actions, sharing recipes and equivalence/offline-build tests; see the [catalog migration plan](package-catalog.md). Current RobotPy/SDK fixtures are markers only.
 - [ ] **Installation behavior:** settle seasonal/per-user/system-wide roots, upgrade migration from the existing installer, launchers/shortcuts, file associations, permissions/elevation, and applications running during updates. Test interrupted extraction, failed operations, rollback/recovery, disk-full behavior, and Windows reboot/replacement scenarios.
 - [ ] **Client UX:** finish profile/component selection, license review, understandable progress/errors, cancellation, accessibility/localization, disk-space checks, proxy/TLS configuration, retry/resume, and cache cleanup. The current GUI and download behavior are development interfaces.
 - [ ] **Trust and deployment:** provision reviewed HTTPS registries and publisher allowlists; conduct root/archival key ceremonies, define custody/thresholds and recovery drills, configure protected CI environments and least-privilege secrets, and validate real Artifactory/R2 publication end to end. Keep fixture trust and loopback exceptions out of release bootstraps.
@@ -36,7 +36,7 @@ All unchecked gates below remain required before calling an installer production
 
 ## Next implementation sequence
 
-1. Integrate real core/RobotPy packaging and settle installation/layout contracts with the current WPILib distribution.
+1. Build real core packages from a pinned last legacy release and/or Maven artifacts while developing equivalent producer CI recipes/actions in parallel; add RobotPy from its own runtime/wheel sources. Settle installation/layout contracts and validate offline development functionality as described in the [catalog plan](package-catalog.md).
 2. Harden lifecycle recovery and complete normal-user GUI flows and VS Code integration.
 3. Provision deployment trust/endpoints and implement signed client release/self-update delivery.
 4. Complete the expanded clean-machine/hardware matrix and release approval process.

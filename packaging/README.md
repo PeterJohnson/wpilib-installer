@@ -1,4 +1,8 @@
-# Real dashboard release recipes
+# Package recipes
+
+Catalog development uses two input paths: pinned legacy-installer/Maven/upstream artifacts now, and producer CI outputs as integrations become available. Both must feed the same component recipes and publisher handoff. See the [catalog development and producer CI plan](../docs/package-catalog.md) for the implementation sequence and equivalence/functional acceptance requirements. General SDK importers and producer-facing packaging actions remain to be built; the real dashboard recipes below are implemented today.
+
+## Real dashboard release recipes
 
 The dashboard adapter packages the official **WPILib distributions** of
 [Elastic](https://github.com/Gold872/elastic_dashboard/releases) and

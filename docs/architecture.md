@@ -18,6 +18,10 @@ Repositories are ordinary HTTPS-accessible files. Qt metadata and larger combine
 
 CI publishes immutable content first and advances mutable indexes last. R2/S3 uses conditional replacement; Artifactory uses staging, verification, promotion, and a serialized writer per publisher/destination. Metadata renewal does not rebuild payload archives. See [CI signing](../deployment/ci-signing.md), [TUF operations](../deployment/tuf.md), and [Artifactory](../deployment/artifactory.md).
 
+## Package catalog migration
+
+Develop the real catalog from pinned legacy-installer releases and Maven/upstream artifacts while building the producer-facing packaging actions in parallel. Both input paths feed the same component recipes and existing publisher handoff, so producers can adopt publication independently without changing installed package identities. This work must include offline SDK functional checks and an audit of legacy setup operations, not just archive splitting. See the [catalog development and producer CI plan](package-catalog.md).
+
 ## Online and archival trust
 
 The native client uses `tough` for online TUF verification. It authenticates registry refresh and publisher catalogs, verifies cached metadata again before use, enforces expiration/rollback protection, and rejects invalid metadata rather than treating it as a transport failure. Transport failures may use still-current verified caches. Root catch-up is bounded per operation and resumable from verified progress; expired bootstrap roots and histories longer than 1,024 rotations do not bypass chain verification.
