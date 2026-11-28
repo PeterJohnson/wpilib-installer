@@ -19,6 +19,10 @@ def publish(assets, work):
         args = ['dotnet', 'publish', str(REPO / 'client' / name), '-c', 'Release', '-r', rid, '-o', str(output), prop]
         if sys.platform == 'darwin':
             args.append('-p:AppleMinOSVersion=14.0')
+            if rid == 'osx-x64':
+                # Xcode 16's classic linker rejects an unaligned GSS symbol in the
+                # .NET 11 x64 runtime archive. Use Apple's current linker instead.
+                args.append('-p:UseLdClassicXCodeLinker=false')
         subprocess.run(args, cwd=REPO / 'client', env=env, check=True)
     project('app/App.csproj', work / 'private', f'-p:ManagerAssets={assets}')
     if sys.platform == 'linux':
