@@ -10,8 +10,9 @@ a=p.parse_args();work=a.work.resolve();work.mkdir(parents=True,exist_ok=False)
 normal=work/'normal';_,_,normal_keys=generate(normal,1)
 long=work/'long';_,_,long_keys=generate(long,1030)
 e=Evaluation('csharp-tuf',a.app,work/'cases',normal,long,a.registry_source);e.work.mkdir()
-e.normal_cases(normal_keys);e.long_cases(long_keys);e.archival_cases(long_keys);e.native_archival_cases();e.existing_cases()
-from extra_checks import run
+e.normal_cases(normal_keys);e.long_cases(long_keys);e.archival_cases(long_keys);e.native_archival_cases()
+from extra_checks import run,existing
+existing(e)
 run(e,normal_keys)
 report={'schema':1,'host':platform.platform(),'library':'Tuf 1.1.1','scope':'Native AOT manager policy adapter; same Python-generated fixtures/assertions as Go/Rust, with separate archival authority; no complete installer migration','binary_bytes':a.app.stat().st_size,'binary_sha256':digest(a.app),'checks':e.results,'status':'passed' if all(c['status']=='passed' for c in e.results) else 'failed'}
 atomic_json(a.report,report);atomic_json(work/'invocations.json',e.invocations)

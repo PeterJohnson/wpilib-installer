@@ -89,3 +89,24 @@ def run(e,keys):
    e.ok(source,f.bundle,e.work/'no-online-state',mode='archive')
   finally:f.doCleanups()
  e.case('archival-python-unicode-scalar-order-and-uint64',canonical_order)
+
+def existing(e):
+ # Same comparison as Evaluation.existing_cases, using OS-aware file-URI decoding
+ # for Windows drive letters (Path('/D:/...') is not the original Windows path).
+ if not e.existing:return
+ from urllib.parse import urlparse
+ from urllib.request import url2pathname
+ from installer_tooling.registry_updates import resolve
+ from installer_tooling.tuf_repository import fetch_catalog
+ from installer_tooling.common import digest
+ import hashlib
+ source=json.loads(e.existing.read_text());view=resolve(source,e.work/'python-existing-cache')
+ trusts={'registry':source['tuf'],**{name:repo['tuf'] for name,repo in view.registry['repositories'].items()}}
+ for name,trust in trusts.items():
+  def test(name=name,trust=trust):
+   parsed=urlparse(trust['url']);assert parsed.scheme=='file'
+   origin=Path(url2pathname(parsed.path));root=e.work/(name+'-root.json');atomic_json(root,trust['root'])
+   native=e.ok(root,origin,e.work/(name+'-state'))['catalog'];reference=fetch_catalog(trust,e.work/'python-existing-cache')[0]
+   assert native==reference
+   return {'catalog_sha256':hashlib.sha256(canonical(native)).hexdigest(),'repository_id':trust['repository_id']}
+  e.case('existing-repository-'+name,test)

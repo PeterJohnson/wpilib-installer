@@ -25,7 +25,13 @@ if not a.assets:
   for f in sorted(engine.rglob('*')) if engine.is_dir() else [engine]:
    if f.is_file():z.write(f,f.relative_to(assets))
  if sys.platform=='linux':
-  subprocess.run([sys.executable,'tools/package_linux_runtime.py','--engine',str(engine),'--output',str(assets/'runtime.zip')],check=True)
+  # Match Rust's minimal baseline image, including the exact runtime-notices policy.
+  image='wpilib-installer-linux-runtime:22.04-rust-1.100.0'
+  repo=Path.cwd().resolve()
+  subprocess.run(['docker','build','-f','.github/containers/linux-runtime.Dockerfile','-t',image,'.'],check=True)
+  subprocess.run(['docker','run','--rm','--user',f'{os.getuid()}:{os.getgid()}',
+                  '-v',f'{repo}:/work:ro','-v',f'{assets}:/assets',image,'python3',
+                  'tools/package_linux_runtime.py','--engine','/assets/engine','--output','/assets/runtime.zip'],check=True)
 publish('app/App.csproj',work/'private',f'-p:ManagerAssets={assets}')
 zip_tree(work/'private',work/'application.zip')
 publish('launcher/Launcher.csproj',work/'launcher',f'-p:Payload={work / "application.zip"}')
@@ -45,6 +51,15 @@ rust=[f for f in baseline.rglob('*') if f.is_file() and f.name in ('wpilib-manag
 assert len(rust)==1,rust
 native=[{'name':f.relative_to(work/'private').as_posix(),'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()} for f in sorted((work/'private').rglob('*')) if f.is_file() and f.suffix not in ('.pdb','.dbg') and '.dSYM' not in str(f)]
 report={'rid':rid,'dotnet_sdk':subprocess.check_output(['dotnet','--version'],text=True).strip(),'host':platform.platform(),'scope':'Experimental catalog/archival manager and GUI+Qt smoke harness, not feature parity with Rust installer. One public executable with private extracted AOT app/native libraries/Qt. Unsigned artifacts, symbols excluded.','csharp':{'executable_bytes':exe.stat().st_size,'download_zip_bytes':(work/'csharp-application.zip').stat().st_size,'executable_sha256':hashlib.sha256(exe.read_bytes()).hexdigest(),'private_files':native,'payload_zip_bytes':(work/'application.zip').stat().st_size},'rust':{'executable_bytes':rust[0].stat().st_size,'download_zip_bytes':a.baseline.stat().st_size,'executable_sha256':hashlib.sha256(rust[0].read_bytes()).hexdigest(),'baseline_commit':'e40b48f7f369dceb6e46add87102590ca1f3eeb5','baseline_run':46082370013},'assets':{f.name:f.stat().st_size for f in assets.iterdir() if f.suffix=='.zip'}}
+# Record all private Windows imports too; hosted SDK installs must not hide a VC runtime requirement.
+if os.name=='nt':
+ from audit_client_dependencies import pe_imports,WINDOWS_SYSTEM
+ files=[exe,*[f for f in (work/'private').iterdir() if f.suffix.lower() in ('.exe','.dll')]]
+ private={f.name.lower() for f in files}
+ imports={f.name:pe_imports(f) for f in files}
+ unresolved={name:[n for n in deps if n not in WINDOWS_SYSTEM and n not in private and not n.startswith(('api-ms-win-','ext-ms-win-'))] for name,deps in imports.items()}
+ (work/'windows-imports.json').write_text(json.dumps({'imports':imports,'unresolved':unresolved},indent=2)+'\n')
+ assert not any(unresolved.values()),unresolved
 (work/'sizes.json').write_text(json.dumps(report,indent=2)+'\n')
 (work/'app-path.txt').write_text(str(exe))
 print(json.dumps(report,indent=2))

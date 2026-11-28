@@ -80,6 +80,7 @@ jobs:
             build/csharp/sizes.json
             build/csharp/gui-smoke.json
             build/csharp/dependencies.txt
+            build/csharp/windows-imports.json
             build/csharp/dotnet-info.txt
           if-no-files-found: warn
       - uses: actions/upload-artifact@v4

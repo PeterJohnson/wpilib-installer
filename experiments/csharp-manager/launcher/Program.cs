@@ -16,8 +16,11 @@ try
         if (!OperatingSystem.IsWindows()) File.SetUnixFileMode(path, (UnixFileMode)((entry.ExternalAttributes >> 16) & 511));
     }
     var exe = Path.Combine(root, "manager-experiment" + (OperatingSystem.IsWindows() ? ".exe" : ""));
-    var command = new ProcessStartInfo(exe) { UseShellExecute = false, CreateNoWindow = true };
+    var command = new ProcessStartInfo(exe) { UseShellExecute = false, CreateNoWindow = true, RedirectStandardOutput = true, RedirectStandardError = true };
     foreach (var arg in args) command.ArgumentList.Add(arg);
-    using var child = Process.Start(command)!; child.WaitForExit(); return child.ExitCode;
+    using var child = Process.Start(command)!;
+    var stdout = child.StandardOutput.BaseStream.CopyToAsync(Console.OpenStandardOutput());
+    var stderr = child.StandardError.BaseStream.CopyToAsync(Console.OpenStandardError());
+    await child.WaitForExitAsync(); await Task.WhenAll(stdout, stderr); return child.ExitCode;
 }
 finally { Directory.Delete(root, true); }
